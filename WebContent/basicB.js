@@ -52,7 +52,7 @@ $(document).ready(function(){
 		$("#bookform").attr("action",host + port + webservice + "/savebook").submit();
 		
 	    $('#myModal1').modal('toggle');
-	    $("#comment").html("policy created succe")
+	    $("#comment").html("book saved successfully")
 	    return false;
 	});
 	

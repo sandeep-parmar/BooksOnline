@@ -70,7 +70,7 @@
 
 <!-- Footer -->
 <footer class="container-fluid bg-4 text-center">
-  <p>Online second hand boosstore </p> 
+  <p>Online second hand bookstore </p> 
 </footer>
 
 </body>
