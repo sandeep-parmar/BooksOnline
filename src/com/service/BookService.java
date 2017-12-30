@@ -33,19 +33,16 @@ public class BookService {
 		// TODO Auto-generated constructor stub
 	}
 	
-	@GET
-	@Path("/getbookinfo/{param1}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public String getBookDetails(@PathParam("param1") String isbn)
-	{		
-		 String address = "https://www.googleapis.com/books/v1/volumes?q=";
-		 String query = "title="+isbn;
+	
+	private String sendBookRequest(String key, String value)
+	{
+		String address = "https://www.googleapis.com/books/v1/volumes?q=";
+		 String query = key+"="+value;
 		 String charset = "UTF-8";
 	 
 		URL url;
 		String str;
-		String jsonres="";
-		JSONObject returnJson = null;
+		String jsonres="";		
 		try {
 			url = new URL(address + URLEncoder.encode(query, charset));
 		
@@ -53,18 +50,74 @@ public class BookService {
 		
 			while ((str = in.readLine()) != null) {			
 				jsonres+=str;
+			}		
+		}catch (IOException e) {			
+			e.printStackTrace();
+		}
+		return jsonres;
+	}
+
+	@GET
+	@Path("/getbooklist/{author}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getBookList(@PathParam("author") String author)
+	{
+		System.out.println("aaaaa author:"+author);
+		String jsonres= sendBookRequest("author", author);
+		
+		JSONObject returnJson = null;
+		
+		JSONObject json = new JSONObject(jsonres);
+		JSONArray itemsArr = null;
+		if(json !=null && json.has("items"))
+		{
+			itemsArr = json.getJSONArray("items");
+		}
+		
+		JSONArray titles = new JSONArray();
+		JSONObject item=null;
+		for(int i=0;i<itemsArr.length();i++)
+		{
+			item= itemsArr.getJSONObject(i);
+			JSONObject jsonvolume = null;
+			if(item != null && item.has("volumeInfo"))
+			{
+				jsonvolume = item.getJSONObject("volumeInfo");
+				if(jsonvolume != null && jsonvolume.has("title"))
+				{
+					titles.put(jsonvolume.getString("title"));
+				}
 			}
+		}
+		
+		//System.out.println("booklist:"+titles);
+		
+		returnJson = new JSONObject();
+		returnJson.put("books", titles);
+		
+		return returnJson.toString();
+	}
+	
+	@GET
+	@Path("/getbookinfo/{param1}/{param2}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getBookDetails(@PathParam("param1") String key, @PathParam("param2") String value)
+	{			
+		//System.out.println(value);
+		String jsonres= sendBookRequest(key, value);
+		
+		JSONObject returnJson = null;
 		
 		JSONObject json = new JSONObject(jsonres);
 		
 		JSONArray jsonArr = null;
-		if(json.has("items"))
+		if(json !=null && json.has("items"))
 		{
 			jsonArr = json.getJSONArray("items");
 		}
 		
 		JSONObject arr1=null;
-		if(jsonArr.length()>0)
+		if(jsonArr !=null && jsonArr.length()>0)
 		{
 		 arr1= jsonArr.getJSONObject(0);
 		}
@@ -80,11 +133,29 @@ public class BookService {
 		{
 			authors = jsonvolume.getJSONArray("authors");
 		}
+		String isbn=null;
+		JSONArray isbns=null;
+		if(jsonvolume.has("industryIdentifiers"))
+		{
+			isbns = jsonvolume.getJSONArray("industryIdentifiers");
+			for(int i=0;i<isbns.length();i++)
+			{
+				JSONObject isbnData = isbns.getJSONObject(i);
+				String type = isbnData.getString("type");
+				if(type.equals("ISBN_13"))
+				{
+					isbn = isbnData.getString("identifier"); 
+				}
+			}
+			//System.out.println("isbn:"+isbn);
+		}
 		
 		JSONObject imagelinks=null;
-		if(jsonvolume.has("imageLinks"))
+		if((jsonvolume != null) && jsonvolume.has("imageLinks"))
 		{
+			//System.out.println("aaaaa1");
 			imagelinks = jsonvolume.getJSONObject("imageLinks");
+			//System.out.println("aaaaa2");
 		}
 		
 		String authorlist="";
@@ -93,10 +164,13 @@ public class BookService {
 			authorlist += authors.getString(i)+" ";
 		}					
 		
+		
 		String thumbnail = null;
-		if(imagelinks.has("thumbnail"))
+		if(imagelinks != null && imagelinks.has("thumbnail"))
 		{
+			//System.out.println("aaaaaaaa3");
 			thumbnail = imagelinks.getString("thumbnail");
+			//System.out.println("aaaaaaaa4");
 		}
 		
 		String title = null;
@@ -107,6 +181,7 @@ public class BookService {
 		
 		
 		String description = null;
+		
 		if(jsonvolume.has("description"))
 		{
 			description = jsonvolume.getString("description");
@@ -117,10 +192,8 @@ public class BookService {
 		returnJson.put("author", authorlist);
 		returnJson.put("description", description);
 		returnJson.put("thumbnail", thumbnail);
+		returnJson.put("isbn", isbn);
 		//System.out.println("authorlist:"+authorlist+"title:"+title+",description:"+description);
-		} catch (IOException e) {			
-			e.printStackTrace();
-		}
 		return returnJson.toString();
 	}
 	
