@@ -26,7 +26,7 @@
 		<label for="sel1">Search By:</label>
 	</div>
 	<div class="col-sm-2">
-		<select class="form-control" id="sel1">
+		<select class="form-control" id="searchkey">
     		<option>ISBN</option>
     		<option>TITLE</option>
     		<option>AUTHOR</option>    
@@ -34,7 +34,7 @@
 	</div>
 	<div class="col-sm-2">
 		<div class="form-group">
-  		<input type="text" class="form-control" id="isbnField">
+  		<input type="text" class="form-control" id="inputfield">
 		</div>
 	</div>
 	<div class="col-lg-2">
@@ -94,6 +94,33 @@
   </div>
 </div>
 
+
+<!--model-2-->
+<div id="myModal2" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->    
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Select your book from the list</h4>
+      </div> 
+      
+      <div class="modal-body">        
+        	<div class="form-group">
+    			<label for="booklist">Book List</label>
+    			<select class="form-control" id="booklist" name="booklist"></select>
+  			</div>
+  			
+  			<button type="button" class="btn btn-primary" id="searchbytitle">Search</button>  					
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 
 <!-- Footer -->
