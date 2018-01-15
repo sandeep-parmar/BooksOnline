@@ -19,6 +19,7 @@ public class BookDao {
 
 	public static void saveBook(String bookid,String booktitle, String bookauthor,String bookdesc, String thumbnail)
 	{
+		System.out.println(" saveBook called with data : bookid : "+bookid+" booktitle : "+bookauthor +" bookdesc : "+bookdesc+" thumbnail : "+thumbnail);
 		String sql = "insert into books(bookid,booktitle,bookauthor,bookdesc,thumbnail) values(?,?,?,?,?)";
 		Connection conn = null;
 		try {
