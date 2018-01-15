@@ -3,12 +3,8 @@ package com.service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.lang.annotation.Retention;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.sql.Connection;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -21,11 +17,7 @@ import javax.ws.rs.core.MediaType;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.connection.ConnectionHandler;
-import com.dao.FacadeDB;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonObjectFormatVisitor;
-
+import com.dao.BookDao;
 @Path("/books")
 public class BookService {
 
@@ -208,6 +200,6 @@ public class BookService {
 	{
 		
 		//System.out.println(title+", "+author+","+description+","+isbn+","+thumbnail);
-		FacadeDB.saveBook(bookid, booktitle, bookauthor, bookdesc, thumbnail);
+		BookDao.saveBook(bookid, booktitle, bookauthor, bookdesc, thumbnail);
 	}
 }

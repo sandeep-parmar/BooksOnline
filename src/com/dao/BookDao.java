@@ -11,9 +11,9 @@ import com.bean.Book;
 import com.connection.ConnectionHandler;
 
 
-public class FacadeDB {
+public class BookDao {
 
-	public FacadeDB() {
+	public BookDao() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -43,9 +43,6 @@ public class FacadeDB {
 	{
 		List<Book> list = new ArrayList<>();
 			
-		
-		
-		
 		ResultSet rs = null;
 		String sql = "select * from books";
 		//System.out.println("In getAllbed");

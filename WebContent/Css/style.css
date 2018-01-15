@@ -11,7 +11,7 @@ body {
   
   #postad
   {
-  	background-color: blue;
+  	background-color: #669975;
   }
   /*
   .btn {
@@ -97,36 +97,6 @@ body {
   	border: .5px solid;
   }
   
-  li.reduced-line-height
-{
-	line-height: 1em;
-}
-
-.prodproperty
-{
-	
-	font-family: arial,Montserrat,Georgia, "Times New Roman", Serif;
-	font-style: normal;
-	font-size: 14px;
-	color:gray;
-}
-
-.prodproperyvalue
-{
-	
-	font-family: Montserrat,"Times new roman";
-	font-size: 14px;
-	font-style: normal;
-}
-
-li.borderless 
-{ 
-	border-top: 0 none;
-	border-bottom: 0 none;
-	border-left: 0 none;
-	border-right: 0 none;
-	text-align: left;
-}
 
 .searchContain
 {
@@ -158,4 +128,16 @@ li.borderless
 	margin-left: 20px;
     display: block;
     margin: 0 auto;
+}
+
+
+.loginsignup {	
+	width: 400px;
+	margin-top: 80px;
+	border:solid 1px;
+	border-radius: 10px 10px 10px 10px;
+}
+#signupformsubmitbutton {
+	width: 200px;
+	margin-left: 20%;
 }
