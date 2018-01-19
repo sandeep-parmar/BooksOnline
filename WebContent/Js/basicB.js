@@ -40,8 +40,7 @@ $(document).ready(function(){
 		$.get(host + port + webservice + bookservice + "/getbookinfo/" + searchKey + "/" + searchVal,
 				function(data, status){					
 				//console.log(data);
-				var title = data["title"];
-									
+				var title = data["title"];									
 				var author = data["author"];
 				var description = data["description"];
 				var thumbnail = data["thumbnail"];
@@ -52,8 +51,7 @@ $(document).ready(function(){
 				$("#author").val(author);										 
 				$("#description").val(description);
 				$("#isbn").val(isbn);
-				$("#thumbnail").val(thumbnail);
-									 
+				$("#thumbnail").val(thumbnail);								 
 				$('#bookImg').attr('src',thumbnail);
 									 
 				$("#title").prop("readonly",true);
@@ -133,81 +131,63 @@ $(document).ready(function(){
 		    contentType: "application/json; charset=utf-8",
 		    success: function (data){
 		    	var status= data["valid"];
+		    	var active = data["accountStatus"];
 		    	if(status)
 		    	{				    
-		    		$(location).attr('href', '/BooksOnline/Secure/isbnquery.jsp?user=' + mobile);
+		    		$(location).attr('href', '/BooksOnline/Secure/isbnquery?user=' + mobile);
 		    	}
 		    	else
 		    	{
-		    		$("#logincomment").html("userid or password is incorrect");
+		    		if(active === 0)
+		    		{
+		    			$("#logincomment").html("Your Account is disabled,Please activate your acount by Clicking on verification link" +
+		    					"in your registered email ");
+		    		}
+		    		else
+		    		{
+		    			$("#logincomment").html("userid or password is incorrect");
+		    		}
 		    	}
 		        
 		    },
 		    error: function (data){
 		        alert("user login failed");        
 		    }
-
 		});
 	});
 	
 	$("#signupformsubmitbutton").click(function() {
+						
+			alert(host + port + webservice + loginservice + "/saveuser");
 				
-		
-		alert(host + port + webservice + loginservice + "/saveuser");
-			
-		jQuery.ajax({
-		    url: host + port + webservice + loginservice + "/saveuser",
-		    type: 'post',
-		    data: JSON.stringify({ 
-		    	"username": $("#name").val(),
-				"mobile": $("#mobile").val(),
-				"email": $("#email").val(),
-				"password": $("#password").val()
-		    }),	
-		    dataType: 'json',
-		    contentType: "application/json; charset=utf-8",
-		    success: function (data){
-		    	var status= data["status"];
-		    	if(!status)
-		    	{
-		    		$("#signupcomment").html("User registered successfully");
-		    		$(location).attr('href', 'login.jsp');
-		    	}
-		    	else
-		    	{
-		    		$("#signupcomment").html("Their is an error in registration");
-		    	}
-		        
-		    },
-		    error: function (data){
-		        alert("user registration failed");        
-		    }
-
+			jQuery.ajax({
+			    url: host + port + webservice + loginservice + "/saveuser",
+			    type: 'post',
+			    data: JSON.stringify({ 
+			    	"username": $("#name").val(),
+					"mobile": $("#mobile").val(),
+					"email": $("#email").val(),
+					"password": $("#password").val()
+			    }),	
+			    dataType: 'json',
+			    contentType: "application/json; charset=utf-8",
+			    success: function (data){
+			    	var status= data["status"];
+			    	if(!status)
+			    	{
+			    		$("#signupcomment").html("User registered successfully. Please verify your account by clicking on verification " +
+			    				"link sent to your registered email address");
+			    		//$(location).attr('href', 'login.jsp');
+			    	}
+			    	else
+			    	{
+			    		$("#signupcomment").html("Their is an error in registration");
+			    	}		  
+			    },
+			    error: function (data){
+			        alert("user registration failed");        
+			    }
 		    });
-		/*$.post(host + port + webservice + loginservice + "/saveuser",
-				{
-					contentType: "application/json; charset=utf-8",	
-				},
-				{
-					username: $("#name").val(),
-					mobile: $("#mobile").val(),
-					email: $("#email").val(),
-					password: $("#password").val()
-				},
-				function(data, status){					
-				console.log(data);
-			
-		
-				})
-				.fail(function(res,status,error) {
-					console.log(res.responseText);
-					alert( res.responseText+" "+status+" "+error);
-				});*/
-		
-		/*$("#signupform").attr("action",host + port + webservice + loginservice + "/saveuser").submit();
-		$("#signupcomment").html("User registered successfully");
-		$(location).attr('href', 'login.jsp');
-	    return false;*/
 	});
 	
 	

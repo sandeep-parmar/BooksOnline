@@ -1,8 +1,12 @@
 package com.service;
 
+import java.util.UUID;
+
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -20,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import com.bean.User;
 import com.dao.UserDao;
+import com.dao.UserRealm;
 
 @Path("/login")
 public class LoginService {
@@ -47,10 +52,17 @@ public class LoginService {
 
 		user.setPassword(hashedPasswordBase64);
 		user.setSalt(salt.toString());
+		
+		UUID uuid = UUID.randomUUID();
+		
+		user.setUuid(uuid.toString());
+		user.setActive(0);
 		System.out.println(user.toString());	
 		int status = UserDao.saveUser(user);
+		String response = UserRealm.sendVerificationEmail(user.getUsername(),user.getUuid());
 		JSONObject json = new JSONObject();
 		json.put("status", status);
+		json.put("verifyRes", response);
 		return json.toString();
 	}
 	
@@ -60,21 +72,14 @@ public class LoginService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String validate(final User user)
 	{
-		
-		/*//System.out.println(user.toString());
-		if(user.getMobile().equals("123") && user.getPassword().equals("123"))
-		{
-			return "{valid:true}";
-		}
-		
-		JSONObject json = new JSONObject();
-		boolean valid = UserDao.validate(user);
-		json.put("valid", valid);
-		return json.toString();*/
-		
+			
 		boolean status = true;
 		org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
 		System.out.println("sssssssss--1");
+		int accountActive = UserDao.isUserAccountActive(user.getMobile());
+		
+		if(accountActive == 1)
+		{
 		if(!currentUser.isAuthenticated())
 		{
 			System.out.println("sssssssss--2");
@@ -85,27 +90,51 @@ public class LoginService {
                 currentUser.login(token);
             } catch (UnknownAccountException uae) {
             	status = false;
-            	System.out.println("There is no user with username of " + token.getPrincipal()+" exception"+uae.getMessage());
+            	//System.out.println("There is no user with username of " + token.getPrincipal()+" exception"+uae.getMessage());
                 log.info("There is no user with username of " + token.getPrincipal());
             } catch (IncorrectCredentialsException ice) {
             	status = false;
-            	System.out.println("Password for account " + token.getPrincipal() + " was incorrect!");
+            	//System.out.println("Password for account " + token.getPrincipal() + " was incorrect!");
                 log.info("Password for account " + token.getPrincipal() + " was incorrect!");
             } catch (LockedAccountException lae) {
             	status = false;
-            	System.out.println("sssssssss--5");
+            	//System.out.println("sssssssss--5");
                 log.info("The account for username " + token.getPrincipal() + " is locked.  " +
                         "Please contact your administrator to unlock it.");
             }            
             catch (AuthenticationException ae) {
             	status = false;
-            	System.out.println("sssssssss--6");
+            	//System.out.println("sssssssss--6");
                 log.info(ae.getMessage());
             }
 		}
+		}
+		else
+		{
+			status = false;
+		}
 		JSONObject json = new JSONObject();
 		json.put("valid", status);
+		json.put("accountStatus", accountActive);
 		return json.toString();		
+	}
+	
+	
+	@GET
+	@Path("/verify/{username}/{hash}")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getBookDetails(@PathParam("username") String username, @PathParam("hash") String hash)
+	{
+		System.out.println("ssssss");
+		int status = UserRealm.verify(username,hash);
+		if(status == 0)
+		{
+			return "You are verified successfully, Please login";
+		}
+		else if(status == -1)
+			return "Verification failed, Please signup again";
+		else
+			return "User already active, Please login";
 	}
 }
 

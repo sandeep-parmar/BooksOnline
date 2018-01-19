@@ -31,8 +31,7 @@
 <% 
 	List<Book> list = BookDao.getBookList();
 	request.setAttribute("list", list);
-	String con = request.getContextPath();
-	System.out.println(con);
+	
 %>
 <div class="container-fluid bookcontainer"> 
   <div class="row">
@@ -56,17 +55,13 @@
 				<div class="row">
 					<div class="col-sm-4"><h5><b>Title</b></h5></div>
 					<div class="col-sm-8"><h5><c:out value = "${item.getTitle()}"/></h5></div>
+				</div>
 				<div class="row">
 					<div class="col-sm-4"><h5><b>Isbn</b></h5></div>
 					<div class="col-sm-8"><h5><c:out value = "${item.getIsbn()}"/></h5></div>
-				</div>
-				<!--   <div class="row">
-					<div class="col-sm-4"><h5><b>Description</b></h5></div>
-					<div class="col-sm-8"><h5><c:out value = "${item.getDescription()}"/></h5></div>
-				</div>--> 												
+				</div>								
     		</div>
   		</div>
-  	</div>
   	</div>
   	</c:forEach> 	
 	</div>
