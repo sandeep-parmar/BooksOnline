@@ -1,5 +1,6 @@
 package com.service;
 
+import java.io.IOException;
 import java.util.UUID;
 
 import javax.ws.rs.Consumes;
@@ -43,7 +44,7 @@ public class LoginService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/saveuser")
-	public String saveUser(final User user)
+	public String saveUser(final User user) throws IOException
 	{	
 		RandomNumberGenerator rng = new SecureRandomNumberGenerator();
 		Object salt = rng.nextBytes();

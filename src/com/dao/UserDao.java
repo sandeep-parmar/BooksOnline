@@ -94,7 +94,6 @@ public class UserDao {
 			break;
 		}
 		
-		System.out.println("Hello sandeep ----------");
 		try {
 			Connection conn = ConnectionHandler.getConnection();
 			PreparedStatement preparedStmt = conn.prepareStatement(sql);

@@ -9,3 +9,13 @@ CREATE TABLE `bookdb`.`books` (
   PRIMARY KEY(`bookid`)
 );
 \
+CREATE TABLE `bookdb`.`user` (
+  `username` VARCHAR(45) NOT NULL,
+  `password` VARCHAR(45) NOT NULL,
+  `mobile` VARCHAR(45) NOT NULL,
+  `email` VARCHAR(45) NOT NULL,
+  `salt` VARCHAR(45) NOT NULL,
+  `uuid` VARCHAR(45) NOT NULL,
+  `active` INTEGER UNSIGNED NOT NULL
+)
+\
