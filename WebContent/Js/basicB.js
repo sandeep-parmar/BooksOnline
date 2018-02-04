@@ -173,14 +173,11 @@ $(document).ready(function(){
 			    contentType: "application/json; charset=utf-8",
 			    success: function (data){
 			    	var status= data["status"];
-			    	if(!status)
-			    	{
+			    	if(!status){
 			    		$("#signupcomment").html("User registered successfully. Please verify your account by clicking on verification " +
 			    				"link sent to your registered email address");
 			    		//$(location).attr('href', 'login.jsp');
-			    	}
-			    	else
-			    	{
+			    	}else{
 			    		$("#signupcomment").html("Their is an error in registration");
 			    	}		  
 			    },

@@ -71,7 +71,7 @@ public class UserRealm extends AuthorizingRealm{
 		return null;
 	}
 	
-	public static String sendVerificationEmail(String username, String uuid) throws IOException
+	public static String sendVerificationEmail(User user) throws IOException
 	{
 		String result;
 		//InputStream eamilProps = getCl;
@@ -82,16 +82,14 @@ public class UserRealm extends AuthorizingRealm{
 		InputStream fstream = loader.getResourceAsStream("/com/properties/email.properties");
 		properties.load(fstream);
 		
-		
 		if(null != fstream){
 			fromProp = properties.getProperty("username");
 			passwordProp = properties.getProperty("password");
 		}
 		
 	   // Recipient's email ID needs to be mentioned.
-	   String to = "ashurulz7@gmail.com";
+	   String to = user.getEmail();
 	   
-
 	   // Assuming you are sending email from localhost
 	   String host = "localhost";
 
@@ -100,7 +98,7 @@ public class UserRealm extends AuthorizingRealm{
 
 	   final String from = fromProp;
 	   final String password = passwordProp;
-	   final String verificationUrl = "http://localhost:8080/BooksOnline/rest/login/verify/" + username + "/" + uuid;
+	   final String verificationUrl = "http://localhost:8080/BooksOnline/rest/login/verify/" + user.getUsername() + "/" + user.getUuid();
 		
 	   // Setup mail server
 	   	properties.put("mail.smtp.host", "smtp.gmail.com"); //SMTP Host
@@ -132,7 +130,7 @@ public class UserRealm extends AuthorizingRealm{
 	      message.setSubject("OnlineBook verification");
 	      
 	      // Now set the actual message
-	      message.setContent("<h3>Hello " + username +"</h3>"
+	      message.setContent("<h3>Hello " + user.getUsername() +"</h3>"
 	      		+ "<h3>Please click on the link below to verify your email address.</h3>"
 	    		 + "<a href=" + verificationUrl + ">Verify Account</a>", "text/html" );
 	      

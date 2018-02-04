@@ -48,19 +48,17 @@ public class LoginService {
 	{	
 		RandomNumberGenerator rng = new SecureRandomNumberGenerator();
 		Object salt = rng.nextBytes();
- 
 		String hashedPasswordBase64 = new Sha256Hash(user.getPassword(), salt, 1024).toBase64();
-
 		user.setPassword(hashedPasswordBase64);
 		user.setSalt(salt.toString());
-		
 		UUID uuid = UUID.randomUUID();
-		
 		user.setUuid(uuid.toString());
 		user.setActive(0);
 		System.out.println(user.toString());	
 		int status = UserDao.saveUser(user);
-		String response = UserRealm.sendVerificationEmail(user.getUsername(),user.getUuid());
+		System.out.println("User save staus 0 success : "+status);
+		String response = UserRealm.sendVerificationEmail(user);
+		System.out.println("email status : response : "+response);
 		JSONObject json = new JSONObject();
 		json.put("status", status);
 		json.put("verifyRes", response);
