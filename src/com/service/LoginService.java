@@ -75,13 +75,14 @@ public class LoginService {
 		boolean status = true;
 		org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
 		System.out.println("sssssssss--1");
-		int accountActive = UserDao.isUserAccountActive(user.getMobile());
+		User usrDetails = UserDao.isUserAccountActive(user.getMobile());
+		int accountActive = usrDetails.getActive();
 		
 		if(accountActive == 1)
 		{
 		if(!currentUser.isAuthenticated())
 		{
-			System.out.println("sssssssss--2");
+			//System.out.println("sssssssss--2");
 			UsernamePasswordToken token = new UsernamePasswordToken(user.getMobile(), user.getPassword());
 			//System.out.println("ssssss2.1"+token);
 			token.setRememberMe(true);
@@ -112,9 +113,13 @@ public class LoginService {
 		{
 			status = false;
 		}
+		//this logic needs to check
 		JSONObject json = new JSONObject();
 		json.put("valid", status);
 		json.put("accountStatus", accountActive);
+		json.put("userMobile", usrDetails.getMobile());
+		json.put("userEmail", usrDetails.getEmail());
+		//System.out.println(json.toString());
 		return json.toString();		
 	}
 	

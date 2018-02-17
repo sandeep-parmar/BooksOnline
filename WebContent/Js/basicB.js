@@ -5,6 +5,7 @@ $(document).ready(function(){
 	var webservice="/BooksOnline/rest";
 	var loginservice="/login";
 	var bookservice="/books";
+	var bookAdservice = "/bookAd";
 					
 	
 	function getSetBookTitles(author)
@@ -107,8 +108,11 @@ $(document).ready(function(){
 	
 	$("#submitbookdetails").click(function() {
 		
+		//saving book
 		$("#bookform").attr("action",host + port + webservice + bookservice + "/savebook").submit();
 		
+		//saving book ad
+		$("#bookform").attr("action",host + port + webservice + bookAdservice + "/saveBookAd").submit();
 	    $('#myModal1').modal('toggle');
 	    $("#comment").html("book saved successfully")
 	    return false;
@@ -132,9 +136,12 @@ $(document).ready(function(){
 		    success: function (data){
 		    	var status= data["valid"];
 		    	var active = data["accountStatus"];
+		    	var userEmail = data["userEmail"];
+		    	var userMobile = data["userMobile"];
+		    	console.log("useremail"+userEmail);
 		    	if(status)
 		    	{				    
-		    		$(location).attr('href', '/BooksOnline/Secure/isbnquery?user=' + mobile);
+		    		$(location).attr('href', '/BooksOnline/Secure/isbnquery?user=' + mobile+'&userEmail='+userEmail+'&userMobile='+userMobile);
 		    	}
 		    	else
 		    	{

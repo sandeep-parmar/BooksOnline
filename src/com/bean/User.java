@@ -37,6 +37,14 @@ public class User implements Serializable{
 	}
 
 	
+	public User(String username, String mobile, String email, int active) {
+		super();
+		this.username = username;
+		this.mobile = mobile;
+		this.email = email;
+		this.active = active;
+	}
+
 	public String getUuid() {
 		return uuid;
 	}

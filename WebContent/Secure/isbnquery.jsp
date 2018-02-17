@@ -54,8 +54,6 @@
 </div>
 
 
-
-
 <!--model-1-->
 <div id="myModal1" class="modal fade" role="dialog">
   <div class="modal-dialog">
@@ -64,19 +62,19 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Confirm a book</h4>
+        <h5 class="modal-title">Confirm a book</h5>
       </div> 
       
       <div class="modal-body">
       
         <form method="post" id="bookform">
-        
         	<img class="img-responsive imgstyle center-block" alt="robin sharma" id="bookImg"></img>
+        	<input type="hidden" id="userEmail" name="userEmail" value = "<%= request.getParameter("userEmail") %>">
+        	<input type="hidden" id="userMobile" name="userMobile" value = "<%= request.getParameter("userMobile") %>">
   			<div class="form-group">
     			<label for="policyname">Title:</label>
     			<input type="text" class="form-control" id="title" name="title">
   			</div>
-  			
   			<div class="form-group">
     			<label for="policystorage">Author:</label>
     			<input type="text" class="form-control" id="author" name="author">
@@ -89,7 +87,14 @@
     			<label for="clientname">Isbn:</label>
     			<input type="text" class="form-control" id="isbn" name="isbn">
   			</div>  			  			
-  			
+  			<div class="form-group">
+    			<label >Offer Price:</label>
+    			<input type="text" class="form-control" id="offPrice" name="offPrice">
+  			</div>  
+  			<div class="form-group">
+    			<label >Preferred Location:</label>
+    			<input type="text" class="form-control" id="prefLoc" name="prefLoc">
+  			</div>
   			<input type="hidden" class="form-control" id="thumbnail" name="thumbnail" >
   			
   			<button type="button" class="btn btn-primary" id="submitbookdetails">Submit</button>  			

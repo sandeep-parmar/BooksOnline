@@ -116,12 +116,13 @@ public class UserDao {
 		return user;
 	}
 
-	public static int isUserAccountActive(String mobile) {
+	public static User isUserAccountActive(String mobile) {
 ResultSet rs = null;
 		
 		int status = -1;
 		String sql = "select * from USER where mobile=?";
 		//System.out.println("In getAllbed");
+		User user = null;
 		try {
 			Connection conn = ConnectionHandler.getConnection();
 			PreparedStatement preparedStmt = conn.prepareStatement(sql);
@@ -129,8 +130,13 @@ ResultSet rs = null;
 			//System.out.println(preparedStmt.toString());
 			rs = preparedStmt.executeQuery();
 			if(rs.next())
-			{					
-				status = rs.getInt("active");
+			{	
+				user = new User(
+						rs.getString("username"),
+						rs.getString("mobile"),
+						rs.getString("email"),
+						rs.getInt("active")
+						);
 			}
 		}catch(SQLException e)
 		{
@@ -139,7 +145,7 @@ ResultSet rs = null;
 		{
 			ConnectionHandler.closeConnection();
 		}
-		return status;
+		return user;
 	}
 
 	public static void activateAccount(String username) {
