@@ -1,7 +1,9 @@
 package com.bean;
 
-public class Book {
+import java.io.Serializable;
 
+public class Book implements Serializable{
+	private static final long serialVersionUID = -451379059366096868L;
 	private String title;
 	private String authors;
 	private String description;
@@ -66,6 +68,4 @@ public class Book {
 		return "Book [title=" + title + ", authors=" + authors + ", description=" + description + ", isbn=" + isbn
 				+ ", thumbnail=" + thumbnail + "]";
 	}
-
-	
 }

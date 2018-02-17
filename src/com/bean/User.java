@@ -1,11 +1,14 @@
 package com.bean;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class User {
-
+public class User implements Serializable{
+	private static final long serialVersionUID = 3548737873219465459L;
+	
 	@XmlElement 
 	String username;
 	@XmlElement

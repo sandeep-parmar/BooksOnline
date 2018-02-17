@@ -43,7 +43,6 @@ public class BookDao {
 	public static List<Book> getBookList()
 	{
 		List<Book> list = new ArrayList<>();
-			
 		ResultSet rs = null;
 		String sql = "select * from books";
 		//System.out.println("In getAllbed");
@@ -69,7 +68,6 @@ public class BookDao {
 		{
 			ConnectionHandler.closeConnection();
 		}
-		//System.out.println(list.toString());
 		return list;
 	}
 }
