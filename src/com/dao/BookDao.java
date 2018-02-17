@@ -47,7 +47,7 @@ public class BookDao {
 	
 	public static List<Book> getBookList()
 	{
-		List<Book> list = new ArrayList<>();
+		List<Book> list = new ArrayList<Book>(0);
 		ResultSet rs = null;
 		String sql = "select * from books";
 		//System.out.println("In getAllbed");

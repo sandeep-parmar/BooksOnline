@@ -28,3 +28,4 @@ CREATE TABLE `bookdb`.`bookad` (
   `preferredloc` VARCHAR(45) NOT NULL
 )
 ENGINE = InnoDB;
+ALTER TABLE `bookdb`.`bookad` ADD PRIMARY KEY(`isbn`, `usermobile`, `useremail`, `offerprice`, `preferredloc`);

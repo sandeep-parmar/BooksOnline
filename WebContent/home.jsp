@@ -1,6 +1,6 @@
 <%@page import="com.dao.*"%>
 <%@page import="java.util.ArrayList"%>
-<%@page import="com.bean.Book"%>
+<%@page import="com.bean.*"%>
 <%@page import="java.util.List"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
@@ -29,15 +29,13 @@
 
 
 <% 
-	List<Book> list = BookDao.getBookList();
+	List<BookAdDTO> list = BookAdDAO.getBookAd();
 	request.setAttribute("list", list);
-	
 %>
 <div class="container-fluid bookcontainer"> 
   <div class="row">
   
   <c:forEach items="${list}" var = "item">
-  
   	<div class="col-sm-3"> 
   		<div class="panel panel-primary">    
     		<div class="panel-body">
@@ -57,8 +55,12 @@
 					<div class="col-sm-8"><h5><c:out value = "${item.getTitle()}"/></h5></div>
 				</div>
 				<div class="row">
-					<div class="col-sm-4"><h5><b>Isbn</b></h5></div>
-					<div class="col-sm-8"><h5><c:out value = "${item.getIsbn()}"/></h5></div>
+					<div class="col-sm-4"><h5><b>Offer Price</b></h5></div>
+					<div class="col-sm-8"><h5><c:out value = "${item.getOfferPrice()}"/></h5></div>
+				</div>
+				<div class="row">
+					<div class="col-sm-4"><h5><b>Location</b></h5></div>
+					<div class="col-sm-8"><h5><c:out value = "${item.getPreferredLoc()}"/></h5></div>
 				</div>								
     		</div>
   		</div>
@@ -66,7 +68,6 @@
   	</c:forEach> 	
 	</div>
 </div>
-
 
 
 <!-- Footer -->
