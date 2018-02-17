@@ -19,3 +19,12 @@ CREATE TABLE `bookdb`.`user` (
   `active` INTEGER UNSIGNED NOT NULL
 )
 \
+--added 17feb
+CREATE TABLE `bookdb`.`bookad` (
+  `isbn` VARCHAR(45) NOT NULL,
+  `usermobile` VARCHAR(45) NOT NULL,
+  `useremail` VARCHAR(45) NOT NULL,
+  `offerprice` VARCHAR(45) NOT NULL,
+  `preferredloc` VARCHAR(45) NOT NULL
+)
+ENGINE = InnoDB;

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class BookDao {
 		// TODO Auto-generated constructor stub
 	}
 
-	public static void saveBook(String bookid,String booktitle, String bookauthor,String bookdesc, String thumbnail)
+	public static String saveBook(String bookid,String booktitle, String bookauthor,String bookdesc, String thumbnail)
 	{
 		System.out.println(" saveBook called with data : bookid : "+bookid+" booktitle : "+bookauthor +" bookdesc : "+bookdesc+" thumbnail : "+thumbnail);
 		String sql = "insert into books(bookid,booktitle,bookauthor,bookdesc,thumbnail) values(?,?,?,?,?)";
@@ -32,12 +33,16 @@ public class BookDao {
 			preparedStmt.setString(5, thumbnail);
 			preparedStmt.execute();
 			
-		}catch(SQLException e) {
+		}catch (SQLIntegrityConstraintViolationException e) {
+		   return bookid;
+		}
+		catch(SQLException e) {
 			System.out.println(e.toString());
 		}
 		finally {
 			ConnectionHandler.closeConnection();
 		}
+		return bookid;
 	}
 	
 	public static List<Book> getBookList()

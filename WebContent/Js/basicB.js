@@ -112,9 +112,10 @@ $(document).ready(function(){
 		$("#bookform").attr("action",host + port + webservice + bookservice + "/savebook").submit();
 		
 		//saving book ad
-		$("#bookform").attr("action",host + port + webservice + bookAdservice + "/saveBookAd").submit();
+		//$("#bookform").attr("action",host + port + webservice + bookAdservice + "/saveBookAd").submit();
 	    $('#myModal1').modal('toggle');
 	    $("#comment").html("book saved successfully")
+	    //window.location.replace(host+port+"/BooksOnline/home.jsp");
 	    return false;
 	});
 	

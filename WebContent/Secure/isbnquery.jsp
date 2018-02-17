@@ -67,7 +67,7 @@
       
       <div class="modal-body">
       
-        <form method="post" id="bookform">
+        <form method="post" id="bookform" action="/home.jsp">
         	<img class="img-responsive imgstyle center-block" alt="robin sharma" id="bookImg"></img>
         	<input type="hidden" id="userEmail" name="userEmail" value = "<%= request.getParameter("userEmail") %>">
         	<input type="hidden" id="userMobile" name="userMobile" value = "<%= request.getParameter("userMobile") %>">
@@ -86,7 +86,8 @@
   			<div class="form-group">
     			<label for="clientname">Isbn:</label>
     			<input type="text" class="form-control" id="isbn" name="isbn">
-  			</div>  			  			
+  			</div>  	
+  					  			
   			<div class="form-group">
     			<label >Offer Price:</label>
     			<input type="text" class="form-control" id="offPrice" name="offPrice">

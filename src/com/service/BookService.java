@@ -17,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.dao.BookAdDAO;
 import com.dao.BookDao;
 @Path("/books")
 public class BookService {
@@ -195,11 +196,17 @@ public class BookService {
 			@FormParam("author") String bookauthor,
 			@FormParam("description") String bookdesc,
 			@FormParam("isbn") String bookid,
-			@FormParam("thumbnail") String thumbnail
+			@FormParam("thumbnail") String thumbnail,
+			@FormParam("userMobile") String userMobile,
+			@FormParam("userEmail") String userEmail,
+			@FormParam("offPrice") String offerPrice,
+			@FormParam("prefLoc") String preferredLoc
 			)			
 	{
 		
 		//System.out.println(title+", "+author+","+description+","+isbn+","+thumbnail);
-		BookDao.saveBook(bookid, booktitle, bookauthor, bookdesc, thumbnail);
+		String isbn = BookDao.saveBook(bookid, booktitle, bookauthor, bookdesc, thumbnail);
+		isbn = BookAdDAO.saveBookAd(isbn, userMobile, userEmail, offerPrice, preferredLoc);
+		
 	}
 }
