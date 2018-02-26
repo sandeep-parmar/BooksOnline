@@ -1,14 +1,8 @@
 package com.dao;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.mail.Authenticator;
@@ -20,6 +14,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -29,10 +24,7 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.util.ByteSource;
-import org.apache.shiro.util.StringUtils;
-
 import com.bean.User;
 import com.utility.UserField;
 
@@ -45,11 +37,11 @@ public class UserRealm extends AuthorizingRealm{
 
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
-		// TODO Auto-generated method stub
 	
 		System.out.println("In doGetAuthenticationInfo");
-		String principal = token.getPrincipal().toString();
-		User user = UserDao.getUserAccount(principal,UserField.MOBILE);
+		String principalAsMobile = token.getPrincipal().toString();
+		//User user = UserDao.getUserAccount(principal,UserField.MOBILE);
+		User user = DBFacade.getUserAccount(principalAsMobile,"mobile");
 		if(user != null){
 			SaltedAuthenticationInfo info = new SimpleAuthenticationInfo(user,user.getPassword(), 
 			ByteSource.Util.bytes(Base64.getDecoder().decode(user.getSalt().getBytes())),getName());
@@ -60,17 +52,21 @@ public class UserRealm extends AuthorizingRealm{
 	}
 
 	@Override
-	public boolean supports(AuthenticationToken token) {
-		// TODO Auto-generated method stub
-		return super.supports(token);
-	}
-
-	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection arg0) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
+	
+	public static User getLoggedInUser()
+	{
+		/*Get current logged in user(subject)*/
+		org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
+		
+		/*Get current logged in user object from shiro*/
+		User user = (User)currentUser.getPrincipal();
+		
+		return user;
+	}
 	public static String sendVerificationEmail(User user) throws IOException
 	{
 		String result;
@@ -147,12 +143,12 @@ public class UserRealm extends AuthorizingRealm{
 	public static int verify(String username, String hash) {
 	
 		int status = 0;
-		User user = UserDao.getUserAccount(username, UserField.USERNAME);
+		User user = DBFacade.getUserAccount(username, "username");
 		if(user.getActive() == 0)
 		{
 			if(user.getUuid().equals(hash))
 			{
-				UserDao.activateAccount(username);
+				DBFacade.activateUserAccount(username);
 				status =  0;
 			}
 			else

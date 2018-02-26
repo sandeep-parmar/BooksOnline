@@ -4,20 +4,18 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import com.bean.Book;
 import com.bean.User;
 import com.connection.ConnectionHandler;
 import com.utility.UserField;
 
-public class UserDao {
+public class UserDao implements IBaseDao {
 
 	public UserDao() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
-	public static int saveUser(final User user) {
-		String sql = "insert into USER(username,password,mobile,email,salt,uuid,active) values(?,?,?,?,?,?,?)";
+	public int saveUser(final User user) {
+		String sql = getInsertQuery();
 		Connection conn = null;
 		int status = 0;
 		try {
@@ -42,17 +40,15 @@ public class UserDao {
 		return status;
 	}
 
-	public static boolean validate(User user) {
+	public boolean validate(User user) {
 		ResultSet rs = null;
 		
 		boolean valid = false;
-		String sql = "select * from USER where mobile=?";
-		//System.out.println("In getAllbed");
+		String sql = getUserByFieldQuery("mobile");
 		try {
 			Connection conn = ConnectionHandler.getConnection();
 			PreparedStatement preparedStmt = conn.prepareStatement(sql);
 			preparedStmt.setString(1, user.getMobile());
-			System.out.println(preparedStmt.toString());
 			rs = preparedStmt.executeQuery();
 			if(rs.next())
 			{		
@@ -73,26 +69,13 @@ public class UserDao {
 		}
 		return valid;
 	}
-	public static User getUserAccount(String fieldName, UserField field)
+	public User getUserAccount(String fieldName, String field)
 	{
 		ResultSet rs = null;
 		User user = null;
 		String sql = null;
-		switch(field)
-		{
-		case MOBILE:
-			sql = "select * from USER where mobile=?";
-			break;
-		case USERNAME:
-			sql = "select * from USER where username=?";
-			break;
-		case EMAIL:
-			sql = "select * from USER where email=?";
-			break;
-		case UUID:
-			sql = "select * from USER where uuid=?";
-			break;
-		}
+		
+		sql = getUserByFieldQuery(field);
 		
 		try {
 			Connection conn = ConnectionHandler.getConnection();
@@ -102,9 +85,13 @@ public class UserDao {
 			rs = preparedStmt.executeQuery();
 			if(rs.next())
 			{		
-				user = new User(rs.getString("username"),rs.getString("password"),rs.getString("mobile"),rs.getString("email"),rs.getString("salt"),
-						rs.getString("uuid"), rs.getInt("active"));
-				
+				user = new User(rs.getString("username"),
+						rs.getString("password"),
+						rs.getString("mobile"),
+						rs.getString("email"),
+						rs.getString("salt"),
+						rs.getString("uuid"),
+						rs.getInt("active"));
 			}
 		}catch(SQLException e)
 		{
@@ -116,18 +103,18 @@ public class UserDao {
 		return user;
 	}
 
-	public static User isUserAccountActive(String mobile) {
-ResultSet rs = null;
 		
-		int status = -1;
-		String sql = "select * from USER where mobile=?";
-		//System.out.println("In getAllbed");
+
+	public User isUserAccountActive(String mobile) {
+		ResultSet rs = null;
 		User user = null;
+		int status = -1;
+		String sql = getUserByFieldQuery("mobile");
+
 		try {
 			Connection conn = ConnectionHandler.getConnection();
 			PreparedStatement preparedStmt = conn.prepareStatement(sql);
 			preparedStmt.setString(1, mobile);
-			//System.out.println(preparedStmt.toString());
 			rs = preparedStmt.executeQuery();
 			if(rs.next())
 			{	
@@ -148,10 +135,9 @@ ResultSet rs = null;
 		return user;
 	}
 
-	public static void activateAccount(String username) {
-		String sql = "update user set active = 1 where username = ?";
+	public void activateAccount(String username) {
+		String sql = getUpdateQuery();
 		Connection conn = null;
-		int status = 0;
 		try {
 			conn = ConnectionHandler.getConnection();
 			PreparedStatement preparedStmt = conn.prepareStatement(sql);
@@ -159,12 +145,40 @@ ResultSet rs = null;
 			preparedStmt.execute();
 			
 		}catch(SQLException e) {
-			System.out.println(e.toString());
-			status = -1;
 		}
 		finally {
 			ConnectionHandler.closeConnection();
 		}
 	}
 
+	@Override
+	public String getSelectQuery() {
+		String sql = "select * from user";
+		return sql;
+	}
+
+	@Override
+	public String getInsertQuery() {
+		String sql = "insert into USER(username,password,mobile,email,salt,uuid,active) values(?,?,?,?,?,?,?)";
+		return sql;
+	}
+	
+	public static String getUserByFieldQuery(String field)
+	{
+		String sql = "select * from USER where " + field + "= ? ";
+		
+		System.out.println(sql.toString());
+		return sql;
+	}
+	public static String getUpdateQuery()
+	{
+		String sql = "update user set active = 1 where username = ?";
+		return sql;
+	}
+
+	@Override
+	public String getSingleEntryQuery() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

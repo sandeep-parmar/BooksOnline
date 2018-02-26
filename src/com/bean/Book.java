@@ -23,6 +23,11 @@ public class Book implements Serializable{
 		this.thumbnail = thumbnail;
 	}
 
+	public Book(String bookid) {
+		super();
+		this.isbn = bookid;
+	}
+
 	public String getTitle() {
 		return title;
 	}

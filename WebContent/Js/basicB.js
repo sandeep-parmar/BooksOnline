@@ -6,8 +6,7 @@ $(document).ready(function(){
 	var loginservice="/login";
 	var bookservice="/books";
 	var bookAdservice = "/bookAd";
-					
-	
+				
 	function getSetBookTitles(author)
 	{
 		
@@ -109,18 +108,20 @@ $(document).ready(function(){
 	$("#submitbookdetails").click(function() {
 		
 		//saving book
+		
 		$("#bookform").attr("action",host + port + webservice + bookservice + "/savebook").submit();
 		
 		//saving book ad
 		//$("#bookform").attr("action",host + port + webservice + bookAdservice + "/saveBookAd").submit();
-	    $('#myModal1').modal('toggle');
+	    
+		$('#myModal1').modal('toggle');
 	    $("#comment").html("book saved successfully")
+	    
 	    //window.location.replace(host+port+"/BooksOnline/home.jsp");
 	    return false;
 	});
 	
 	$("#loginformsubmitbutton").click(function() {
-		//alert(host + port + webservice + loginservice + "/saveuser");
 		
 		var mobile = $("#loginid").val();
 		var password = $("#loginpassword").val();
@@ -164,6 +165,23 @@ $(document).ready(function(){
 		});
 	});
 	
+	$(".soldbutton").click(function() {
+		  var bookid = $(this).attr("value");
+		  alert("The value is "+ $(this).attr("value") );
+		$.get(host + port + webservice + bookservice + "/soldthisbook/" + bookid,
+				function(data, status){					
+					$(location).attr('href', '/BooksOnline/Secure/myads.jsp');
+				})
+				.fail(function(res,status,error) {
+					console.log(res.responseText);
+					alert( res.responseText+" "+status+" "+error);
+				});
+	});
+	
+	function sendSoldStatus(bookid) {
+		alert(bookid);
+	}
+	
 	$("#signupformsubmitbutton").click(function() {
 						
 			alert(host + port + webservice + loginservice + "/saveuser");
@@ -195,37 +213,6 @@ $(document).ready(function(){
 		    });
 	});
 	
-	
-	
-	$("#submit").click(function(){
-		  var name = $(this).attr("name");
-		  var table = $(this).attr("alt");
-		  
-		  $('body').append($('<form/>')
-				  .attr({
-					  'action':'prodFeature' , 
-					  'method': 'get', 
-					  'id': 'replacer'})
-				  .append($('<input/>')
-				    .attr({
-				    	'type': 'hidden', 
-				    	'name': 'name', 
-				    	'value': name})
-				  )
-				  .append($('<input/>')
-				    .attr({
-				    	'type': 'hidden', 
-				    	'name': 'table', 
-				    	'value': table})
-				  )
-				).find('#replacer').submit();
-	  });
-	  
-	  $(".side").click(function(){
-		  var src = $(this).attr("src");	 
-		  $('#super').attr("src",src);
-	  });
-	  
 	  
 	  function validateEmail(sEmail) {
 	      var filter = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;

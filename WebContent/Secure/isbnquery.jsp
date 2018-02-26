@@ -69,34 +69,53 @@
       
         <form method="post" id="bookform" action="/home.jsp">
         	<img class="img-responsive imgstyle center-block" alt="robin sharma" id="bookImg"></img>
-        	<input type="hidden" id="userEmail" name="userEmail" value = "<%= request.getParameter("userEmail") %>">
-        	<input type="hidden" id="userMobile" name="userMobile" value = "<%= request.getParameter("userMobile") %>">
+        	
   			<div class="form-group">
-    			<label for="policyname">Title:</label>
+    			<label for="title">Title:</label>
     			<input type="text" class="form-control" id="title" name="title">
   			</div>
   			<div class="form-group">
-    			<label for="policystorage">Author:</label>
+    			<label for="author">Author:</label>
     			<input type="text" class="form-control" id="author" name="author">
   			</div>
   			<div class="form-group">
-    			<label for="schedulename">Description:</label>
+    			<label for="description">Description:</label>
     			<input type="text" class="form-control" id="description" name="description">
   			</div>  		
   			<div class="form-group">
-    			<label for="clientname">Isbn:</label>
+    			<label for="isbn">Isbn:</label>
     			<input type="text" class="form-control" id="isbn" name="isbn">
-  			</div>  	
-  					  			
+  			</div>  
+  			<input type="hidden" class="form-control" id="thumbnail" name="thumbnail" >	
+  					  		
+  			<hr>
+  			
+  			<!-- validation of below entries pending -->
+  			<div class="form-group">
+    			<label >Name:</label>
+    			<input type="text" class="form-control" id="lname" name="lname">
+  			</div>  
+  			<div class="form-group">
+    			<label >Phone Number:</label>
+    			<input type="text" class="form-control" id="lphno" name="lphno">
+  			</div>  
+  			<div class="form-group">
+    			<label >City:</label>
+    			<input type="text" class="form-control" id="lcity" name="lcity">
+  			</div>  
+  			<div class="form-group">
+    			<label >Locality (nearby):</label>
+    			<input type="text" class="form-control" id="llocality" name="llocality">
+  			</div>
+  			<div class="form-group">
+    			<label >Pin:</label>
+    			<input type="text" class="form-control" id="lpin" name="lpin">
+  			</div>
+  			<hr>  				
   			<div class="form-group">
     			<label >Offer Price:</label>
     			<input type="text" class="form-control" id="offPrice" name="offPrice">
   			</div>  
-  			<div class="form-group">
-    			<label >Preferred Location:</label>
-    			<input type="text" class="form-control" id="prefLoc" name="prefLoc">
-  			</div>
-  			<input type="hidden" class="form-control" id="thumbnail" name="thumbnail" >
   			
   			<button type="button" class="btn btn-primary" id="submitbookdetails">Submit</button>  			
 		</form>
