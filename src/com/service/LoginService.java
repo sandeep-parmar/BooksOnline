@@ -24,6 +24,7 @@ import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
 
 import com.bean.User;
+import com.dao.DBFacade;
 import com.dao.UserDao;
 import com.dao.UserRealm;
 
@@ -46,22 +47,34 @@ public class LoginService {
 	@Path("/saveuser")
 	public String saveUser(final User user) throws IOException
 	{	
+		
+		/*Wrap it in new class*/
 		RandomNumberGenerator rng = new SecureRandomNumberGenerator();
 		Object salt = rng.nextBytes();
 		String hashedPasswordBase64 = new Sha256Hash(user.getPassword(), salt, 1024).toBase64();
+		UUID uuid = UUID.randomUUID();
+		
 		user.setPassword(hashedPasswordBase64);
 		user.setSalt(salt.toString());
-		UUID uuid = UUID.randomUUID();
 		user.setUuid(uuid.toString());
 		user.setActive(0);
-		System.out.println(user.toString());	
-		int status = UserDao.saveUser(user);
+		
+		System.out.println(user.toString());
+		
+		/*error handling*/
+		int status = DBFacade.saveUser(user);
+		
 		System.out.println("User save staus 0 success : "+status);
+		
+		/*error handling*/
 		String response = UserRealm.sendVerificationEmail(user);
+		
 		System.out.println("email status : response : "+response);
+		
 		JSONObject json = new JSONObject();
 		json.put("status", status);
 		json.put("verifyRes", response);
+		
 		return json.toString();
 	}
 	
@@ -74,8 +87,11 @@ public class LoginService {
 			
 		boolean status = true;
 		org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
+		
 		System.out.println("sssssssss--1");
-		User usrDetails = UserDao.isUserAccountActive(user.getMobile());
+		
+//		User usrDetails = UserDao.isUserAccountActive(user.getMobile());
+		User usrDetails = DBFacade.isUserAccountActive(user.getMobile());
 		int accountActive = usrDetails.getActive();
 		
 		if(accountActive == 1)

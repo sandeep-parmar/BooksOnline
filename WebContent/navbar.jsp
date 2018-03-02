@@ -18,13 +18,14 @@
       	 	<a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-user"></span>
       	 		<shiro:principal property="username"/><span class="caret"></span>
       	 	</a>
-      	 	<ul class="dropdown-menu">
-          		<li><a href="/BooksOnline/logout.jsp">Logout</a></li>          	 
+      	 	<ul class="dropdown-menu">          		
+          		<li><a href="/BooksOnline/Secure/myads.jsp">MyAds</a></li>  
+          		<li><a href="/BooksOnline/logout.jsp">Logout</a></li>      	 
         	</ul>
       	 </li>
       	 </shiro:authenticated>
       	         
-        <li><a href="Secure/isbnquery.jsp"><button type="button" class="btn btn-primary btn-lg" id="postad"><b>Submit a Free Ad</b></button></a></li>                
+        <li><a href="/BooksOnline/Secure/isbnquery.jsp"><button type="button" class="btn btn-primary btn-lg" id="postad"><b>Submit a Free Ad</b></button></a></li>                
       </ul>
     </div>
   </div>
