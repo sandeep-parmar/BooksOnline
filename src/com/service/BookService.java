@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import javax.security.auth.Subject;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -14,28 +15,35 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.PrincipalCollection;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.bean.Book;
+import com.bean.User;
 import com.dao.BookAdDAO;
 import com.dao.BookDao;
+import com.dao.DBFacade;
+import com.dao.UserRealm;
+import com.utility.*;
+
 @Path("/books")
 public class BookService {
 
 	public BookService() {
-		// TODO Auto-generated constructor stub
+		
 	}
-	
 	
 	private String sendBookRequest(String key, String value)
 	{
 		String address = "https://www.googleapis.com/books/v1/volumes?q=";
-		 String query = key+"="+value;
+		 String query = key + "=" + value;
 		 String charset = "UTF-8";
 	 
 		URL url;
 		String str;
-		String jsonres="";		
+		String jsonres = "";		
 		try {
 			url = new URL(address + URLEncoder.encode(query, charset));
 		
@@ -55,158 +63,95 @@ public class BookService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getBookList(@PathParam("author") String author)
 	{
-		System.out.println("aaaaa author:"+author);
-		String jsonres= sendBookRequest("author", author);
 		
-		JSONObject returnJson = null;
+		String jsonres= sendBookRequest(JsonStrings.AUTHOR, author);
 		
-		JSONObject json = new JSONObject(jsonres);
-		JSONArray itemsArr = null;
-		if(json !=null && json.has("items"))
-		{
-			itemsArr = json.getJSONArray("items");
-		}
-		
-		JSONArray titles = new JSONArray();
-		JSONObject item=null;
-		for(int i=0;i<itemsArr.length();i++)
-		{
-			item= itemsArr.getJSONObject(i);
-			JSONObject jsonvolume = null;
-			if(item != null && item.has("volumeInfo"))
-			{
-				jsonvolume = item.getJSONObject("volumeInfo");
-				if(jsonvolume != null && jsonvolume.has("title"))
-				{
-					titles.put(jsonvolume.getString("title"));
-				}
-			}
-		}
-		
-		//System.out.println("booklist:"+titles);
-		
-		returnJson = new JSONObject();
-		returnJson.put("books", titles);
-		
+		JsonStrings jsonSTR = new JsonStrings(jsonres);
+
+		JSONArray itemsArr = jsonSTR.getItemsArray();
+		JSONArray titles = jsonSTR.getTitlesArrayFromItems(itemsArr);
+
+		JSONObject returnJson = jsonSTR.getNewJsonObject();
+		returnJson.put(JsonStrings.BOOKS, titles);
 		return returnJson.toString();
 	}
+	
+
+	@GET
+	@Path("/soldthisbook/{param1}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public void setSoldStatusTrue(@PathParam("param1") String bookId)
+	{
+		System.out.println(bookId);
+		User user = UserRealm.getLoggedInUser();
+		DBFacade.setSoldStatusTrue(user.getMobile(), bookId);
+	}
+	
 	
 	@GET
 	@Path("/getbookinfo/{param1}/{param2}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getBookDetails(@PathParam("param1") String key, @PathParam("param2") String value)
 	{			
-		//System.out.println(value);
 		String jsonres= sendBookRequest(key, value);
+		
+		JsonStrings jsonSTR = new JsonStrings(jsonres);
 		
 		JSONObject returnJson = null;
 		
-		JSONObject json = new JSONObject(jsonres);
+		JSONArray jsonArr = jsonSTR.getItemsArray();
 		
-		JSONArray jsonArr = null;
-		if(json !=null && json.has("items"))
+		JSONObject obj0 = jsonSTR.getIthObjectFromArray(jsonArr, 0);
+		
+		JSONObject jsonvolume = jsonSTR.getVolumesInfoFromObject(obj0);
+		
+		JSONArray authors = jsonSTR.getAuthorsArrayFromVolumeObject(jsonvolume);
+		JSONObject imagelinks = jsonSTR.getImageLinksFromVolumeObject(jsonvolume);
+		
+		String authorlist = "";
+		for(int i = 0; i < authors.length(); i++)
 		{
-			jsonArr = json.getJSONArray("items");
+			authorlist += authors.getString(i) + " ";
 		}
 		
-		JSONObject arr1=null;
-		if(jsonArr !=null && jsonArr.length()>0)
-		{
-		 arr1= jsonArr.getJSONObject(0);
-		}
+		String isbn = jsonSTR.getIsbnFromVolumeObject(jsonvolume);
 		
-		JSONObject jsonvolume = null;
-		if(arr1.has("volumeInfo"))
-		{
-			jsonvolume = arr1.getJSONObject("volumeInfo");
-		}
+		String title = jsonSTR.getTitleFromVolumeObject(jsonvolume);
 		
-		JSONArray authors = null;
-		if(jsonvolume.has("authors"))
-		{
-			authors = jsonvolume.getJSONArray("authors");
-		}
-		String isbn=null;
-		JSONArray isbns=null;
-		if(jsonvolume.has("industryIdentifiers"))
-		{
-			isbns = jsonvolume.getJSONArray("industryIdentifiers");
-			for(int i=0;i<isbns.length();i++)
-			{
-				JSONObject isbnData = isbns.getJSONObject(i);
-				String type = isbnData.getString("type");
-				if(type.equals("ISBN_13"))
-				{
-					isbn = isbnData.getString("identifier"); 
-				}
-			}
-			//System.out.println("isbn:"+isbn);
-		}
+		String thumbnail = jsonSTR.getThumbnailFromImageLinks(imagelinks);
 		
-		JSONObject imagelinks=null;
-		if((jsonvolume != null) && jsonvolume.has("imageLinks"))
-		{
-			//System.out.println("aaaaa1");
-			imagelinks = jsonvolume.getJSONObject("imageLinks");
-			//System.out.println("aaaaa2");
-		}
+		String description = jsonSTR.getDescriptionFromVolumeObject(jsonvolume);
 		
-		String authorlist="";
-		for(int i=0;i<authors.length();i++)
-		{
-			authorlist += authors.getString(i)+" ";
-		}					
+		returnJson = jsonSTR.getNewJsonObject();
 		
-		
-		String thumbnail = null;
-		if(imagelinks != null && imagelinks.has("thumbnail"))
-		{
-			//System.out.println("aaaaaaaa3");
-			thumbnail = imagelinks.getString("thumbnail");
-			//System.out.println("aaaaaaaa4");
-		}
-		
-		String title = null;
-		if(jsonvolume.has("title"))
-		{
-			title = jsonvolume.getString("title");
-		}
-		
-		
-		String description = null;
-		
-		if(jsonvolume.has("description"))
-		{
-			description = jsonvolume.getString("description");
-		}
-		
-		returnJson = new JSONObject();
-		returnJson.put("title", title);
-		returnJson.put("author", authorlist);
-		returnJson.put("description", description);
-		returnJson.put("thumbnail", thumbnail);
-		returnJson.put("isbn", isbn);
-		//System.out.println("authorlist:"+authorlist+"title:"+title+",description:"+description);
+		returnJson.put(JsonStrings.TITLE, title);
+		returnJson.put(JsonStrings.AUTHOR, authorlist);
+		returnJson.put(JsonStrings.DESCRIPTION, description);
+		returnJson.put(JsonStrings.THUMBNAIL, thumbnail);
+		returnJson.put(JsonStrings.ISBN, isbn);
 		return returnJson.toString();
 	}
 	
 	@POST
 	@Path("/savebook")
-	public void saveBook(@FormParam("title") String booktitle,
-			@FormParam("author") String bookauthor,
-			@FormParam("description") String bookdesc,
-			@FormParam("isbn") String bookid,
+	public void saveBook(@FormParam("title") String title,
+			@FormParam("author") String author,
+			@FormParam("description") String desc,
+			@FormParam("isbn") String id,
 			@FormParam("thumbnail") String thumbnail,
-			@FormParam("userMobile") String userMobile,
-			@FormParam("userEmail") String userEmail,
-			@FormParam("offPrice") String offerPrice,
-			@FormParam("prefLoc") String preferredLoc
+			@FormParam("lname") String lname,
+			@FormParam("lphno") String lphno,
+			@FormParam("lcity") String lcity,
+			@FormParam("llocality") String llocality,
+			@FormParam("lpin") String lpin,
+			@FormParam("offPrice") String offPrice
 			)			
 	{
+		//System.out.println(title+" "+author+" "+desc+" "+id+" "+thumbnail+" "+lname+" "+lphno+" "+lcity+" "+llocality+" "+lpin+" "+offPrice);
 		
-		//System.out.println(title+", "+author+","+description+","+isbn+","+thumbnail);
-		String isbn = BookDao.saveBook(bookid, booktitle, bookauthor, bookdesc, thumbnail);
-		isbn = BookAdDAO.saveBookAd(isbn, userMobile, userEmail, offerPrice, preferredLoc);
+		/*Get current logged in user object from shiro*/
+		User user = UserRealm.getLoggedInUser();
 		
+		DBFacade.saveBookUser(user, title, author, desc, id, thumbnail, lcity, llocality, lpin, lname, lphno , offPrice);
 	}
 }

@@ -18,7 +18,7 @@
 
 <title>Books Online</title>
 <%@ include file="BootConfig/bootstrap.jsp"%>
- <link rel="stylesheet" type="text/css" href="Css/style.css"></link>
+<link rel="stylesheet" type="text/css" href="Css/style.css"></link>
 
 <script src="Js/basicB.js"></script>
 
@@ -29,7 +29,7 @@
 
 
 <% 
-	List<BookAdDTO> list = BookAdDAO.getBookAd();
+	List<BookUser> list = DBFacade.getBookAdList();
 	request.setAttribute("list", list);
 %>
 <div class="container-fluid bookcontainer"> 
@@ -41,26 +41,30 @@
     		<div class="panel-body">
     			<img 
     				class = "img-responsive imgstyle center-block" 
-    				src = <c:out value = "${item.getThumbnail()}"/> 
-    				alt = <c:out value = "${item.getTitle()}"/>
+    				src = <c:out value = "${item.getBook().getThumbnail()}"/> 
+    				alt = <c:out value = "${item.getBook().getTitle()}"/>
     			>
     		</div>
     		<div class="panel-footer">
 				<div class="row">
 					<div class="col-sm-4"><h5><b>Author</b></h5></div>
-					<div class="col-sm-8"><h5><c:out value = "${item.getAuthors()}"/></h5></div>
+					<div class="col-sm-8"><h5><c:out value = "${item.getBook().getAuthors()}"/></h5></div>
 				</div>
 				<div class="row">
 					<div class="col-sm-4"><h5><b>Title</b></h5></div>
-					<div class="col-sm-8"><h5><c:out value = "${item.getTitle()}"/></h5></div>
+					<div class="col-sm-8"><h5><c:out value = "${item.getBook().getTitle()}"/></h5></div>
 				</div>
 				<div class="row">
 					<div class="col-sm-4"><h5><b>Offer Price</b></h5></div>
-					<div class="col-sm-8"><h5><c:out value = "${item.getOfferPrice()}"/></h5></div>
+					<div class="col-sm-8"><h5><c:out value = "${item.getPrice()}"/></h5></div>
 				</div>
 				<div class="row">
-					<div class="col-sm-4"><h5><b>Location</b></h5></div>
-					<div class="col-sm-8"><h5><c:out value = "${item.getPreferredLoc()}"/></h5></div>
+					<div class="col-sm-4"><h5><b>City</b></h5></div>
+					<div class="col-sm-8"><h5><c:out value = "${item.getLocality().getCity()}"/></h5></div>
+				</div>
+				<div class="row">
+					<div class="col-sm-4"><h5><b>Locality</b></h5></div>
+					<div class="col-sm-8"><h5><c:out value = "${item.getLocality().getArea()}"/></h5></div>
 				</div>								
     		</div>
   		</div>

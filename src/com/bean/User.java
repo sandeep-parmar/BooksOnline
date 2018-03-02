@@ -45,6 +45,10 @@ public class User implements Serializable{
 		this.active = active;
 	}
 
+	public User(String uid) {
+		this.mobile = uid;
+	}
+
 	public String getUuid() {
 		return uuid;
 	}
