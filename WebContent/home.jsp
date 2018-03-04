@@ -1,4 +1,5 @@
 <%@page import="com.dao.*"%>
+<%@page import="com.dao.DBFacade"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="com.bean.*"%>
 <%@page import="java.util.List"%>
