@@ -1,9 +1,11 @@
 <%@page import="org.apache.shiro.SecurityUtils"%>
+
 <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
       <a class="navbar-brand" href="/BooksOnline/home"><b>BooksOnline</b></a>
     </div>
+    
     <div class="collapse navbar-collapse" id="myNavbar">
        
       <ul class="nav navbar-nav navbar-right">
@@ -28,6 +30,7 @@
         <li><a href="/BooksOnline/Secure/isbnquery.jsp"><button type="button" class="btn btn-primary btn-lg" id="postad"><b>Submit a Free Ad</b></button></a></li>                
       </ul>
     </div>
+ 
   </div>
 </nav>
 

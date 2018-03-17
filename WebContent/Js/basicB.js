@@ -167,7 +167,7 @@ $(document).ready(function(){
 	
 	$(".soldbutton").click(function() {
 		  var bookid = $(this).attr("value");
-		  alert("The value is "+ $(this).attr("value") );
+		 // alert("The value is "+ $(this).attr("value") );
 		$.get(host + port + webservice + bookservice + "/soldthisbook/" + bookid,
 				function(data, status){					
 					$(location).attr('href', '/BooksOnline/Secure/myads.jsp');
@@ -184,7 +184,7 @@ $(document).ready(function(){
 	
 	$("#signupformsubmitbutton").click(function() {
 						
-			alert(host + port + webservice + loginservice + "/saveuser");
+			//alert(host + port + webservice + loginservice + "/saveuser");
 				
 			jQuery.ajax({
 			    url: host + port + webservice + loginservice + "/saveuser",
@@ -214,6 +214,61 @@ $(document).ready(function(){
 	});
 	
 	  
+	
+	/*Upload custom images*/
+	 $("#submitcustomdata").click(function (event) {
+
+		 //	alert("sandeep");
+		 	console.log("sandeep");
+	        //stop submit the form, we will post it manually.
+	        event.preventDefault();
+
+	        // Get form
+	        var form = $('#customedataform')[0];
+
+			// Create an FormData object 
+	        var data = new FormData(form);
+
+			// If you want to add an extra field for the FormData
+	        //data.append("CustomField", "This is some extra data, testing");
+
+			// disabled the submit button
+	        $("#submitcustomdata").prop("disabled", true);
+	        
+	        	
+	        $.ajax({
+	            type: "POST",
+	            enctype: 'multipart/form-data',
+	            url: host + port + webservice + bookservice + "/brbook",
+	            data: data,
+	            processData: false,
+	            contentType: false,
+	            cache: false,
+	            timeout: 600000,
+	            success: function (data) {
+
+	                $("#brresult").text(data);
+	                console.log("SUCCESS : ", data);
+	                $("#submitcustomdata").prop("disabled", false);
+
+	            },
+	            error: function (e) {
+
+	                $("#brresult").text(e.responseText);
+	                console.log("ERROR : ", e);
+	                $("#submitcustomdata").prop("disabled", false);
+
+	            }
+	        });
+
+	    });
+
+	 $("#manualfileloadbutton").click(function (event) {
+		// alert("parmar");
+		$("#customedataform").removeClass('invisible');
+		$("#manualfileloadbutton").hide();
+	 });
+	
 	  function validateEmail(sEmail) {
 	      var filter = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
 	      if (filter.test(sEmail)) {

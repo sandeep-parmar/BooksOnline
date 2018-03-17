@@ -9,11 +9,30 @@
         <param-name>jersey.config.server.provider.packages</param-name>
         <param-value>com.service</param-value>
     </init-param>
+    <init-param>
+    	<param-name>jersey.config.server.provider.classnames</param-name>
+    	<param-value>org.glassfish.jersey.media.multipart.MultiPartFeature</param-value>
+	</init-param>
+	 <init-param>
+      <param-name>dataStoragePath</param-name>
+      <param-value>C:/UploadFiles</param-value>
+  	</init-param>
+
     <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>
     <servlet-name>Jersey REST Service</servlet-name>
     <url-pattern>/rest/*</url-pattern>
+  </servlet-mapping>
+
+
+   <servlet>
+    <servlet-name>UploadServlet</servlet-name>
+    <servlet-class>com.servlet.UploadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UploadServlet</servlet-name>
+    <url-pattern>/Secure/UploadServlet</url-pattern>
   </servlet-mapping>
 
  <servlet>
@@ -52,7 +71,7 @@
   	<servlet-name>isbnquery</servlet-name>
   	<url-pattern>/Secure/isbnquery</url-pattern>
   </servlet-mapping>
-
+  
   <listener>
     <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
 </listener>
@@ -73,6 +92,13 @@
   	<location>/errorpage.jsp</location>  
   </error-page>
    
+   <!-- This is for configuration of saved images -->
+   <context-param>
+    <description>Context Parameter Test</description>
+    <param-name>uploadfolder</param-name>
+    <param-value>C:\Users\sandeep.parmar\eclipse-workspace\BooksOnline\UploadImages\</param-value>
+	</context-param>
+
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
     <welcome-file>index.htm</welcome-file>
