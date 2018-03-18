@@ -7,7 +7,7 @@ public class ConnectionHandler {
 
 	  final private static String user = "root";
 
-	  final private static String passwd = "Gyp.s8m";
+	  final private static String passwd = "root";
 	  
 	 public static Connection getConnection()
 	  {

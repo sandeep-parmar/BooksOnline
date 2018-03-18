@@ -9,7 +9,13 @@
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
+<script type="text/javascript">
+function getBookUser(userId,bookId){
+	console.log("called:"+userId+"bookid"+bookId);
+	var url = "http://localhost:8080";
+	document.location.href = url + "/BooksOnline/getMoreBookDetails?userId=" + encodeURIComponent(userId) + "&bookId=" + encodeURIComponent(bookId); 
+}
+</script>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -34,84 +40,83 @@
 		request.setAttribute("list", list);
 	%>
 	<div class="container-fluid bookcontainer">
-
 		<div class="row">
-
 			<c:forEach items="${list}" var="item">
-				<div class="col-sm-3">
-					<div class="panel panel-primary">
-						<div class="panel-body">
-							<img class="img-responsive imgstyle center-block"
-								src=<c:out value = "${item.getBook().getThumbnail()}"/>
-								alt=<c:out value = "${item.getBook().getThumbnail()}"/>>
-						</div>
-						<div class="panel-footer">
-							<div class="row">
-								<div class="col-sm-4">
-									<h5>
-										<b>Author</b>
-									</h5>
-								</div>
-								<div class="col-sm-8">
-									<h5>
-										<c:out value="${item.getBook().getAuthors()}" />
-									</h5>
-								</div>
+				<a href="javascript:getBookUser('${item.uid}','${item.bookid}');">
+					<div class="col-sm-3">
+						<div class="panel panel-primary">
+							<div class="panel-body">
+								<img class="img-responsive imgstyle center-block"
+									src=<c:out value = "${item.getBook().getThumbnail()}"/>
+									alt=<c:out value = "${item.getBook().getThumbnail()}"/>>
 							</div>
-							<div class="row">
-								<div class="col-sm-4">
-									<h5>
-										<b>Title</b>
-									</h5>
+							<div class="panel-footer">
+								<div class="row">
+									<div class="col-sm-4">
+										<h5>
+											<b>Author</b>
+										</h5>
+									</div>
+									<div class="col-sm-8">
+										<h5>
+											<c:out value="${item.getBook().getAuthors()}" />
+										</h5>
+									</div>
 								</div>
-								<div class="col-sm-8">
-									<h5>
-										<c:out value="${item.getBook().getTitle()}" />
-									</h5>
+								<div class="row">
+									<div class="col-sm-4">
+										<h5>
+											<b>Title</b>
+										</h5>
+									</div>
+									<div class="col-sm-8">
+										<h5>
+											<c:out value="${item.getBook().getTitle()}" />
+										</h5>
+									</div>
 								</div>
-							</div>
-							<div class="row">
-								<div class="col-sm-4">
-									<h5>
-										<b>Offer Price</b>
-									</h5>
+								<div class="row">
+									<div class="col-sm-4">
+										<h5>
+											<b>Offer Price</b>
+										</h5>
+									</div>
+									<div class="col-sm-8">
+										<h5>
+											<c:out value="${item.getPrice()}" />
+										</h5>
+									</div>
 								</div>
-								<div class="col-sm-8">
-									<h5>
-										<c:out value="${item.getPrice()}" />
-									</h5>
+								<div class="row">
+									<div class="col-sm-4">
+										<h5>
+											<b>City</b>
+										</h5>
+									</div>
+									<div class="col-sm-8">
+										<h5>
+											<c:out value="${item.getLocality().getCity()}" />
+										</h5>
+									</div>
 								</div>
-							</div>
-							<div class="row">
-								<div class="col-sm-4">
-									<h5>
-										<b>City</b>
-									</h5>
-								</div>
-								<div class="col-sm-8">
-									<h5>
-										<c:out value="${item.getLocality().getCity()}" />
-									</h5>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-sm-4">
-									<h5>
-										<b>Locality</b>
-									</h5>
-								</div>
-								<div class="col-sm-8">
-									<h5>
-										<c:out value="${item.getLocality().getArea()}" />
-									</h5>
+								<div class="row">
+									<div class="col-sm-4">
+										<h5>
+											<b>Locality</b>
+										</h5>
+									</div>
+									<div class="col-sm-8">
+										<h5>
+											<c:out value="${item.getLocality().getArea()}" />
+										</h5>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-				</div>
+				</a>
 			</c:forEach>
 		</div>
-
 	</div>
 
 
