@@ -28,12 +28,12 @@
 
 <%@ include file="navbar.jsp"%>
 
-
 <% 
 	List<BookUser> list = DBFacade.getBookAdList();
 	request.setAttribute("list", list);
 %>
-<div class="container-fluid bookcontainer"> 
+<div class="container-fluid bookcontainer">
+ 
   <div class="row">
   
   <c:forEach items="${list}" var = "item">
@@ -43,7 +43,7 @@
     			<img 
     				class = "img-responsive imgstyle center-block" 
     				src = <c:out value = "${item.getBook().getThumbnail()}"/> 
-    				alt = <c:out value = "${item.getBook().getTitle()}"/>
+    				alt = <c:out value = "${item.getBook().getThumbnail()}"/>
     			>
     		</div>
     		<div class="panel-footer">
@@ -72,7 +72,9 @@
   	</div>
   	</c:forEach> 	
 	</div>
+	
 </div>
+
 
 
 <!-- Footer -->

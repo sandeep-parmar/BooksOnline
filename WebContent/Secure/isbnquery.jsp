@@ -50,7 +50,123 @@
 		<button type="button" class="btn btn-primary btn-md" id="searchIsbn">Search</button>
 	</div>
 </div>
+</div>
+
+ <h4 class="col-sm-offset-2"> OR</h4>
+ <button type="button" class="btn btn-primary btn-md col-sm-offset-2" id="manualfileloadbutton">Manually Post Ad</button>
+
+<div class = "browsefilecontainer">
+
+<form class="invisible" method="post" enctype="multipart/form-data" id="customedataform">
 	
+	<h2 class="col-sm-offset-2"> Please enter your Ad info</h2>
+		<div class = "row pad_row">
+    		<div class="form-group">
+    			<label for="brtitle" class="col-sm-1 col-sm-offset-2">Title:</label>    	
+    			<div class="col-sm-4">
+	    			<input id="brtitle" type="text" class="form-control" id="brtitle" name="brtitle">
+	    		</div>
+    		</div>
+    	</div>
+    
+    <div class = "row pad_row">    	
+    	<div class="form-group">
+    		<label for="sel1" class="col-sm-1 col-sm-offset-2">Author:</label>
+    	
+    		<div class="col-sm-4">
+    			<input id="brauthor" type="text" class="form-control col-sm-4" id="brauthor" name="brauthor">
+    		</div>
+    	</div>
+	</div>	
+	
+	<div class = "row pad_row">
+		<div class="form-group">
+    			<label for="description" class="col-sm-1 col-sm-offset-2">Description:</label>
+    			<div class="col-sm-4">
+    				<input type="text" class="form-control" id="brdesc" name="brdesc">
+  				</div>
+  		</div>
+  	</div>
+  	
+  	<div class = "row pad_row">
+		<div class="form-group">
+    			<label for="isbn" class="col-sm-1 col-sm-offset-2">Isbn:</label>
+    			<div class="col-sm-4">
+    				<input type="text" class="form-control" id="brisbn" name="brisbn">
+  				</div>
+  		</div>
+  	</div>
+  	  		
+  				  		
+  			<hr>
+  			
+  			<!-- validation of below entries pending -->
+  	<div class = "row pad_row">
+		<div class="form-group">
+    			<label class="col-sm-1 col-sm-offset-2">Name:</label>
+    			<div class="col-sm-4">
+    				<input type="text" class="form-control" id="brlname" name="brlname">
+  				</div>
+  		</div>
+  	</div>
+  	
+  	<div class = "row pad_row">
+		<div class="form-group">
+    			<label class="col-sm-1 col-sm-offset-2">Phone Number:</label>
+    			<div class="col-sm-4">
+    				<input type="text" class="form-control" id="brlphno" name="brlphno">
+  				</div>
+  		</div>
+  	</div>
+  	
+  	<div class = "row pad_row">
+		<div class="form-group">
+    			<label class="col-sm-1 col-sm-offset-2">City:</label>
+    			<div class="col-sm-4">
+    				<input type="text" class="form-control" id="brlcity" name="brlcity">
+  				</div>
+  		</div>
+  	</div>  			
+  			
+  	<div class = "row pad_row">
+		<div class="form-group">
+    			<label class="col-sm-1 col-sm-offset-2">Locality (nearby):</label>
+    			<div class="col-sm-4">
+    				<input type="text" class="form-control" id="brllocality" name="brllocality">
+  				</div>
+  		</div>
+  	</div>  			
+  	<div class = "row pad_row">
+		<div class="form-group">
+    			<label class="col-sm-1 col-sm-offset-2">Pin:</label>
+    			<div class="col-sm-4">
+    				<input type="text" class="form-control" id="brlpin" name="brlpin">
+  				</div>
+  		</div>
+  	</div>  		
+  	<div class = "row pad_row">
+		<div class="form-group">
+    			<label class="col-sm-1 col-sm-offset-2">Offer Price:</label>
+    			<div class="col-sm-4">
+    				<input type="text" class="form-control" id="broffPrice" name="broffPrice">
+  				</div>
+  		</div>
+  	</div>  		
+  	
+  		<hr>			
+	<div class="row pad_row">
+		<div class="form-group">
+		<div class="col-sm-3 col-sm-offset-2">
+			<input type="file" class="file" name="dataFile" id="datafile"/><br/><br/>			
+		</div>
+		<div class="col-sm-3">
+			<button type="submit" class="btn btn-primary" value="submit" id="submitcustomdata" name="submitcustomdata">Submit</button>
+		</div>
+		</div>
+	</div>   
+	  	
+	
+</form>
 </div>
 
 
