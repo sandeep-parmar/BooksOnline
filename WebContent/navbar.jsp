@@ -6,6 +6,16 @@
       <a class="navbar-brand" href="/BooksOnline/home"><b>BooksOnline</b></a>
     </div>
     
+     <form class="navbar-form navbar-left">
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Enter City" id="entercity" name="entercity">
+      </div>
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Enter Locality" id="enterlocality" name="enterlocality">
+      </div>
+      <button type="button" class="btn btn-primary btn-md">Submit</button>
+    </form>
+    
     <div class="collapse navbar-collapse" id="myNavbar">
        
       <ul class="nav navbar-nav navbar-right">
@@ -27,10 +37,9 @@
       	 </li>
       	 </shiro:authenticated>
       	         
-        <li><a href="/BooksOnline/Secure/isbnquery.jsp"><button type="button" class="btn btn-primary btn-lg" id="postad"><b>Submit a Free Ad</b></button></a></li>                
+         <li><a href="/BooksOnline/Secure/isbnquery.jsp"><button type="button" class="btn btn-primary btn-lg" id="postad"><b>Submit a Free Ad</b></button></a></li>                
       </ul>
     </div>
- 
   </div>
 </nav>
 

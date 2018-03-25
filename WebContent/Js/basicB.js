@@ -268,7 +268,41 @@ $(document).ready(function(){
 		$("#customedataform").removeClass('invisible');
 		$("#manualfileloadbutton").hide();
 	 });
-	
+		 
+	 
+	 // manually file input plugin
+	 $("#bootfileinput").fileinput({
+		 	'showUpload':false,
+		 	'previewFileType':'any',		 	
+		    hideThumbnailContent: false,
+		    allowedFileTypes:['image'],
+		    previewSettings : {
+    			image: {width: "auto", height: "auto", 'max-width': "100%",'max-height': "100%"}
+		    	}
+		});
+
+	 
+	 		var options = {
+				url: function(phrase) {
+					return host + port + webservice + bookservice + "/getcitysuggestion?phrase=" + phrase + "&format=json";
+				},
+
+				getValue: "name"
+			};
+
+			$("#entercity").easyAutocomplete(options);
+			
+			var options = {
+				url: function(phrase) {
+					return host + port + webservice + bookservice + "/getlocalitysuggestion?phrase=" + phrase + "&format=json";
+				},
+
+				getValue: "name"
+			};
+
+			$("#enterlocality").easyAutocomplete(options);
+	 
+	 
 	  function validateEmail(sEmail) {
 	      var filter = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
 	      if (filter.test(sEmail)) {
