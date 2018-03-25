@@ -29,6 +29,23 @@ public class DBFacade {
 		 return list;
 	 }
 	 
+	 public static List<BookUser> getBookAdListBylocality(String city, String area)
+	 {
+		 List<BookUser> list = bookUserDao.getBookListByLocality(city, area);
+	 		
+		 for (BookUser bookUser : list) {
+			 Book book = bookDao.geBook(bookUser.getBookid());
+			 Locality locality = localityDao.getLocality(bookUser.getPin());
+			 
+			 bookUser.setBook(book);
+			 bookUser.setLocality(locality);
+			 
+			// System.out.println(bookUser);
+		}
+		 return list;
+
+	 }
+	 
 	 /*Used in home page*/
 	 public static List<BookUser> getBookAdList()
 	 {		
