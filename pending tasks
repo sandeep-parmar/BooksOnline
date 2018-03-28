@@ -1,0 +1,26 @@
+For user identity:
+  . Forget Password.
+  . prevent back button after logout.
+  . reset password functionality for logged in user.
+  . reset email and phone number(Future).
+  . Modify book details added like price and description.
+  . Remove sold books after some time.
+  . Proper transition for any error from server in login flow.
+  . Send email functionality.
+  . OTP functionalty.
+
+For book entity:
+  . Revisit fech book detail form google APi and check for more accurate details
+  . Error handling for all books rest API.
+
+UI side:
+  . Make proper header.
+  . Make device independence.
+  . Use cards instead of model.
+  . Make footer relative to last div in body. Dont make it stick for contant.
+  . Use proper fonts.
+  . Add viewport for mobile first UI.
+  
+  
+Add your points as and when remember ot mark above points complete whenver done.
+  
