@@ -35,13 +35,13 @@
 %>
 <br><br><br> <!-- To be removed  -->
 
-<div id="container" style="width:100%;">                                   
-  <div id="left" style="float:left; width:30%;"> 
+<div id="container" class="width100per">                                   
+  <div id="left" class="floatLeft width70per"> 
   	<img class="" height="300" width="300"
 		src=<c:out value = "${bd.getThumbnail()}"/>
 		alt=<c:out value = "${bd.getThumbnail()}"/>>
   </div>                     
-  <div id="right" style="float:right; width:70%;"> 
+  <div id="right" class="floatRight width70per"> 
   	<div class="row">
 		<div class="col-sm-2">
 			<h4>
