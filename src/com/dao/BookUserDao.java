@@ -38,6 +38,10 @@ public class BookUserDao implements IBaseDao {
 		String sql = "update book_user set soldstatus = 1 where uid = ? and bookid = ?";
 		return sql;
 	}
+	public String getUpdatePriceQuery() {
+		String sql = "update book_user set price = ? where uid = ? and bookid = ?";
+		return sql;
+	}
 
 	public void saveBookUser(BookUser bookUser) {
 		
@@ -154,7 +158,26 @@ public class BookUserDao implements IBaseDao {
 			ConnectionHandler.closeConnection();
 		}
 	}
-
+	
+	public void updateNewOfferPrice(String uid, String bookid, String newprice) {		
+		String sql = getUpdatePriceQuery();
+		try {
+			Connection conn = ConnectionHandler.getConnection();
+			PreparedStatement preparedStmt = conn.prepareStatement(sql);
+			preparedStmt.setString(1, newprice);
+			preparedStmt.setString(2, uid);
+			preparedStmt.setString(3, bookid);
+			System.out.println(preparedStmt);
+			
+			preparedStmt.execute();
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}finally
+		{
+			ConnectionHandler.closeConnection();
+		}
+	}
 
 	public List<BookUser> getBookListByLocality(String city, String area) {
 		List<BookUser> list = new ArrayList<BookUser>(0);
@@ -193,5 +216,5 @@ public class BookUserDao implements IBaseDao {
 	private String getSelectQueryByLocality() {
 		String sql = "select * from book_user where pin in(select pin from locality where city like ? and area like ?)";
 		return sql;
-	}
+	}	
 }

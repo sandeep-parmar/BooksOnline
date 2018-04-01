@@ -168,7 +168,19 @@ public class BookService {
 		/*Get current logged in user object from shiro*/
 		User user = UserRealm.getLoggedInUser();
 		
-		DBFacade.saveBookUser(user, title, author, desc, id, thumbnail, lcity, llocality, lpin, lname, lphno , offPrice);
+		DBFacade.saveBookUser(user, title, author, desc, id, thumbnail, lpin, lcity, llocality, lname, lphno , offPrice);
+	}
+	
+	@GET
+	@Path("/updatepriceofbook/{param1}/{param2}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String updateThisBooksprice(@PathParam("param1") String bookId, @PathParam("param2") String newPrice)
+	{
+		System.out.println(bookId+","+newPrice);
+		User user = UserRealm.getLoggedInUser();
+		//DBFacade.setSoldStatusTrue(user.getMobile(), bookId);
+		DBFacade.updateNewOfferPrice(user.getMobile(), bookId, newPrice);
+		return "success";
 	}
 	
 	@GET
@@ -264,7 +276,7 @@ public class BookService {
 				/*Actual operation*/
 				System.out.println("Image location:" + uploadedFileLocation);
 				User user = UserRealm.getLoggedInUser();
-				DBFacade.saveBookUser(user, title, author, desc, id, uploadedFileLocation, lcity, llocality, lpin, lname, lphno , offPrice);
+				DBFacade.saveBookUser(user, title, author, desc, id, uploadedFileLocation, lpin, lcity, llocality, lname, lphno , offPrice);
 				
 				return Response.status(200)
 						.entity("File saved to " + uploadedFileLocation).build();

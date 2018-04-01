@@ -8,8 +8,7 @@ $(document).ready(function(){
 	var bookAdservice = "/bookAd";
 				
 	function getSetBookTitles(author)
-	{
-		
+	{		
 		$.get(host + port + webservice + bookservice + "/getbooklist/" + author,
 				function(data, status){					
 				//console.log(data);
@@ -123,14 +122,14 @@ $(document).ready(function(){
 	
 	$("#loginformsubmitbutton").click(function() {
 		
-		var mobile = $("#loginid").val();
+		var email = $("#loginid").val();
 		var password = $("#loginpassword").val();
 		
 		jQuery.ajax({
 		    url: host + port + webservice + loginservice + "/validate",
 		    type: 'post',
 		    data: JSON.stringify({ 
-		    	"mobile": $("#loginid").val(),
+		    	"email": $("#loginid").val(),
 				"password": $("#loginpassword").val(),				
 		    }),	
 		    dataType: 'json',
@@ -140,10 +139,10 @@ $(document).ready(function(){
 		    	var active = data["accountStatus"];
 		    	var userEmail = data["userEmail"];
 		    	var userMobile = data["userMobile"];
-		    	console.log("useremail"+userEmail);
+		    	//console.log("useremail"+userEmail);
 		    	if(status)
 		    	{				    
-		    		$(location).attr('href', '/BooksOnline/Secure/isbnquery?user=' + mobile+'&userEmail='+userEmail+'&userMobile='+userMobile);
+		    		$(location).attr('href', '/BooksOnline/Secure/isbnquery');
 		    	}
 		    	else
 		    	{
@@ -168,13 +167,29 @@ $(document).ready(function(){
 	$(".soldbutton").click(function() {
 		  var bookid = $(this).attr("value");
 		 // alert("The value is "+ $(this).attr("value") );
-		$.get(host + port + webservice + bookservice + "/soldthisbook/" + bookid,
+		  $.get(host + port + webservice + bookservice + "/soldthisbook/" + bookid,
 				function(data, status){					
 					$(location).attr('href', '/BooksOnline/Secure/myads.jsp');
 				})
 				.fail(function(res,status,error) {
 					console.log(res.responseText);
-					alert( res.responseText+" "+status+" "+error);
+					//alert( res.responseText+" "+status+" "+error);
+				});
+	});
+
+	$(".updatepricebutton").click(function() {
+		var count = $(this).attr("value");
+		//alert("updatedprice_" + count);
+		var offerprice = $("#updatedprice_" + count).val();
+		var bookid = $("#soldthisbook_" + count).val(); 			
+		
+		  $.get(host + port + webservice + bookservice + "/updatepriceofbook/" + bookid + "/" + offerprice,
+				function(data, status){					
+					$(location).attr('href', '/BooksOnline/Secure/myads.jsp');
+				})
+				.fail(function(res,status,error) {
+					console.log(res.responseText);
+					//alert( res.responseText+" "+status+" "+error);
 				});
 	});
 	
@@ -213,7 +228,52 @@ $(document).ready(function(){
 		    });
 	});
 	
-	  
+	$("#forgetpasswordsubmitbutton").click(function() {
+		
+		//alert(host + port + webservice + loginservice + "/saveuser");		
+		var fpemail = $("#fpemail").val();
+		$.get(host + port + webservice + loginservice + "/forgetpassword/" + fpemail,
+				function(data, status){					
+						var ret= data["status"];						
+						if(status === "success")
+						{
+							if(ret == 0){
+								$("#fpcomment").html("Password reset link has been sent to your email");							
+							}else{
+								$("#fpcomment").html("Invalid email");
+							}	
+						}
+				})
+				.fail(function(res,status,error) {
+					console.log(res.responseText);
+					alert( res.responseText+" "+status+" "+error);
+				});		    	
+	});
+	
+	$("#resetpasswordsubmitbutton").click(function() {
+		
+		//alert(host + port + webservice + loginservice + "/saveuser");
+		alert("reset password");
+		var uuid = $("#resuuid").val();
+		var respasswd = $("#respassword").val();
+		$.get(host + port + webservice + loginservice + "/resetpassword/" + uuid + "/" + respasswd,
+				function(data, status){					
+						var ret= data["status"];						
+						if(status === "success")
+						{
+							if(ret == 0){
+								$("#rescomment").html("Password has been reset successfully");							
+							}else{
+								$("#rescomment").html("Password reset successful");
+							}	
+						}
+				})
+				.fail(function(res,status,error) {
+					console.log(res.responseText);
+					alert( res.responseText+" "+status+" "+error);
+				});		    	
+	});
+		
 	
 	/*Upload custom images*/
 	 $("#submitcustomdata").click(function (event) {
@@ -281,6 +341,9 @@ $(document).ready(function(){
 		    	}
 		});
 
+	 
+	 
+	 // easy auto complete
 	 
 	 		var options = {
 				url: function(phrase) {

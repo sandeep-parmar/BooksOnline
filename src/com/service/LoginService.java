@@ -88,10 +88,10 @@ public class LoginService {
 		boolean status = true;
 		org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
 		
-		System.out.println("sssssssss--1");
+		System.out.println("sssssssss--1:"+user);
 		
 //		User usrDetails = UserDao.isUserAccountActive(user.getMobile());
-		User usrDetails = DBFacade.isUserAccountActive(user.getMobile());
+		User usrDetails = DBFacade.isUserAccountActive("email", user.getEmail());
 		int accountActive = usrDetails.getActive();
 		
 		if(accountActive == 1)
@@ -99,29 +99,41 @@ public class LoginService {
 		if(!currentUser.isAuthenticated())
 		{
 			//System.out.println("sssssssss--2");
-			UsernamePasswordToken token = new UsernamePasswordToken(user.getMobile(), user.getPassword());
+			
+			UsernamePasswordToken token = new UsernamePasswordToken(user.getEmail(), user.getPassword());
+			
 			//System.out.println("ssssss2.1"+token);
+			
 			token.setRememberMe(true);
 			try {
                 currentUser.login(token);
-            } catch (UnknownAccountException uae) {
+            
+			} catch (UnknownAccountException uae) {
             	status = false;
             	//System.out.println("There is no user with username of " + token.getPrincipal()+" exception"+uae.getMessage());
-                log.info("There is no user with username of " + token.getPrincipal());
-            } catch (IncorrectCredentialsException ice) {
+            
+            	log.info("There is no user with an email " + token.getPrincipal());
+            
+			} catch (IncorrectCredentialsException ice) {
             	status = false;
+            	
             	//System.out.println("Password for account " + token.getPrincipal() + " was incorrect!");
-                log.info("Password for account " + token.getPrincipal() + " was incorrect!");
+            
+            	log.info("Password for account " + token.getPrincipal() + " was incorrect!");
             } catch (LockedAccountException lae) {
             	status = false;
+            	
             	//System.out.println("sssssssss--5");
-                log.info("The account for username " + token.getPrincipal() + " is locked.  " +
+                
+            	log.info("The account for username " + token.getPrincipal() + " is locked.  " +
                         "Please contact your administrator to unlock it.");
             }            
             catch (AuthenticationException ae) {
             	status = false;
+            	
             	//System.out.println("sssssssss--6");
-                log.info(ae.getMessage());
+                
+            	log.info(ae.getMessage());
             }
 		}
 		}
@@ -143,7 +155,7 @@ public class LoginService {
 	@GET
 	@Path("/verify/{username}/{hash}")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String getBookDetails(@PathParam("username") String username, @PathParam("hash") String hash)
+	public String verifyUser(@PathParam("username") String username, @PathParam("hash") String hash)
 	{
 		System.out.println("ssssss");
 		int status = UserRealm.verify(username,hash);
@@ -155,6 +167,45 @@ public class LoginService {
 			return "Verification failed, Please signup again";
 		else
 			return "User already active, Please login";
+	}
+	
+	@GET
+	@Path("/forgetpassword/{email}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String forgetpassword(@PathParam("email") String email)
+	{
+		System.out.println("email:" + email);
+		
+		String response = UserRealm.sendResetPasswordLink(email);
+		System.out.println("email status : response : "+response);
+		
+		JSONObject json = new JSONObject();
+		json.put("status", 0);
+		json.put("forgetpassRes", response);
+		
+		return json.toString();
+	}
+	
+	@GET
+	@Path("/resetpassword/{uuid}/{newpassword}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String resetpassword(@PathParam("uuid") String uuid, @PathParam("newpassword") String newpassword)
+	{		
+		System.out.println("New Password:" + newpassword);
+		System.out.println("UUId:" + uuid);
+
+		/*Wrap it in new class*/
+		RandomNumberGenerator rng = new SecureRandomNumberGenerator();
+		Object salt = rng.nextBytes();
+		String hashedPasswordBase64 = new Sha256Hash(newpassword, salt, 1024).toBase64();		
+
+		String response = DBFacade.resetPassword(uuid,hashedPasswordBase64, salt.toString());
+		
+		JSONObject json = new JSONObject();
+		json.put("status", 0);
+		json.put("resetpassRes", response);
+		
+		return json.toString();
 	}
 }
 

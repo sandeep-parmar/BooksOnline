@@ -135,7 +135,7 @@
     				<input type="text" class="form-control" id="brllocality" name="brllocality">
   				</div>
   		</div>
-  	</div>  			
+  	</div>
   	<div class = "row pad_row">
 		<div class="form-group">
     			<label class="col-sm-1 col-sm-offset-2">Pin:</label>
@@ -143,7 +143,7 @@
     				<input type="text" class="form-control" id="brlpin" name="brlpin">
   				</div>
   		</div>
-  	</div>  		
+  	</div>  				
   	<div class = "row pad_row">
 		<div class="form-group">
     			<label class="col-sm-1 col-sm-offset-2">Offer Price:</label>

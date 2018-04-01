@@ -105,16 +105,17 @@ public class UserDao implements IBaseDao {
 
 		
 
-	public User isUserAccountActive(String mobile) {
+	public User isUserAccountActive(String field, String value) {
 		ResultSet rs = null;
 		User user = null;
 		int status = -1;
-		String sql = getUserByFieldQuery("mobile");
+		String sql = getUserByFieldQuery(field);
 
 		try {
 			Connection conn = ConnectionHandler.getConnection();
 			PreparedStatement preparedStmt = conn.prepareStatement(sql);
-			preparedStmt.setString(1, mobile);
+			preparedStmt.setString(1, value);
+			System.out.println(preparedStmt.toString());
 			rs = preparedStmt.executeQuery();
 			if(rs.next())
 			{	
@@ -151,6 +152,33 @@ public class UserDao implements IBaseDao {
 		}
 	}
 
+	public static String resetPassword(String uuid, String hashedPasswordBase64, String salt) {
+		String sql = getResetPasswordQuery();
+		Connection conn = null;
+		try {
+			conn = ConnectionHandler.getConnection();
+			PreparedStatement preparedStmt = conn.prepareStatement(sql);
+			preparedStmt.setString(1, hashedPasswordBase64);
+			preparedStmt.setString(2, salt);
+			preparedStmt.setString(3, uuid);
+			System.out.println(preparedStmt.toString());
+			preparedStmt.execute();
+			
+		}catch(SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+		finally {
+			ConnectionHandler.closeConnection();
+		}	
+		return "success";
+	}
+	
+	private static String getResetPasswordQuery() {
+		String sql = "update user set password=?, salt=? where uuid=?";
+		return sql;
+	}
+
 	@Override
 	public String getSelectQuery() {
 		String sql = "select * from user";
@@ -180,5 +208,5 @@ public class UserDao implements IBaseDao {
 	public String getSingleEntryQuery() {
 		// TODO Auto-generated method stub
 		return null;
-	}
+	}	
 }

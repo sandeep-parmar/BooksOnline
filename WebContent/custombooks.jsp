@@ -19,9 +19,9 @@
 
 <title>Books Online</title>
 <%@ include file="BootConfig/bootstrap.jsp"%>
-<link rel="stylesheet" type="text/css" href="Css/style.css"></link>
+<link rel="stylesheet" type="text/css" href="/BooksOnline/Css/style.css"></link>
 
-<script src="Js/basicB.js"></script>
+<script src="/BooksOnline/Js/basicB.js"></script>
 
 </head>
 <body>

@@ -68,13 +68,13 @@ public class DBFacade {
 		return status;
 	}
 
-	public static User isUserAccountActive(String mobile) {		
-		User user = userDao.isUserAccountActive(mobile);
+	public static User isUserAccountActive(String field, String value) {		
+		User user = userDao.isUserAccountActive(field, value);
 		return user;
 	}
 
-	public static User getUserAccount(String principalAsMobile, String field) {		
-		User user = userDao.getUserAccount(principalAsMobile, field);
+	public static User getUserAccount(String principalAsEmail, String field) {		
+		User user = userDao.getUserAccount(principalAsEmail, field);
 		return user;
 	}
 
@@ -83,12 +83,12 @@ public class DBFacade {
 	}
 
 	/*Save model 1 info*/
-	public static void saveBookUser(User user, String title, String author, String desc, String id, String thumbnail,
-		String lcity, String larea, String lpin, String lname, String lphno, String offPrice) {
+	public static void saveBookUser(User user, String title, String author, String desc, String id, String thumbnail, String lpin,
+		String lcity, String larea, String lname, String lphno, String offPrice) {
 		
 		/*create required entities*/
 		Book book = new Book(title, author, desc, id, thumbnail);
-		Locality locality = new Locality(lpin, lcity, larea);
+		Locality locality = new Locality(lpin,lcity, larea);
 		BookUser bookUser = new BookUser(user.getMobile(), id, Integer.parseInt(lpin), lname, lphno, offPrice, 0);
 		
 		/*save book and locality details*/
@@ -133,5 +133,13 @@ public class DBFacade {
 
 	public static List<String> getLocalityList(String phrase) {
 		return localityDao.getSuggestionList(phrase, "area");
+	}
+
+	public static String resetPassword(String uuid, String hashedPasswordBase64, String salt) {
+		return UserDao.resetPassword(uuid, hashedPasswordBase64, salt);		
+	}
+
+	public static void updateNewOfferPrice(String mobile, String bookId, String newPrice) {
+		bookUserDao.updateNewOfferPrice(mobile, bookId, newPrice);
 	}
 }

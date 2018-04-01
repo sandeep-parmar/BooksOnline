@@ -39,12 +39,12 @@ public class UserRealm extends AuthorizingRealm{
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
 	
 		System.out.println("In doGetAuthenticationInfo");
-		String principalAsMobile = token.getPrincipal().toString();
+		String principalAsEmail = token.getPrincipal().toString();
 		//User user = UserDao.getUserAccount(principal,UserField.MOBILE);
-		User user = DBFacade.getUserAccount(principalAsMobile,"mobile");
+		User user = DBFacade.getUserAccount(principalAsEmail, "email");
 		if(user != null){
-			SaltedAuthenticationInfo info = new SimpleAuthenticationInfo(user,user.getPassword(), 
-			ByteSource.Util.bytes(Base64.getDecoder().decode(user.getSalt().getBytes())),getName());
+			SaltedAuthenticationInfo info = new SimpleAuthenticationInfo(user, user.getPassword(), 
+			ByteSource.Util.bytes(Base64.getDecoder().decode(user.getSalt().getBytes())), getName());
 			return info;
 		}else{
 			throw new UnknownAccountException();
@@ -67,8 +67,54 @@ public class UserRealm extends AuthorizingRealm{
 		
 		return user;
 	}
+	
+
+	public static int verify(String username, String hash) {
+	
+		int status = 0;
+		User user = DBFacade.getUserAccount(username, "username");
+		if(user.getActive() == 0)
+		{
+			if(user.getUuid().equals(hash))
+			{
+				DBFacade.activateUserAccount(username);
+				status =  0;
+			}
+			else
+			{
+				status = -1;
+			}
+		}
+		else
+		{
+			status = 1;
+		}
+		return status;
+	}
+
 	public static String sendVerificationEmail(User user) throws IOException
 	{
+		final String verificationUrl = "http://localhost:8080/BooksOnline/rest/login/verify/" + user.getUsername() + "/" + user.getUuid();
+		String message = "<h3>Hello " + user.getUsername() +"</h3>"
+  		+ "<h3>Please click on the link below to verify your email address.</h3>"
+		 + "<a href=" + verificationUrl + ">Verify Account</a>";
+		String result = SendEmail(message, user.getEmail());
+		
+		return result;
+	}
+
+	public static String sendResetPasswordLink(String email) {
+		int status = 0;
+		User user = DBFacade.getUserAccount(email, "email");
+		
+		final String resetUrl = "http://localhost:8080/BooksOnline/resetpassword?username=" + user.getUsername() + "&uuid=" +user.getUuid();
+	    String message = "<h3>Hello " + user.getUsername() +"</h3>" + "<h3>Please click on the link below to reset your password.</h3>" + "<a href=" + resetUrl + ">reset password</a>";		
+	    
+	    String result = SendEmail(message, user.getEmail());
+		return result;
+	}
+
+	private static String SendEmail(String messagetobesent, String receiver) {
 		String result;
 		//InputStream eamilProps = getCl;
 		Properties properties = new Properties();
@@ -76,7 +122,12 @@ public class UserRealm extends AuthorizingRealm{
 		String passwordProp = new String();
 		ClassLoader loader = Thread.currentThread().getContextClassLoader(); 
 		InputStream fstream = loader.getResourceAsStream("/com/properties/email.properties");
-		properties.load(fstream);
+		try {
+			properties.load(fstream);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		if(null != fstream){
 			fromProp = properties.getProperty("username");
@@ -84,7 +135,7 @@ public class UserRealm extends AuthorizingRealm{
 		}
 		
 	   // Recipient's email ID needs to be mentioned.
-	   String to = user.getEmail();
+	   String to = receiver;
 	   
 	   // Assuming you are sending email from localhost
 	   String host = "localhost";
@@ -94,8 +145,7 @@ public class UserRealm extends AuthorizingRealm{
 
 	   final String from = fromProp;
 	   final String password = passwordProp;
-	   final String verificationUrl = "http://localhost:8080/BooksOnline/rest/login/verify/" + user.getUsername() + "/" + user.getUuid();
-		
+	   
 	   // Setup mail server
 	   	properties.put("mail.smtp.host", "smtp.gmail.com"); //SMTP Host
 		properties.put("mail.smtp.socketFactory.port", "465"); //SSL Port
@@ -126,9 +176,7 @@ public class UserRealm extends AuthorizingRealm{
 	      message.setSubject("OnlineBook verification");
 	      
 	      // Now set the actual message
-	      message.setContent("<h3>Hello " + user.getUsername() +"</h3>"
-	      		+ "<h3>Please click on the link below to verify your email address.</h3>"
-	    		 + "<a href=" + verificationUrl + ">Verify Account</a>", "text/html" );
+	      message.setContent(messagetobesent, "text/html" );
 	      
 	      // Send message
 	      Transport.send(message);
@@ -138,28 +186,5 @@ public class UserRealm extends AuthorizingRealm{
 	      result = "Error: unable to send email....";
 	   }
 	   return result;
-	}
-
-	public static int verify(String username, String hash) {
-	
-		int status = 0;
-		User user = DBFacade.getUserAccount(username, "username");
-		if(user.getActive() == 0)
-		{
-			if(user.getUuid().equals(hash))
-			{
-				DBFacade.activateUserAccount(username);
-				status =  0;
-			}
-			else
-			{
-				status = -1;
-			}
-		}
-		else
-		{
-			status = 1;
-		}
-		return status;
 	}
 }

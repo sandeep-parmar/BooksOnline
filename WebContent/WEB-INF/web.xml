@@ -13,10 +13,13 @@
     	<param-name>jersey.config.server.provider.classnames</param-name>
     	<param-value>org.glassfish.jersey.media.multipart.MultiPartFeature</param-value>
 	</init-param>
+	
+	<!--  
 	 <init-param>
       <param-name>dataStoragePath</param-name>
       <param-value>C:/UploadFiles</param-value>
   	</init-param>
+	-->
 
     <load-on-startup>1</load-on-startup>
   </servlet>
@@ -64,6 +67,25 @@
   </servlet-mapping>
 
  <servlet>
+  	<servlet-name>forgetpassword</servlet-name>
+  	<jsp-file>/forgetpassword.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>forgetpassword</servlet-name>
+  	<url-pattern>/forgetpassword</url-pattern>
+  </servlet-mapping>
+
+ <servlet>
+  	<servlet-name>resetpassword</servlet-name>
+  	<jsp-file>/resetpassword.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>resetpassword</servlet-name>
+  	<url-pattern>/resetpassword</url-pattern>
+  </servlet-mapping>
+
+
+ <servlet>
   	<servlet-name>isbnquery</servlet-name>
   	<jsp-file>/Secure/isbnquery.jsp</jsp-file>
   </servlet>
@@ -79,6 +101,7 @@
   <servlet-mapping>
   	<servlet-name>custombooks</servlet-name>
   	<url-pattern>/custombooks</url-pattern>
+  	<url-pattern>/Secure/custombooks</url-pattern>
   </servlet-mapping>
   
   
