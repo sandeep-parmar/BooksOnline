@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.List;
 
 import javax.security.auth.Subject;
 import javax.servlet.Servlet;
@@ -20,6 +21,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -169,12 +171,45 @@ public class BookService {
 		DBFacade.saveBookUser(user, title, author, desc, id, thumbnail, lcity, llocality, lpin, lname, lphno , offPrice);
 	}
 	
+	@GET
+	@Path("/getcitysuggestion")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getCitySuggestion(@QueryParam("phrase") String phrase)
+	{			
+		List<String> clist = DBFacade.getCityList(phrase);
+		JSONArray jsonArr = new JSONArray();
+		for(String city:clist)
+		{
+			JSONObject obj = new JSONObject();
+			obj.put("name", city);
+			jsonArr.put(obj);
+		}				
+		return jsonArr.toString();
+	}
+	
+	
+	@GET
+	@Path("/getlocalitysuggestion")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getLocalitySuggestion(@QueryParam("phrase") String phrase)
+	{	
+		List<String> clist = DBFacade.getLocalityList(phrase);
+		JSONArray jsonArr = new JSONArray();
+		for(String city:clist)
+		{
+			JSONObject obj = new JSONObject();
+			obj.put("name", city);
+			jsonArr.put(obj);
+		}				
+		return jsonArr.toString();
+	}
+	
 	@POST
 	@Path("/brbook")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response saveBrowseBook(
-			@FormDataParam("dataFile") InputStream uploadedInputStream,
-			@FormDataParam("dataFile") FormDataContentDisposition fileDetail,
+			@FormDataParam("bootfileinput") InputStream uploadedInputStream,
+			@FormDataParam("bootfileinput") FormDataContentDisposition fileDetail,
 			@FormDataParam("brtitle") String title,
 			@FormDataParam("brauthor") String author,
 			@FormDataParam("brdesc") String desc,
@@ -195,6 +230,7 @@ public class BookService {
 		System.out.println("locality"+ llocality);
 		System.out.println("lpin"+ lpin);
 		System.out.println("offer price"+ offPrice);
+		System.out.println("file name"+ fileDetail.getFileName());
 //		String uploadDirectory = (String) context.getInitParameter("dataStoragePath");
 		String UPLOAD_FOLDER = this.context.getInitParameter("uploadfolder");
 		
@@ -247,6 +283,7 @@ public class BookService {
 	 */
 	private void saveToFile(InputStream inStream, String target)
 			throws IOException {
+		System.out.println("writing to a file");
 		
 		OutputStream out = null;
 		int read = 0;

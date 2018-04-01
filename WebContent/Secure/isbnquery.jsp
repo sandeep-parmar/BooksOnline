@@ -156,8 +156,9 @@
   		<hr>			
 	<div class="row pad_row">
 		<div class="form-group">
-		<div class="col-sm-3 col-sm-offset-2">
-			<input type="file" class="file" name="dataFile" id="datafile"/><br/><br/>			
+		<div class="col-sm-4 col-sm-offset-2">
+			<!-- <input type="file"  name="dataFile" id="datafile"/><br/><br/> -->
+			<input type="file" name="bootfileinput" id="bootfileinput"/><br/><br/>						
 		</div>
 		<div class="col-sm-3">
 			<button type="submit" class="btn btn-primary" value="submit" id="submitcustomdata" name="submitcustomdata">Submit</button>
