@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.bean.Book;
 import com.bean.Locality;
@@ -67,7 +69,29 @@ public class LocalityDao implements IBaseDao {
 		}
 		return locality;
 	}
-
+	public List<String> getSuggestionList(String phrase, String str) {
+		List<String> clist = new ArrayList<>();
+		ResultSet rs = null;
+		String sql = getStrListQuery(str);
+		try {
+			Connection conn = ConnectionHandler.getConnection();
+			PreparedStatement preparedStmt = conn.prepareStatement(sql);
+			preparedStmt.setString(1, "%" + phrase + "%");			
+			//System.out.println(preparedStmt.toString());
+			rs = preparedStmt.executeQuery();
+			while(rs.next())
+			{
+				clist.add(rs.getString(str));
+			}
+		}catch(SQLException e) {
+			System.out.println(e.toString());
+		}
+		finally {
+			ConnectionHandler.closeConnection();
+		}
+		return clist;
+	}	
+		
 	@Override
 	public String getSelectQuery() {
 		String sql = "select * from Locality";
@@ -83,6 +107,11 @@ public class LocalityDao implements IBaseDao {
 	@Override
 	public String getSingleEntryQuery() {
 		String sql = "select * from Locality where pin = ?";
+		return sql;
+	}
+	
+	public String getStrListQuery(String str) {
+		String sql = "select distinct " + str + " from Locality where " + str +" like ?" ;
 		return sql;
 	}
 

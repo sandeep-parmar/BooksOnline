@@ -154,4 +154,44 @@ public class BookUserDao implements IBaseDao {
 			ConnectionHandler.closeConnection();
 		}
 	}
+
+
+	public List<BookUser> getBookListByLocality(String city, String area) {
+		List<BookUser> list = new ArrayList<BookUser>(0);
+		ResultSet rs = null;
+		String sql = getSelectQueryByLocality();
+		try {
+			Connection conn = ConnectionHandler.getConnection();
+			PreparedStatement preparedStmt = conn.prepareStatement(sql);
+			preparedStmt.setString(1, "%"+city+"%");
+			preparedStmt.setString(2, "%"+area+"%");
+			System.out.println(preparedStmt.toString());
+			rs = preparedStmt.executeQuery();
+			while(rs.next())
+			{
+				BookUser bookUser = new BookUser(rs.getString("uid"),
+												 rs.getString("bookid"),
+												 rs.getInt("pin"), 
+												 rs.getString("name"), 
+												 rs.getString("phone"), 
+												 rs.getString("price"), 
+												 rs.getInt("soldstatus")
+												 ); 
+				list.add(bookUser);
+			}
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}finally
+		{
+			ConnectionHandler.closeConnection();
+		}
+		return list;
+	}
+
+
+	private String getSelectQueryByLocality() {
+		String sql = "select * from book_user where pin in(select pin from locality where city like ? and area like ?)";
+		return sql;
+	}
 }

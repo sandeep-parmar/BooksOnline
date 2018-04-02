@@ -62,6 +62,17 @@
     <servlet-name>isbnquery</servlet-name>
     <url-pattern>/Secure/isbnquery</url-pattern>
   </servlet-mapping>
+
+ <servlet>
+  	<servlet-name>custombooks</servlet-name>
+  	<jsp-file>/custombooks.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>custombooks</servlet-name>
+  	<url-pattern>/custombooks</url-pattern>
+  </servlet-mapping>
+  
+  
   <listener>
     <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
   </listener>
