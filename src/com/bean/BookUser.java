@@ -24,7 +24,7 @@ public class BookUser implements Serializable {
 	}
 
 	String uid;
-	String  bookid;
+	String bookid;
 	int pin;
 	
 	String name;
