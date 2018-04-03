@@ -1,4 +1,4 @@
-For user identity:
+.For user identity:
   . Forget Password.
   . prevent back button after logout.
   . reset password functionality for logged in user.
@@ -30,6 +30,7 @@ Midcellaneous:
   . redirect user after verified successfully.
   . validate various form fields in javascript client side
   . validate if data not already exists in db before insert
+  . Have Shiro session for appropriate logout handler
   
   
 Add your points as and when remember ot mark above points complete whenver done.
