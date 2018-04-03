@@ -28,6 +28,8 @@ Midcellaneous:
   . change book table to incorporate more details
   . Add Header for differetn categories of books.
   . redirect user after verified successfully.
+  . validate various form fields in javascript client side
+  . validate if data not already exists in db before insert
   
   
 Add your points as and when remember ot mark above points complete whenver done.
