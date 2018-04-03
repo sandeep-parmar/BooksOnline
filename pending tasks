@@ -20,6 +20,14 @@ UI side:
   . Make footer relative to last div in body. Dont make it stick for contant.
   . Use proper fonts.
   . Add viewport for mobile first UI.
+  . load more images.
+  
+  
+Midcellaneous:
+  . search by title,author,isbn.
+  . change book table to incorporate more details
+  . Add Header for differetn categories of books.
+  . redirect user after verified successfully.
   
   
 Add your points as and when remember ot mark above points complete whenver done.
