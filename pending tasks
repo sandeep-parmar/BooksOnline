@@ -21,6 +21,7 @@ UI side:
   . Use proper fonts.
   . Add viewport for mobile first UI.
   . load more images.
+  . Using thumbnail instead of panel for listing images
   
   
 Midcellaneous:
