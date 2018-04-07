@@ -103,7 +103,25 @@
   	<url-pattern>/custombooks</url-pattern>
   	<url-pattern>/Secure/custombooks</url-pattern>
   </servlet-mapping>
-  
+
+ <servlet>
+  	<servlet-name>myads</servlet-name>
+  	<jsp-file>/Secure/myads.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>myads</servlet-name>  	
+  	<url-pattern>/Secure/myads</url-pattern>
+  </servlet-mapping>
+
+ <servlet>
+  	<servlet-name>myprofile</servlet-name>
+  	<jsp-file>/Secure/myprofile.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>myprofile</servlet-name>  	
+  	<url-pattern>/Secure/myprofile</url-pattern>
+  </servlet-mapping>
+        
   
   <listener>
     <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>

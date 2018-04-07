@@ -31,8 +31,9 @@
 <% 
 	String city = request.getParameter("entercity");
 	String area = request.getParameter("enterlocality");
-	System.out.println("city:"+city+",locality:"+area);
-	List<BookUser> list = DBFacade.getBookAdListBylocality(city, area);
+	String criteria = request.getParameter("searchbookbytai");
+	System.out.println("city:"+city+",locality:"+area+",criteria:"+criteria);
+	List<BookUser> list = DBFacade.getBookAdListByCriteria(city, area, criteria);
 	request.setAttribute("list", list);
 %>
 <div class="container-fluid bookcontainer">

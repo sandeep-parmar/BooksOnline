@@ -13,7 +13,10 @@
       <div class="form-group">
         <input type="text" class="form-control" placeholder="Enter Locality" id="enterlocality" name="enterlocality">
       </div>
-      <button type="submit" class="btn btn-primary btn-md">Submit</button>
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Title / Author / Isbn" id="searchbookbytai" name="searchbookbytai">
+      </div>
+      <button type="submit" class="btn btn-primary btn-md">Search</button>
     </form>
     
     <div class="collapse navbar-collapse" id="myNavbar">
@@ -31,8 +34,9 @@
       	 		<shiro:principal property="username"/><span class="caret"></span>
       	 	</a>
       	 	<ul class="dropdown-menu">          		
-          		<li><a href="/BooksOnline/Secure/myads.jsp">MyAds</a></li>  
-          		<li><a href="/BooksOnline/logout.jsp">Logout</a></li>      	 
+          		<li><a href="/BooksOnline/Secure/myads">MyAds</a></li>
+          		<li><a href="/BooksOnline/Secure/myprofile">Profile</a></li>  
+          		<li><a href="/BooksOnline/logout.jsp">Logout</a></li>          		       	
         	</ul>
       	 </li>
       	 </shiro:authenticated>
@@ -42,4 +46,3 @@
     </div>
   </div>
 </nav>
-

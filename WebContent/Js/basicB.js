@@ -227,6 +227,74 @@ $(document).ready(function(){
 			    }
 		    });
 	});
+	$("#profileupdateformsubmitbutton").click(function() {
+		
+		var profname;
+		var profmobile;
+		var profemail;
+		var somethingtoupdate = false;
+		if($('#namecheckbox').is(":checked"))
+		{			
+			profname = $("#profname").val();
+			somethingtoupdate = true;
+		}
+		if($('#mobilecheckbox').is(":checked"))
+		{			
+			profmobile = $("#profmobile").val();
+			somethingtoupdate = true;
+		}
+		if($('#emailcheckbox').is(":checked"))
+		{			
+			profemail = $("#profemail").val();
+			somethingtoupdate = true;
+		}
+				
+		if(somethingtoupdate)
+		{	
+		jQuery.ajax({
+		    url: host + port + webservice + loginservice + "/profileupdate",
+		    type: 'post',
+		    data: JSON.stringify({ 
+		    	"username": profname,
+				"mobile": profmobile,
+				"email": profemail
+		    }),	
+		    dataType: 'json',
+		    contentType: "application/json; charset=utf-8",
+		    success: function (data){
+		    	var status= data["status"];
+		    	if(!status){
+		    		$("#profilecomment").html("User profile is updated successfully, Please verify your account by clicking on verification " +
+			    				"link sent to your email address");
+		    		//$(location).attr('href', 'login.jsp');
+		    	}else{
+		    		$("#profilecomment").html("Their is an error in profile updation");
+		    	}		  
+		    },
+		    error: function (data){
+		        alert("user profile update failed");        
+		    }
+	    });
+		}
+		else
+		{
+	  		$("#profilecomment").html("Please modify proper field to update");
+		}
+});
+	
+	/*This is to update profile data like name,mobile,email*/
+	$(".checked").change(function(e) {
+		var editfield = $(this).attr("value");
+		if($(e.target).is(':checked'))
+		{			
+			$("#" + editfield).prop('disabled',false);
+		}
+		else
+		{				
+			$("#" + editfield).prop('disabled',true);
+		}
+		
+	});
 	
 	$("#forgetpasswordsubmitbutton").click(function() {
 		
@@ -364,7 +432,17 @@ $(document).ready(function(){
 			};
 
 			$("#enterlocality").easyAutocomplete(options);
-	 
+
+			var options = {					
+					url: function(phrase) {
+						return host + port + webservice + bookservice + "/getbooksuggestion?phrase=" + phrase + "&format=json";
+					},
+
+					getValue: "name"
+				};
+
+				$("#searchbookbytai").easyAutocomplete(options);
+		 
 	 
 	  function validateEmail(sEmail) {
 	      var filter = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;

@@ -79,6 +79,36 @@ public class LoginService {
 	}
 	
 	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/profileupdate")
+	public String profileupdate(final User user) throws IOException
+	{	
+		
+		System.out.println(user.toString());
+		
+		User olduser = UserRealm.getLoggedInUser();				
+		/*error handling*/
+		int status = DBFacade.updateProfile(olduser, user);
+		/*error handling*/
+		String response = null;
+		if(user.getEmail() != null)
+		{			
+			user.setUuid(olduser.getUuid());
+			response = UserRealm.sendVerificationEmail(user);
+		}
+		
+		System.out.println("email status : response : "+response);
+		
+		JSONObject json = new JSONObject();
+		json.put("status", status);		
+		json.put("verifyRes", response);
+		
+		return json.toString();			
+	}
+	
+	
+	@POST
 	@Path("/validate")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)

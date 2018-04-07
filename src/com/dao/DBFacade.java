@@ -29,9 +29,9 @@ public class DBFacade {
 		 return list;
 	 }
 	 
-	 public static List<BookUser> getBookAdListBylocality(String city, String area)
+	 public static List<BookUser> getBookAdListByCriteria(String city, String area, String criteria)
 	 {
-		 List<BookUser> list = bookUserDao.getBookListByLocality(city, area);
+		 List<BookUser> list = bookUserDao.getBookListByCriteria(city, area, criteria);
 	 		
 		 for (BookUser bookUser : list) {
 			 Book book = bookDao.geBook(bookUser.getBookid());
@@ -141,5 +141,13 @@ public class DBFacade {
 
 	public static void updateNewOfferPrice(String mobile, String bookId, String newPrice) {
 		bookUserDao.updateNewOfferPrice(mobile, bookId, newPrice);
+	}
+
+	public static int updateProfile(User olduser, User user) {
+		return userDao.updateProfile(olduser, user);		
+	}
+
+	public static List<String> getBookList(String phrase, String field) {
+		return bookDao.getSuggestionList(phrase, field);
 	}
 }

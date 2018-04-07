@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.security.auth.Subject;
@@ -199,6 +200,30 @@ public class BookService {
 		return jsonArr.toString();
 	}
 	
+	@GET
+	@Path("/getbooksuggestion")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getBookSuggestion(@QueryParam("phrase") String phrase)
+	{			
+		List<String> glist = new ArrayList<String>();
+		List<String> tlist = DBFacade.getBookList(phrase, "booktitle");
+		List<String> alist = DBFacade.getBookList(phrase, "bookauthor");
+		List<String> ilist = DBFacade.getBookList(phrase, "bookid");
+		glist.addAll(tlist);
+		glist.addAll(alist);
+		glist.addAll(ilist);
+		
+		//System.out.println(glist);
+		
+		JSONArray jsonArr = new JSONArray();
+		for(String str:glist)
+		{
+			JSONObject obj = new JSONObject();
+			obj.put("name", str);
+			jsonArr.put(obj);
+		}				
+		return jsonArr.toString();
+	}
 	
 	@GET
 	@Path("/getlocalitysuggestion")
