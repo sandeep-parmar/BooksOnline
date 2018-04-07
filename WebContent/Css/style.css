@@ -182,3 +182,23 @@ body {
     font-family: 'Mukta Mahee', sans-serif;
     cursor: pointer;
 }
+
+.width100per{
+	width:100%;
+}
+
+.width70per{
+	width:70%;
+}
+
+.width30per{
+	width:30%;
+}
+
+.floatRight{
+	float:right;
+}
+
+.floatLeft{
+	float:left;
+}

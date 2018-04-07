@@ -1,4 +1,4 @@
-For user identity:
+.For user identity:
   . Forget Password.
   . prevent back button after logout.
   . reset password functionality for logged in user.
@@ -20,6 +20,18 @@ UI side:
   . Make footer relative to last div in body. Dont make it stick for contant.
   . Use proper fonts.
   . Add viewport for mobile first UI.
+  . load more images.
+  . Using thumbnail instead of panel for listing images
+  
+  
+Midcellaneous:
+  . search by title,author,isbn.
+  . change book table to incorporate more details
+  . Add Header for differetn categories of books.
+  . redirect user after verified successfully.
+  . validate various form fields in javascript client side
+  . validate if data not already exists in db before insert
+  . Have Shiro session for appropriate logout handler
   
   
 Add your points as and when remember ot mark above points complete whenver done.
