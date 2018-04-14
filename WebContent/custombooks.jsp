@@ -32,11 +32,11 @@
 	String city = request.getParameter("entercity");
 	String area = request.getParameter("enterlocality");
 	String criteria = request.getParameter("searchbookbytai");
-	System.out.println("city:"+city+",locality:"+area+",criteria:"+criteria);
+	//System.out.println("city:"+city+",locality:"+area+",criteria:"+criteria);
 	List<BookUser> list = DBFacade.getBookAdListByCriteria(city, area, criteria);
 	request.setAttribute("list", list);
 %>
-<div class="container-fluid bookcontainer">
+<div class = "container">
  
   <div class="row">
   
@@ -52,24 +52,24 @@
     		</div>
     		<div class="panel-footer">
 				<div class="row">
-					<div class="col-sm-4"><h5><b>Author</b></h5></div>
-					<div class="col-sm-8"><h5><c:out value = "${item.getBook().getAuthors()}"/></h5></div>
+					<div class="col-sm-4"><h5 class="h5-spec"><b>Author</b></h5></div>
+					<div class="col-sm-8"><h5 class="h5-spec"><c:out value = "${item.getBook().getAuthors()}"/></h5></div>
 				</div>
 				<div class="row">
-					<div class="col-sm-4"><h5><b>Title</b></h5></div>
-					<div class="col-sm-8"><h5><c:out value = "${item.getBook().getTitle()}"/></h5></div>
+					<div class="col-sm-4"><h5 class="h5-spec"><b>Title</b></h5></div>
+					<div class="col-sm-8"><h5 class="h5-spec"><c:out value = "${item.getBook().getTitle()}"/></h5></div>
 				</div>
 				<div class="row">
-					<div class="col-sm-4"><h5><b>Offer Price</b></h5></div>
-					<div class="col-sm-8"><h5><c:out value = "${item.getPrice()}"/></h5></div>
+					<div class="col-sm-4"><h5 class="h5-spec"><b>Offer Price</b></h5></div>
+					<div class="col-sm-8"><h5 class="h5-spec"><c:out value = "${item.getPrice()}"/></h5></div>
 				</div>
 				<div class="row">
-					<div class="col-sm-4"><h5><b>City</b></h5></div>
-					<div class="col-sm-8"><h5><c:out value = "${item.getLocality().getCity()}"/></h5></div>
+					<div class="col-sm-4"><h5 class="h5-spec"><b>City</b></h5></div>
+					<div class="col-sm-8"><h5 class="h5-spec"><c:out value = "${item.getLocality().getCity()}"/></h5></div>
 				</div>
 				<div class="row">
-					<div class="col-sm-4"><h5><b>Locality</b></h5></div>
-					<div class="col-sm-8"><h5><c:out value = "${item.getLocality().getArea()}"/></h5></div>
+					<div class="col-sm-4"><h5 class="h5-spec"><b>Locality</b></h5></div>
+					<div class="col-sm-8"><h5 class="h5-spec"><c:out value = "${item.getLocality().getArea()}"/></h5></div>
 				</div>								
     		</div>
   		</div>

@@ -6,6 +6,8 @@ $(document).ready(function(){
 	var loginservice="/login";
 	var bookservice="/books";
 	var bookAdservice = "/bookAd";
+	var STATUS = "status";
+	var ERRMSG = "errmsg";
 				
 	function getSetBookTitles(author)
 	{		
@@ -135,12 +137,13 @@ $(document).ready(function(){
 		    dataType: 'json',
 		    contentType: "application/json; charset=utf-8",
 		    success: function (data){
-		    	var status= data["valid"];
+		    	var status= data[STATUS];
+		    	var errmsg = data[ERRMSG];
 		    	var active = data["accountStatus"];
 		    	var userEmail = data["userEmail"];
 		    	var userMobile = data["userMobile"];
-		    	//console.log("useremail"+userEmail);
-		    	if(status)
+		    	
+		    	if(status == 0)
 		    	{				    
 		    		$(location).attr('href', '/BooksOnline/Secure/isbnquery');
 		    	}
@@ -153,13 +156,12 @@ $(document).ready(function(){
 		    		}
 		    		else
 		    		{
-		    			$("#logincomment").html("userid or password is incorrect");
+		    			$("#logincomment").html(errmsg);
 		    		}
-		    	}
-		        
+		    	}		        
 		    },
 		    error: function (data){
-		        alert("user login failed");        
+		        alert("user validation failed");        
 		    }
 		});
 	});
@@ -213,13 +215,14 @@ $(document).ready(function(){
 			    dataType: 'json',
 			    contentType: "application/json; charset=utf-8",
 			    success: function (data){
-			    	var status= data["status"];
+			    	var status= data[STATUS];
+			    	var errmsg = data[ERRMSG];
 			    	if(!status){
 			    		$("#signupcomment").html("User registered successfully. Please verify your account by clicking on verification " +
 			    				"link sent to your registered email address");
 			    		//$(location).attr('href', 'login.jsp');
 			    	}else{
-			    		$("#signupcomment").html("Their is an error in registration");
+			    		$("#signupcomment").html(ermsg);
 			    	}		  
 			    },
 			    error: function (data){
@@ -263,12 +266,15 @@ $(document).ready(function(){
 		    contentType: "application/json; charset=utf-8",
 		    success: function (data){
 		    	var status= data["status"];
-		    	if(!status){
-		    		$("#profilecomment").html("User profile is updated successfully, Please verify your account by clicking on verification " +
-			    				"link sent to your email address");
+		    	var errmsg = data[ERRMSG];
+		    	
+		    	if(!status){		    		
+		    		$("#profilecomment").html("User profile is updated successfully, " +
+		    				"Please verify your account by clicking on verification link sent to your registered email");
+		    		
 		    		//$(location).attr('href', 'login.jsp');
 		    	}else{
-		    		$("#profilecomment").html("Their is an error in profile updation");
+		    		$("#profilecomment").html(errmsg);
 		    	}		  
 		    },
 		    error: function (data){
@@ -443,7 +449,16 @@ $(document).ready(function(){
 
 				$("#searchbookbytai").easyAutocomplete(options);
 		 
-	 
+			$(document).ajaxStart(function(){
+					 // Show image container
+					$("#loader").show();
+			});
+			$(document).ajaxComplete(function(){
+					 // Hide image container
+					$("#loader").hide();
+			});
+				
+				
 	  function validateEmail(sEmail) {
 	      var filter = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
 	      if (filter.test(sEmail)) {

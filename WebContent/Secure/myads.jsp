@@ -38,7 +38,7 @@
 	request.setAttribute("list", list);
 %>
 
-<div class="container-fluid bookcontainer"> 
+<div class="container"> 
 
   <c:set var="count" value="0" scope="page" />
   <c:forEach items="${list}" var = "item">

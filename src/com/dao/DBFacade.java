@@ -135,7 +135,7 @@ public class DBFacade {
 		return localityDao.getSuggestionList(phrase, "area");
 	}
 
-	public static String resetPassword(String uuid, String hashedPasswordBase64, String salt) {
+	public static int resetPassword(String uuid, String hashedPasswordBase64, String salt) {
 		return UserDao.resetPassword(uuid, hashedPasswordBase64, salt);		
 	}
 

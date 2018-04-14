@@ -54,9 +54,11 @@ public class BookService {
 	private String sendBookRequest(String key, String value)
 	{
 		String address = "https://www.googleapis.com/books/v1/volumes?q=";
-		 String query = key + "=" + value;
-		 String charset = "UTF-8";
+		String query = key + "=" + value;
+		String charset = "UTF-8";
 	 
+		int status = Errorcode.EC_SUCCESS.getValue();
+		
 		URL url;
 		String str;
 		String jsonres = "";		
@@ -68,8 +70,10 @@ public class BookService {
 			while ((str = in.readLine()) != null) {			
 				jsonres+=str;
 			}		
-		}catch (IOException e) {			
+		}catch (IOException e) {
+			System.out.println(e.getMessage());
 			e.printStackTrace();
+			status = Errorcode.EC_FILE_READ_FAILED.getValue();			
 		}
 		return jsonres;
 	}
@@ -79,7 +83,7 @@ public class BookService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getBookList(@PathParam("author") String author)
 	{
-		
+		int status = Errorcode.EC_SUCCESS.getValue();
 		String jsonres= sendBookRequest(JsonStrings.AUTHOR, author);
 		
 		JsonStrings jsonSTR = new JsonStrings(jsonres);

@@ -8,13 +8,13 @@
     
      <form class="navbar-form navbar-left" method="get" action="custombooks">
       <div class="form-group">
-        <input type="text" class="form-control" placeholder="Enter City" id="entercity" name="entercity">
+        <input type="text" class="form-control" placeholder="Enter City" id="entercity" name="entercity" style="border-radius:1rem">
       </div>
       <div class="form-group">
-        <input type="text" class="form-control" placeholder="Enter Locality" id="enterlocality" name="enterlocality">
+        <input type="text" class="form-control" placeholder="Enter Locality" id="enterlocality" name="enterlocality" style="border-radius:1rem">
       </div>
       <div class="form-group">
-        <input type="text" class="form-control" placeholder="Title / Author / Isbn" id="searchbookbytai" name="searchbookbytai">
+        <input type="text" class="form-control form-rounded" placeholder="Title / Author / Isbn" id="searchbookbytai" name="searchbookbytai" style="border-radius:1rem">
       </div>
       <button type="submit" class="btn btn-primary btn-md">Search</button>
     </form>
@@ -41,7 +41,7 @@
       	 </li>
       	 </shiro:authenticated>
       	         
-         <li><a href="/BooksOnline/Secure/isbnquery.jsp"><button type="button" class="btn btn-primary btn-lg" id="postad"><b>Submit a Free Ad</b></button></a></li>                
+         <li><a href="/BooksOnline/Secure/isbnquery.jsp"><button type="button" class="btn btn-primary btn-lg" id="postad"><b>Submit Free Ad</b></button></a></li>                
       </ul>
     </div>
   </div>

@@ -1,6 +1,6 @@
 <%@page import="com.dao.DBFacade"%>
 <%@page import="com.bean.BookUser"%>
-<%@page import="entities.BookAdBean"%>
+<%@page import="entities.*"%>
 <%@page import="com.dao.*"%>
 <%@page import="com.bean.*"%>
 <%@page import="java.util.List"%>
@@ -35,117 +35,118 @@
 %>
 <br><br><br> <!-- To be removed  -->
 
-<div id="container" class="width100per">                                   
-  <div id="left" class="floatLeft width70per"> 
-  	<img class="" height="300" width="300"
-		src=<c:out value = "${bd.getThumbnail()}"/>
-		alt=<c:out value = "${bd.getThumbnail()}"/>>
-  </div>                     
-  <div id="right" class="floatRight width70per"> 
-  	<div class="row">
+<div class = "container">    
+<div class = "row">
+	<div class = "col-sm-4">	                                 
+  		<img class="img-responsive imgstyle center-block" 
+			src=<c:out value = "${bd.getThumbnail()}"/>
+			alt=<c:out value = "${bd.getThumbnail()}"/>>  
+  	</div>
+  <div class = "col-sm-8">                     
+  	<div class = "row">
 		<div class="col-sm-2">
-			<h4>
+			<h5 class="h5-spec">
 				<b>Title : </b>
-			</h4>
+			</h5>
 		</div>
 		<div class="col-sm-10">
-			<h5>
+			<h5 class="h5-spec">
 				<c:out value="${bd.getBooktitle()}" />
 			</h5>
 		</div>		
 	</div>
   	<div class="row">
 		<div class="col-sm-2">
-			<h4>
+			<h5 class="h5-spec">
 				<b>Author : </b>
-			</h4>
+			</h5>
 		</div>
 		<div class="col-sm-10">
-			<h5>
+			<h5 class="h5-spec">
 				<c:out value="${bd.getBookauthor()}" />
 			</h5>
 		</div>		
 	</div>
 	<div class="row">
 		<div class="col-sm-2">
-			<h4>
+			<h5 class="h5-spec">
 				<b>ISBN : </b>
-			</h4>
+			</h5>
 		</div>
 		<div class="col-sm-10">
-			<h5>
+			<h5 class="h5-spec">
 				<c:out value="${bd.getBookid()}" />
 			</h5>
 		</div>		
 	</div>
 	<div class="row">
 		<div class="col-sm-2">
-			<h4>
+			<h5 class="h5-spec">
 				<b>Offered Price : </b>
-			</h4>
+			</h5>
 		</div>
 		<div class="col-sm-10">
-			<h5>
+			<h5 class="h5-spec">
 				<c:out value="${bd.getPrice()}" />
 			</h5>
 		</div>		
 	</div>
 	<div class="row">
 		<div class="col-sm-2">
-			<h4>
+			<h5 class="h5-spec">
 				<b>Book Description : </b>
-			</h4>
+			</h5>
 		</div>
 		<div class="col-sm-10">
-			<h5>
+			<h5 class="h5-spec">
 				<c:out value="${bd.getBookdesc()}" />
 			</h5>
 		</div>		
 	</div>
 	<div class="row">
 		<div class="col-sm-2">
-			<h4>
+			<h5 class="h5-spec">
 				<b>Poster's PINCODE : </b>
-			</h4>
+			</h5>
 		</div>
 		<div class="col-sm-10">
-			<h5>
+			<h5 class="h5-spec">
 				<c:out value="${bd.getPin()}" />
 			</h5>
 		</div>		
 	</div>
 	<div class="row">
 		<div class="col-sm-2">
-			<h4>
+			<h5 class="h5-spec">
 				<b>Poster's City : </b>
-			</h4>
+			</h5>
 		</div>
 		<div class="col-sm-10">
-			<h5>
+			<h5 class="h5-spec">
 				<c:out value="${bd.getCity()}" />
 			</h5>
 		</div>		
 	</div>
 	<div class="row">
 		<div class="col-sm-2">
-			<h4>
+			<h5 class="h5-spec">
 				<b>Poster's Area : </b>
-			</h4>
+			</h5>
 		</div>
 		<div class="col-sm-10">
-			<h5>
+			<h5 class="h5-spec">
 				<c:out value="${bd.getArea()}" />
 			</h5>
 		</div>		
 	</div>
 	<div class="row">
 		<div class="col-sm-2">
-			<h4>
+			<h5 class="h5-spec">
 				<b>Current Staus : </b>
-			</h4>
+			</h5>
 		</div>
 		<div class="col-sm-10">
-			<h5>
+			<h5 class="h5-spec">
 				<c:if test ="${bd.getSoldstatus() eq 0}">
 					<c:out value="Available" />
 				</c:if>
@@ -157,18 +158,20 @@
 	</div>
 		<div class="row">
 		<div class="col-sm-2">
-			<h4>
+			<h5 class="h5-spec">
 				<b>Get This Deal : </b>
-			</h4>
+			</h5>
 		</div>
 		<div class="col-sm-10">
-			<h5>
+			<h5 class="h5-spec">
 				<a href='#' onclick='javascript:window.open("getdeal.jsp", "_blank", "scrollbars=1,resizable=1,height=300,width=450");' title='Pop Up'>Enter Mail</a>
 			</h5>
 		</div>		
 	</div>
    </div>                   
 </div>
+</div>
+
 <!-- Footer Not added as we are changing page -->
 </body>
 </html>

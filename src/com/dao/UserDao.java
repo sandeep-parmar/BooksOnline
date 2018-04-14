@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import com.bean.User;
 import com.connection.ConnectionHandler;
+import com.utility.Errorcode;
 import com.utility.UserField;
 
 public class UserDao implements IBaseDao {
@@ -15,9 +16,9 @@ public class UserDao implements IBaseDao {
 	}
 
 	public int saveUser(final User user) {
+		int status = Errorcode.EC_SUCCESS.getValue();
 		String sql = getInsertQuery();
-		Connection conn = null;
-		int status = 0;
+		Connection conn = null;		
 		try {
 			conn = ConnectionHandler.getConnection();
 			PreparedStatement preparedStmt = conn.prepareStatement(sql);
@@ -32,7 +33,7 @@ public class UserDao implements IBaseDao {
 			
 		}catch(SQLException e) {
 			System.out.println(e.toString());
-			status = -1;
+			status = Errorcode.EC_USER_REGISTRATION_FAILED.getValue();
 		}
 		finally {
 			ConnectionHandler.closeConnection();
@@ -152,7 +153,8 @@ public class UserDao implements IBaseDao {
 		}
 	}
 
-	public static String resetPassword(String uuid, String hashedPasswordBase64, String salt) {
+	public static int resetPassword(String uuid, String hashedPasswordBase64, String salt) {
+		int status = Errorcode.EC_SUCCESS.getValue();
 		String sql = getResetPasswordQuery();
 		Connection conn = null;
 		try {
@@ -160,24 +162,24 @@ public class UserDao implements IBaseDao {
 			PreparedStatement preparedStmt = conn.prepareStatement(sql);
 			preparedStmt.setString(1, hashedPasswordBase64);
 			preparedStmt.setString(2, salt);
-			preparedStmt.setString(3, uuid);
-			System.out.println(preparedStmt.toString());
+			preparedStmt.setString(3, uuid);			
 			preparedStmt.execute();
 			
 		}catch(SQLException e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
+			status = Errorcode.EC_RESET_PASSWORD_FAILED.getValue();
 		}
 		finally {
 			ConnectionHandler.closeConnection();
 		}	
-		return "success";
+		return status;
 	}
 	public int updateProfile(User olduser, User user) {
+		int status = Errorcode.EC_SUCCESS.getValue();
 		String sql = null;
 		Connection conn = null;
-		PreparedStatement preparedStmt = null;
-		int status = 0;
+		PreparedStatement preparedStmt = null;		
 		try {
 			conn = ConnectionHandler.getConnection();
 			
@@ -214,7 +216,7 @@ public class UserDao implements IBaseDao {
 			
 		}catch(SQLException e) {
 			System.out.println(e.toString());
-			status = -1;
+			status = Errorcode.EC_PROFILE_UPDATE_FAILED.getValue();
 		}
 		finally {
 			ConnectionHandler.closeConnection();
