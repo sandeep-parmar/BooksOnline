@@ -22,10 +22,10 @@
  
  <!-- Easy Auto complete -->
  <!-- JS file -->
-<script src="Js/jquery.easy-autocomplete.min.js"></script>  
+<script src="/BooksOnline/Js/jquery.easy-autocomplete.min.js"></script>  
 
 <!-- CSS file -->
-<link rel="stylesheet" href="Css/easy-autocomplete.min.css"> 
+<link rel="stylesheet" href="/BooksOnline/Css/easy-autocomplete.min.css"> 
 
 <!-- Additional CSS Themes file - not required-->
-<link rel="stylesheet" href="Css/easy-autocomplete.themes.min.css"> 
+<link rel="stylesheet" href="/BooksOnline/Css/easy-autocomplete.themes.min.css"> 

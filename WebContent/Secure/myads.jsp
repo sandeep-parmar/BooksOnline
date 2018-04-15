@@ -38,8 +38,13 @@
 	request.setAttribute("list", list);
 %>
 
-<div class="container-fluid bookcontainer"> 
+<div class="container"> 
+
+  <c:set var="count" value="0" scope="page" />
   <c:forEach items="${list}" var = "item">
+  
+  <c:set var="count" value="${count + 1}" scope="page"/>
+  
   	<div class="row">
   	<div class="col-sm-4">
   		<img 
@@ -59,20 +64,27 @@
 		</div>
 		<div class="row">
 					<div class="col-sm-4"><h5><b>Offer Price</b></h5></div>
-					<div class="col-sm-8"><h5><c:out value = "${item.getPrice()}"/></h5></div>
+					<div class="col-sm-8">
+						<c:set var="updatedprice" value="updatedprice_${count}"/>
+						<input type="text" class="form-control" id="<c:out value ="${updatedprice}"/>" name="<c:out value ="${updatedprice}"/>" value="<c:out value ="${item.getPrice()}"/>">
+					</div>
 		</div>
 		<div class="row">
 					<div class="col-sm-4"><h5><b>bookid</b></h5></div>
 					<div class="col-sm-8"><h5><c:out value = "${item.getBookid()}"/></h5></div>
 		</div>
-		<input type="hidden" id= "thisBookIsSold" name="thisBookIsSold" value = "<c:out value="${item.getBookid()}"/>"> 
+		
+		<c:set var="soldthisbook" value="soldthisbook_${count}"/>
+		<input type="text" class="form-control hidden" id="<c:out value ="${soldthisbook}"/>" name="<c:out value ="${soldthisbook}"/>" value="<c:out value ="${item.getBookid()}"/>">
 	
 		 <c:choose>
   			<c:when test="${item.getSoldstatus() == 1}">
     			<button type="button" class="btn btn-primary btn-md soldbutton" disabled="true"><b>SOLD</b></button>
+    			<button type="button" class="btn btn-primary btn-md updatepricebutton" disabled="true"><b>UPDATE</b></button>
   			</c:when>
   			<c:otherwise>
-    			<button type="button" class="btn btn-primary btn-md soldbutton"  value = "<c:out value="${item.getBookid()}"/>"><b>SOLD</b></button>
+    			<button type="button" class="btn btn-primary btn-md soldbutton"  value = "<c:out value="${count}"/>"><b>SOLD</b></button>
+    			<button type="button" class="btn btn-primary btn-md updatepricebutton" value = "<c:out value="${count}"/>"><b>UPDATE</b></button>
   			</c:otherwise>
 		</c:choose>
     </div>

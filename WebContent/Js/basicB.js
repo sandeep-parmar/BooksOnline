@@ -6,10 +6,11 @@ $(document).ready(function(){
 	var loginservice="/login";
 	var bookservice="/books";
 	var bookAdservice = "/bookAd";
+	var STATUS = "status";
+	var ERRMSG = "errmsg";
 				
 	function getSetBookTitles(author)
-	{
-		
+	{		
 		$.get(host + port + webservice + bookservice + "/getbooklist/" + author,
 				function(data, status){					
 				//console.log(data);
@@ -123,27 +124,28 @@ $(document).ready(function(){
 	
 	$("#loginformsubmitbutton").click(function() {
 		
-		var mobile = $("#loginid").val();
+		var email = $("#loginid").val();
 		var password = $("#loginpassword").val();
 		
 		jQuery.ajax({
 		    url: host + port + webservice + loginservice + "/validate",
 		    type: 'post',
 		    data: JSON.stringify({ 
-		    	"mobile": $("#loginid").val(),
+		    	"email": $("#loginid").val(),
 				"password": $("#loginpassword").val(),				
 		    }),	
 		    dataType: 'json',
 		    contentType: "application/json; charset=utf-8",
 		    success: function (data){
-		    	var status= data["valid"];
+		    	var status= data[STATUS];
+		    	var errmsg = data[ERRMSG];
 		    	var active = data["accountStatus"];
 		    	var userEmail = data["userEmail"];
 		    	var userMobile = data["userMobile"];
-		    	console.log("useremail"+userEmail);
-		    	if(status)
+		    	
+		    	if(status == 0)
 		    	{				    
-		    		$(location).attr('href', '/BooksOnline/Secure/isbnquery?user=' + mobile+'&userEmail='+userEmail+'&userMobile='+userMobile);
+		    		$(location).attr('href', '/BooksOnline/Secure/isbnquery');
 		    	}
 		    	else
 		    	{
@@ -154,13 +156,12 @@ $(document).ready(function(){
 		    		}
 		    		else
 		    		{
-		    			$("#logincomment").html("userid or password is incorrect");
+		    			$("#logincomment").html(errmsg);
 		    		}
-		    	}
-		        
+		    	}		        
 		    },
 		    error: function (data){
-		        alert("user login failed");        
+		        alert("user validation failed");        
 		    }
 		});
 	});
@@ -168,13 +169,29 @@ $(document).ready(function(){
 	$(".soldbutton").click(function() {
 		  var bookid = $(this).attr("value");
 		 // alert("The value is "+ $(this).attr("value") );
-		$.get(host + port + webservice + bookservice + "/soldthisbook/" + bookid,
+		  $.get(host + port + webservice + bookservice + "/soldthisbook/" + bookid,
 				function(data, status){					
 					$(location).attr('href', '/BooksOnline/Secure/myads.jsp');
 				})
 				.fail(function(res,status,error) {
 					console.log(res.responseText);
-					alert( res.responseText+" "+status+" "+error);
+					//alert( res.responseText+" "+status+" "+error);
+				});
+	});
+
+	$(".updatepricebutton").click(function() {
+		var count = $(this).attr("value");
+		//alert("updatedprice_" + count);
+		var offerprice = $("#updatedprice_" + count).val();
+		var bookid = $("#soldthisbook_" + count).val(); 			
+		
+		  $.get(host + port + webservice + bookservice + "/updatepriceofbook/" + bookid + "/" + offerprice,
+				function(data, status){					
+					$(location).attr('href', '/BooksOnline/Secure/myads.jsp');
+				})
+				.fail(function(res,status,error) {
+					console.log(res.responseText);
+					//alert( res.responseText+" "+status+" "+error);
 				});
 	});
 	
@@ -198,13 +215,14 @@ $(document).ready(function(){
 			    dataType: 'json',
 			    contentType: "application/json; charset=utf-8",
 			    success: function (data){
-			    	var status= data["status"];
+			    	var status= data[STATUS];
+			    	var errmsg = data[ERRMSG];
 			    	if(!status){
 			    		$("#signupcomment").html("User registered successfully. Please verify your account by clicking on verification " +
 			    				"link sent to your registered email address");
 			    		//$(location).attr('href', 'login.jsp');
 			    	}else{
-			    		$("#signupcomment").html("Their is an error in registration");
+			    		$("#signupcomment").html(ermsg);
 			    	}		  
 			    },
 			    error: function (data){
@@ -212,8 +230,124 @@ $(document).ready(function(){
 			    }
 		    });
 	});
+	$("#profileupdateformsubmitbutton").click(function() {
+		
+		var profname;
+		var profmobile;
+		var profemail;
+		var somethingtoupdate = false;
+		if($('#namecheckbox').is(":checked"))
+		{			
+			profname = $("#profname").val();
+			somethingtoupdate = true;
+		}
+		if($('#mobilecheckbox').is(":checked"))
+		{			
+			profmobile = $("#profmobile").val();
+			somethingtoupdate = true;
+		}
+		if($('#emailcheckbox').is(":checked"))
+		{			
+			profemail = $("#profemail").val();
+			somethingtoupdate = true;
+		}
+				
+		if(somethingtoupdate)
+		{	
+		jQuery.ajax({
+		    url: host + port + webservice + loginservice + "/profileupdate",
+		    type: 'post',
+		    data: JSON.stringify({ 
+		    	"username": profname,
+				"mobile": profmobile,
+				"email": profemail
+		    }),	
+		    dataType: 'json',
+		    contentType: "application/json; charset=utf-8",
+		    success: function (data){
+		    	var status= data["status"];
+		    	var errmsg = data[ERRMSG];
+		    	
+		    	if(!status){		    		
+		    		$("#profilecomment").html("User profile is updated successfully, " +
+		    				"Please verify your account by clicking on verification link sent to your registered email");
+		    		
+		    		//$(location).attr('href', 'login.jsp');
+		    	}else{
+		    		$("#profilecomment").html(errmsg);
+		    	}		  
+		    },
+		    error: function (data){
+		        alert("user profile update failed");        
+		    }
+	    });
+		}
+		else
+		{
+	  		$("#profilecomment").html("Please modify proper field to update");
+		}
+});
 	
-	  
+	/*This is to update profile data like name,mobile,email*/
+	$(".checked").change(function(e) {
+		var editfield = $(this).attr("value");
+		if($(e.target).is(':checked'))
+		{			
+			$("#" + editfield).prop('disabled',false);
+		}
+		else
+		{				
+			$("#" + editfield).prop('disabled',true);
+		}
+		
+	});
+	
+	$("#forgetpasswordsubmitbutton").click(function() {
+		
+		//alert(host + port + webservice + loginservice + "/saveuser");		
+		var fpemail = $("#fpemail").val();
+		$.get(host + port + webservice + loginservice + "/forgetpassword/" + fpemail,
+				function(data, status){					
+						var ret= data["status"];						
+						if(status === "success")
+						{
+							if(ret == 0){
+								$("#fpcomment").html("Password reset link has been sent to your email");							
+							}else{
+								$("#fpcomment").html("Invalid email");
+							}	
+						}
+				})
+				.fail(function(res,status,error) {
+					console.log(res.responseText);
+					alert( res.responseText+" "+status+" "+error);
+				});		    	
+	});
+	
+	$("#resetpasswordsubmitbutton").click(function() {
+		
+		//alert(host + port + webservice + loginservice + "/saveuser");
+		alert("reset password");
+		var uuid = $("#resuuid").val();
+		var respasswd = $("#respassword").val();
+		$.get(host + port + webservice + loginservice + "/resetpassword/" + uuid + "/" + respasswd,
+				function(data, status){					
+						var ret= data["status"];						
+						if(status === "success")
+						{
+							if(ret == 0){
+								$("#rescomment").html("Password has been reset successfully");							
+							}else{
+								$("#rescomment").html("Password reset successful");
+							}	
+						}
+				})
+				.fail(function(res,status,error) {
+					console.log(res.responseText);
+					alert( res.responseText+" "+status+" "+error);
+				});		    	
+	});
+		
 	
 	/*Upload custom images*/
 	 $("#submitcustomdata").click(function (event) {
@@ -282,6 +416,9 @@ $(document).ready(function(){
 		});
 
 	 
+	 
+	 // easy auto complete
+	 
 	 		var options = {
 				url: function(phrase) {
 					return host + port + webservice + bookservice + "/getcitysuggestion?phrase=" + phrase + "&format=json";
@@ -301,8 +438,27 @@ $(document).ready(function(){
 			};
 
 			$("#enterlocality").easyAutocomplete(options);
-	 
-	 
+
+			var options = {					
+					url: function(phrase) {
+						return host + port + webservice + bookservice + "/getbooksuggestion?phrase=" + phrase + "&format=json";
+					},
+
+					getValue: "name"
+				};
+
+				$("#searchbookbytai").easyAutocomplete(options);
+		 
+			$(document).ajaxStart(function(){
+					 // Show image container
+					$("#loader").show();
+			});
+			$(document).ajaxComplete(function(){
+					 // Hide image container
+					$("#loader").hide();
+			});
+				
+				
 	  function validateEmail(sEmail) {
 	      var filter = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
 	      if (filter.test(sEmail)) {

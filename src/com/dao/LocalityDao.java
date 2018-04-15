@@ -27,7 +27,7 @@ public class LocalityDao implements IBaseDao {
 		Connection conn = null;
 		try {
 			conn = ConnectionHandler.getConnection();
-			PreparedStatement preparedStmt = conn.prepareStatement(sql);
+			PreparedStatement preparedStmt = conn.prepareStatement(sql);			
 			preparedStmt.setString(1, locality.getPin());
 			preparedStmt.setString(2, locality.getCity());
 			preparedStmt.setString(3, locality.getArea());

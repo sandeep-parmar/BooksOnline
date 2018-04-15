@@ -27,8 +27,16 @@ function getBookUser(userId,bookId){
 	document.location.href = url + "/BooksOnline/getMoreBookDetails?userId=" + encodeURIComponent(userId) + "&bookId=" + encodeURIComponent(bookId); 
 }
 </script>
+<script type="text/javascript">
+function getBookUser(userId,bookId){
+	console.log("called:"+userId+"bookid"+bookId);
+	var url = "http://localhost:8080";
+	document.location.href = url + "/BooksOnline/getMoreBookDetails?userId=" + encodeURIComponent(userId) + "&bookId=" + encodeURIComponent(bookId); 
+}
+</script>
+
 </head>
-<body>
+<body class = "body-grey">
 
 	<%@ include file="navbar.jsp"%>
 
@@ -36,13 +44,13 @@ function getBookUser(userId,bookId){
 		List<BookUser> list = DBFacade.getBookAdList();
 		request.setAttribute("list", list);
 	%>
-	<div class="container-fluid bookcontainer">
-		<div class="row">
+	<div class="container">
+		<div class="row cool-white">
 			<c:forEach items="${list}" var="item">
 				<a href="javascript:getBookUser('${item.uid}','${item.bookid}');">
 					<div class="col-sm-3">
 						<div class="panel panel-primary">
-							<div class="panel-body">
+							<div class="panel-body img-hover">
 								<img class="img-responsive imgstyle center-block"
 									src=<c:out value = "${item.getBook().getThumbnail()}"/>
 									alt=<c:out value = "${item.getBook().getThumbnail()}"/>>
@@ -50,60 +58,60 @@ function getBookUser(userId,bookId){
 							<div class="panel-footer">
 								<div class="row">
 									<div class="col-sm-4">
-										<h5>
+										<h5 class="h5-spec">
 											<b>Author</b>
 										</h5>
 									</div>
 									<div class="col-sm-8">
-										<h5>
+										<h5 class="h5-spec">
 											<c:out value="${item.getBook().getAuthors()}" />
 										</h5>
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-sm-4">
-										<h5>
+										<h5 class="h5-spec">
 											<b>Title</b>
 										</h5>
 									</div>
 									<div class="col-sm-8">
-										<h5>
+										<h5 class="h5-spec">
 											<c:out value="${item.getBook().getTitle()}" />
 										</h5>
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-sm-4">
-										<h5>
+										<h5 class="h5-spec">
 											<b>Offer Price</b>
 										</h5>
 									</div>
 									<div class="col-sm-8">
-										<h5>
+										<h5 class="h5-spec">
 											<c:out value="${item.getPrice()}" />
 										</h5>
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-sm-4">
-										<h5>
+										<h5 class="h5-spec">
 											<b>City</b>
 										</h5>
 									</div>
 									<div class="col-sm-8">
-										<h5>
+										<h5 class="h5-spec">
 											<c:out value="${item.getLocality().getCity()}" />
 										</h5>
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-sm-4">
-										<h5>
+										<h5 class="h5-spec">
 											<b>Locality</b>
 										</h5>
 									</div>
 									<div class="col-sm-8">
-										<h5>
+										<h5 class="h5-spec">
 											<c:out value="${item.getLocality().getArea()}" />
 										</h5>
 									</div>

@@ -29,9 +29,9 @@ public class DBFacade {
 		 return list;
 	 }
 	 
-	 public static List<BookUser> getBookAdListBylocality(String city, String area)
+	 public static List<BookUser> getBookAdListByCriteria(String city, String area, String criteria)
 	 {
-		 List<BookUser> list = bookUserDao.getBookListByLocality(city, area);
+		 List<BookUser> list = bookUserDao.getBookListByCriteria(city, area, criteria);
 	 		
 		 for (BookUser bookUser : list) {
 			 Book book = bookDao.geBook(bookUser.getBookid());
@@ -68,13 +68,13 @@ public class DBFacade {
 		return status;
 	}
 
-	public static User isUserAccountActive(String mobile) {		
-		User user = userDao.isUserAccountActive(mobile);
+	public static User isUserAccountActive(String field, String value) {		
+		User user = userDao.isUserAccountActive(field, value);
 		return user;
 	}
 
-	public static User getUserAccount(String principalAsMobile, String field) {		
-		User user = userDao.getUserAccount(principalAsMobile, field);
+	public static User getUserAccount(String principalAsEmail, String field) {		
+		User user = userDao.getUserAccount(principalAsEmail, field);
 		return user;
 	}
 
@@ -83,12 +83,12 @@ public class DBFacade {
 	}
 
 	/*Save model 1 info*/
-	public static void saveBookUser(User user, String title, String author, String desc, String id, String thumbnail,
-		String lcity, String larea, String lpin, String lname, String lphno, String offPrice) {
+	public static void saveBookUser(User user, String title, String author, String desc, String id, String thumbnail, String lpin,
+		String lcity, String larea, String lname, String lphno, String offPrice) {
 		
 		/*create required entities*/
 		Book book = new Book(title, author, desc, id, thumbnail);
-		Locality locality = new Locality(lpin, lcity, larea);
+		Locality locality = new Locality(lpin,lcity, larea);
 		BookUser bookUser = new BookUser(user.getMobile(), id, Integer.parseInt(lpin), lname, lphno, offPrice, 0);
 		
 		/*save book and locality details*/
@@ -133,5 +133,21 @@ public class DBFacade {
 
 	public static List<String> getLocalityList(String phrase) {
 		return localityDao.getSuggestionList(phrase, "area");
+	}
+
+	public static int resetPassword(String uuid, String hashedPasswordBase64, String salt) {
+		return UserDao.resetPassword(uuid, hashedPasswordBase64, salt);		
+	}
+
+	public static void updateNewOfferPrice(String mobile, String bookId, String newPrice) {
+		bookUserDao.updateNewOfferPrice(mobile, bookId, newPrice);
+	}
+
+	public static int updateProfile(User olduser, User user) {
+		return userDao.updateProfile(olduser, user);		
+	}
+
+	public static List<String> getBookList(String phrase, String field) {
+		return bookDao.getSuggestionList(phrase, field);
 	}
 }

@@ -10,9 +10,9 @@ public class Locality implements Serializable {
 	public Locality() {
 		
 	}
-	public Locality(String pin, String city, String area) {
-		super();
-		this.pin = pin;
+	public Locality(String lpin, String city, String area) {
+		super();		
+		this.pin = lpin;
 		this.city = city;
 		this.area = area;
 	}
