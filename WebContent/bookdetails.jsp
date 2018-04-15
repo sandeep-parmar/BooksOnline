@@ -24,7 +24,23 @@
 <link rel="stylesheet" type="text/css" href="Css/style.css"></link>
 
 <script src="Js/basicB.js"></script>
+<script type="text/javascript">
+function openPopup(url, title, w, h) {
+    
+    var width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+    var height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
 
+    var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : window.screenX;
+    var dualScreenTop = window.screenTop != undefined ? window.screenTop : window.screenY;
+
+    var left = ((width / 2) - (w / 2)) + dualScreenLeft;
+    var top = ((height / 2) - (h / 2)) + dualScreenTop;
+    var newWindow = window.open(url, title, 'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+    if (window.focus) {
+        newWindow.focus();
+    }
+}
+</script>
 </head>
 <body>
 <%@ include file="navbar.jsp"%>
@@ -163,7 +179,7 @@
 		</div>
 		<div class="col-sm-10">
 			<h5>
-				<a href='#' onclick='javascript:window.open("getdeal.jsp", "_blank", "scrollbars=1,resizable=1,height=300,width=450");' title='Pop Up'>Enter Mail</a>
+				<a href='#' onclick='javascript:openPopup("getdeal.jsp","Enter Your Communication Detais","600","400");' title='Pop Up'>Enter Mail</a>
 			</h5>
 		</div>		
 	</div>
