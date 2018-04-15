@@ -35,15 +35,14 @@
     			<input type="password" class="form-control" id="loginpassword" name="loginpassword">
     			<!--<input type="password" class="form-control" id="password" name="password">-->
   			</div>
-  			  			
-  			<button type="button" class="btn btn-primary  btn-lg" id="loginformsubmitbutton">Login</button>
+  			  
+  			 <a href = "forgetpassword.jsp"> Forget Password </a>
+  			<button type="button" class="btn btn-primary btn-lg buttonclass" id="loginformsubmitbutton">Login</button>
   			<!--<button type="submit" class="btn btn-primary  btn-lg" >Login</button>-->
   			<div id="logincomment">
   			</div>
 		</form>
-	
 	</div>
-	
 	<!-- Footer -->
 	<footer class="container-fluid bg-4 text-center">
   	<p>Online second hand bookstore </p> 

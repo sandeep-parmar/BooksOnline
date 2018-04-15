@@ -38,6 +38,10 @@ public class BookUserDao implements IBaseDao {
 		String sql = "update book_user set soldstatus = 1 where uid = ? and bookid = ?";
 		return sql;
 	}
+	public String getUpdatePriceQuery() {
+		String sql = "update book_user set price = ? where uid = ? and bookid = ?";
+		return sql;
+	}
 
 	public void saveBookUser(BookUser bookUser) {
 		
@@ -154,18 +158,42 @@ public class BookUserDao implements IBaseDao {
 			ConnectionHandler.closeConnection();
 		}
 	}
-
-
-	public List<BookUser> getBookListByLocality(String city, String area) {
-		List<BookUser> list = new ArrayList<BookUser>(0);
-		ResultSet rs = null;
-		String sql = getSelectQueryByLocality();
+	
+	public void updateNewOfferPrice(String uid, String bookid, String newprice) {		
+		String sql = getUpdatePriceQuery();
 		try {
 			Connection conn = ConnectionHandler.getConnection();
 			PreparedStatement preparedStmt = conn.prepareStatement(sql);
-			preparedStmt.setString(1, "%"+city+"%");
-			preparedStmt.setString(2, "%"+area+"%");
+			preparedStmt.setString(1, newprice);
+			preparedStmt.setString(2, uid);
+			preparedStmt.setString(3, bookid);
+			System.out.println(preparedStmt);
+			
+			preparedStmt.execute();
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}finally
+		{
+			ConnectionHandler.closeConnection();
+		}
+	}
+
+	public List<BookUser> getBookListByCriteria(String city, String area, String criteria) {
+		List<BookUser> list = new ArrayList<BookUser>(0);
+		ResultSet rs = null;
+		String sql = getSelectQueryByCriteria();
+		try {
+			Connection conn = ConnectionHandler.getConnection();
+			PreparedStatement preparedStmt = conn.prepareStatement(sql);
+			preparedStmt.setString(1, "%"+criteria+"%");
+			preparedStmt.setString(2, "%"+criteria+"%");
+			preparedStmt.setString(3, "%"+criteria+"%");
+			preparedStmt.setString(4, "%"+city+"%");
+			preparedStmt.setString(5, "%"+area+"%");
+			
 			System.out.println(preparedStmt.toString());
+			
 			rs = preparedStmt.executeQuery();
 			while(rs.next())
 			{
@@ -190,8 +218,20 @@ public class BookUserDao implements IBaseDao {
 	}
 
 
-	private String getSelectQueryByLocality() {
-		String sql = "select * from book_user where pin in(select pin from locality where city like ? and area like ?)";
+	private String getSelectQueryByCriteria() {
+		//String sql = "select * from book_user where pin in(select pin from locality where city like ? and area like ?)";
+		
+		String sql = "select * from book_user where bookid in "
+				+ "(select bookid from books where booktitle like ? or bookauthor like ? or bookid like ?) "
+				+ "and pin in (select pin from locality where city like ? and area like ?)";
+		
+		/*Use below inner join in future if performance impact is bigger*/
+		
+		/*String sql2 = "select * from book_user bu inner join "
+				+ "(select b.bookid from books b where b.booktitle like ? or b.bookauthor like ? or b.bookid like ?) d "
+				+ "on bu.bookid = d.bookid inner join "
+				+ "(select pin from locality where city like ? and area like ?) l "
+				+ "on bu.pin=l.pin";*/
 		return sql;
-	}
+	}	
 }

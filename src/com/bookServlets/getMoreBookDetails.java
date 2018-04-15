@@ -36,7 +36,7 @@ public class getMoreBookDetails extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		System.out.println("called getMoreBookDetails");
-		String url = "/bookdetails.jsp";
+		String url = "/bookdetails";
 
 		BooksFullAdDao bfd = new BooksFullAdDao();
 		RequestDispatcher rd ;

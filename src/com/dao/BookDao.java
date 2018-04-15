@@ -100,6 +100,35 @@ public class BookDao implements IBaseDao{
 		return list;
 	}
 
+	public List<String> getSuggestionList(String phrase, String field) {
+		List<String> clist = new ArrayList<>();
+		ResultSet rs = null;
+		String sql = getStrListQuery(field);
+		try {
+			Connection conn = ConnectionHandler.getConnection();
+			PreparedStatement preparedStmt = conn.prepareStatement(sql);
+			preparedStmt.setString(1, "%" + phrase + "%");			
+			//System.out.println(preparedStmt.toString());
+			rs = preparedStmt.executeQuery();
+			while(rs.next())
+			{
+				clist.add(rs.getString(field));
+			}
+		}catch(SQLException e) {
+			System.out.println(e.toString());
+		}
+		finally {
+			ConnectionHandler.closeConnection();
+		}
+		return clist;
+	}	
+	
+	
+	private String getStrListQuery(String str) {
+		String sql = "select distinct " + str + " from books where " + str +" like ?" ;
+		return sql;
+	}
+
 	@Override
 	public String getSelectQuery() {
 		String sql = "select * from books";
@@ -116,6 +145,11 @@ public class BookDao implements IBaseDao{
 	public String getSingleEntryQuery() {
 		String sql = "select * from books where bookid = ?" ;
 		return sql;
+	}
+
+	public List<String> getSuggestionList(String phrase) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

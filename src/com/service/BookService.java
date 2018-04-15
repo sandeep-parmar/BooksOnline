@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.security.auth.Subject;
@@ -53,9 +54,11 @@ public class BookService {
 	private String sendBookRequest(String key, String value)
 	{
 		String address = "https://www.googleapis.com/books/v1/volumes?q=";
-		 String query = key + "=" + value;
-		 String charset = "UTF-8";
+		String query = key + "=" + value;
+		String charset = "UTF-8";
 	 
+		int status = Errorcode.EC_SUCCESS.getValue();
+		
 		URL url;
 		String str;
 		String jsonres = "";		
@@ -67,8 +70,10 @@ public class BookService {
 			while ((str = in.readLine()) != null) {			
 				jsonres+=str;
 			}		
-		}catch (IOException e) {			
+		}catch (IOException e) {
+			System.out.println(e.getMessage());
 			e.printStackTrace();
+			status = Errorcode.EC_FILE_READ_FAILED.getValue();			
 		}
 		return jsonres;
 	}
@@ -78,7 +83,7 @@ public class BookService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getBookList(@PathParam("author") String author)
 	{
-		
+		int status = Errorcode.EC_SUCCESS.getValue();
 		String jsonres= sendBookRequest(JsonStrings.AUTHOR, author);
 		
 		JsonStrings jsonSTR = new JsonStrings(jsonres);
@@ -168,7 +173,19 @@ public class BookService {
 		/*Get current logged in user object from shiro*/
 		User user = UserRealm.getLoggedInUser();
 		
-		DBFacade.saveBookUser(user, title, author, desc, id, thumbnail, lcity, llocality, lpin, lname, lphno , offPrice);
+		DBFacade.saveBookUser(user, title, author, desc, id, thumbnail, lpin, lcity, llocality, lname, lphno , offPrice);
+	}
+	
+	@GET
+	@Path("/updatepriceofbook/{param1}/{param2}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String updateThisBooksprice(@PathParam("param1") String bookId, @PathParam("param2") String newPrice)
+	{
+		System.out.println(bookId+","+newPrice);
+		User user = UserRealm.getLoggedInUser();
+		//DBFacade.setSoldStatusTrue(user.getMobile(), bookId);
+		DBFacade.updateNewOfferPrice(user.getMobile(), bookId, newPrice);
+		return "success";
 	}
 	
 	@GET
@@ -187,6 +204,30 @@ public class BookService {
 		return jsonArr.toString();
 	}
 	
+	@GET
+	@Path("/getbooksuggestion")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getBookSuggestion(@QueryParam("phrase") String phrase)
+	{			
+		List<String> glist = new ArrayList<String>();
+		List<String> tlist = DBFacade.getBookList(phrase, "booktitle");
+		List<String> alist = DBFacade.getBookList(phrase, "bookauthor");
+		List<String> ilist = DBFacade.getBookList(phrase, "bookid");
+		glist.addAll(tlist);
+		glist.addAll(alist);
+		glist.addAll(ilist);
+		
+		//System.out.println(glist);
+		
+		JSONArray jsonArr = new JSONArray();
+		for(String str:glist)
+		{
+			JSONObject obj = new JSONObject();
+			obj.put("name", str);
+			jsonArr.put(obj);
+		}				
+		return jsonArr.toString();
+	}
 	
 	@GET
 	@Path("/getlocalitysuggestion")
@@ -264,7 +305,7 @@ public class BookService {
 				/*Actual operation*/
 				System.out.println("Image location:" + uploadedFileLocation);
 				User user = UserRealm.getLoggedInUser();
-				DBFacade.saveBookUser(user, title, author, desc, id, uploadedFileLocation, lcity, llocality, lpin, lname, lphno , offPrice);
+				DBFacade.saveBookUser(user, title, author, desc, id, uploadedFileLocation, lpin, lcity, llocality, lname, lphno , offPrice);
 				
 				return Response.status(200)
 						.entity("File saved to " + uploadedFileLocation).build();

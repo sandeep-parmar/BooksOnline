@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import com.bean.User;
 import com.connection.ConnectionHandler;
+import com.utility.Errorcode;
 import com.utility.UserField;
 
 public class UserDao implements IBaseDao {
@@ -15,9 +16,9 @@ public class UserDao implements IBaseDao {
 	}
 
 	public int saveUser(final User user) {
+		int status = Errorcode.EC_SUCCESS.getValue();
 		String sql = getInsertQuery();
-		Connection conn = null;
-		int status = 0;
+		Connection conn = null;		
 		try {
 			conn = ConnectionHandler.getConnection();
 			PreparedStatement preparedStmt = conn.prepareStatement(sql);
@@ -32,7 +33,7 @@ public class UserDao implements IBaseDao {
 			
 		}catch(SQLException e) {
 			System.out.println(e.toString());
-			status = -1;
+			status = Errorcode.EC_USER_REGISTRATION_FAILED.getValue();
 		}
 		finally {
 			ConnectionHandler.closeConnection();
@@ -105,16 +106,17 @@ public class UserDao implements IBaseDao {
 
 		
 
-	public User isUserAccountActive(String mobile) {
+	public User isUserAccountActive(String field, String value) {
 		ResultSet rs = null;
 		User user = null;
 		int status = -1;
-		String sql = getUserByFieldQuery("mobile");
+		String sql = getUserByFieldQuery(field);
 
 		try {
 			Connection conn = ConnectionHandler.getConnection();
 			PreparedStatement preparedStmt = conn.prepareStatement(sql);
-			preparedStmt.setString(1, mobile);
+			preparedStmt.setString(1, value);
+			System.out.println(preparedStmt.toString());
 			rs = preparedStmt.executeQuery();
 			if(rs.next())
 			{	
@@ -151,6 +153,82 @@ public class UserDao implements IBaseDao {
 		}
 	}
 
+	public static int resetPassword(String uuid, String hashedPasswordBase64, String salt) {
+		int status = Errorcode.EC_SUCCESS.getValue();
+		String sql = getResetPasswordQuery();
+		Connection conn = null;
+		try {
+			conn = ConnectionHandler.getConnection();
+			PreparedStatement preparedStmt = conn.prepareStatement(sql);
+			preparedStmt.setString(1, hashedPasswordBase64);
+			preparedStmt.setString(2, salt);
+			preparedStmt.setString(3, uuid);			
+			preparedStmt.execute();
+			
+		}catch(SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+			status = Errorcode.EC_RESET_PASSWORD_FAILED.getValue();
+		}
+		finally {
+			ConnectionHandler.closeConnection();
+		}	
+		return status;
+	}
+	public int updateProfile(User olduser, User user) {
+		int status = Errorcode.EC_SUCCESS.getValue();
+		String sql = null;
+		Connection conn = null;
+		PreparedStatement preparedStmt = null;		
+		try {
+			conn = ConnectionHandler.getConnection();
+			
+			if(user.getUsername() != null)
+			{
+				sql = getProfileUpdateQuery("username");
+				preparedStmt = conn.prepareStatement(sql);
+				preparedStmt.setString(1, user.getUsername());			
+				preparedStmt.setString(2, olduser.getUuid());
+				preparedStmt.execute();
+			}
+			if(user.getMobile() != null)
+			{
+				sql = getProfileUpdateQuery("mobile");
+				preparedStmt = conn.prepareStatement(sql);
+				preparedStmt.setString(1, user.getMobile());			
+				preparedStmt.setString(2, olduser.getUuid());
+				preparedStmt.execute();
+			}
+			if(user.getEmail() != null)
+			{
+				sql = getProfileUpdateQuery("email");
+				preparedStmt = conn.prepareStatement(sql);
+				preparedStmt.setString(1, user.getEmail());			
+				preparedStmt.setString(2, olduser.getUuid());
+				preparedStmt.execute();
+				
+				sql = getProfileUpdateQuery("status");
+				preparedStmt = conn.prepareStatement(sql);
+				preparedStmt.setInt(1, 0);			
+				preparedStmt.setString(2, olduser.getUuid());
+				preparedStmt.execute();
+			}
+			
+		}catch(SQLException e) {
+			System.out.println(e.toString());
+			status = Errorcode.EC_PROFILE_UPDATE_FAILED.getValue();
+		}
+		finally {
+			ConnectionHandler.closeConnection();
+		}
+		return status;		
+	}	
+	
+	private static String getResetPasswordQuery() {
+		String sql = "update user set password=?, salt=? where uuid=?";
+		return sql;
+	}
+
 	@Override
 	public String getSelectQuery() {
 		String sql = "select * from user";
@@ -176,6 +254,12 @@ public class UserDao implements IBaseDao {
 		return sql;
 	}
 
+	public static String getProfileUpdateQuery(String field)
+	{
+		String sql = "update user set " + field +"=?" + " where uuid = ?";
+		System.out.println(sql);
+		return sql;
+	}
 	@Override
 	public String getSingleEntryQuery() {
 		// TODO Auto-generated method stub

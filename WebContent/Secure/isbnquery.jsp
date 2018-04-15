@@ -55,6 +55,10 @@
  <h4 class="col-sm-offset-2"> OR</h4>
  <button type="button" class="btn btn-primary btn-md col-sm-offset-2" id="manualfileloadbutton">Manually Post Ad</button>
 
+<div id='loader' style='display: none;'>
+  <img src='/BooksOnline/BootConfig/spinner.gif' width='500px' height='500px'>
+</div>
+
 <div class = "browsefilecontainer">
 
 <form class="invisible" method="post" enctype="multipart/form-data" id="customedataform">
@@ -135,7 +139,7 @@
     				<input type="text" class="form-control" id="brllocality" name="brllocality">
   				</div>
   		</div>
-  	</div>  			
+  	</div>
   	<div class = "row pad_row">
 		<div class="form-group">
     			<label class="col-sm-1 col-sm-offset-2">Pin:</label>
@@ -143,7 +147,7 @@
     				<input type="text" class="form-control" id="brlpin" name="brlpin">
   				</div>
   		</div>
-  	</div>  		
+  	</div>  				
   	<div class = "row pad_row">
 		<div class="form-group">
     			<label class="col-sm-1 col-sm-offset-2">Offer Price:</label>
