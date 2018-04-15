@@ -57,7 +57,7 @@ public class BookService {
 		String query = key + "=" + value;
 		String charset = "UTF-8";
 	 
-		int status = Errorcode.EC_SUCCESS.getValue();
+		/*int status = Errorcode.EC_SUCCESS.getValue();*/
 		
 		URL url;
 		String str;
@@ -73,7 +73,7 @@ public class BookService {
 		}catch (IOException e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
-			status = Errorcode.EC_FILE_READ_FAILED.getValue();			
+//			status = Errorcode.EC_FILE_READ_FAILED.getValue();			
 		}
 		return jsonres;
 	}
@@ -83,7 +83,7 @@ public class BookService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getBookList(@PathParam("author") String author)
 	{
-		int status = Errorcode.EC_SUCCESS.getValue();
+//		int status = Errorcode.EC_SUCCESS.getValue();
 		String jsonres= sendBookRequest(JsonStrings.AUTHOR, author);
 		
 		JsonStrings jsonSTR = new JsonStrings(jsonres);

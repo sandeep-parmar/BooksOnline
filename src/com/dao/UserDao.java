@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import com.bean.User;
 import com.connection.ConnectionHandler;
-import com.utility.Errorcode;
+//import com.utility.Errorcode;
 import com.utility.UserField;
 
 public class UserDao implements IBaseDao {
@@ -16,7 +16,7 @@ public class UserDao implements IBaseDao {
 	}
 
 	public int saveUser(final User user) {
-		int status = Errorcode.EC_SUCCESS.getValue();
+//		int status = Errorcode.EC_SUCCESS.getValue();
 		String sql = getInsertQuery();
 		Connection conn = null;		
 		try {
@@ -33,12 +33,13 @@ public class UserDao implements IBaseDao {
 			
 		}catch(SQLException e) {
 			System.out.println(e.toString());
-			status = Errorcode.EC_USER_REGISTRATION_FAILED.getValue();
+//			status = Errorcode.EC_USER_REGISTRATION_FAILED.getValue();
 		}
 		finally {
 			ConnectionHandler.closeConnection();
 		}
-		return status;
+//		return status;
+		return 0;
 	}
 
 	public boolean validate(User user) {
@@ -154,7 +155,7 @@ public class UserDao implements IBaseDao {
 	}
 
 	public static int resetPassword(String uuid, String hashedPasswordBase64, String salt) {
-		int status = Errorcode.EC_SUCCESS.getValue();
+//		int status = Errorcode.EC_SUCCESS.getValue();
 		String sql = getResetPasswordQuery();
 		Connection conn = null;
 		try {
@@ -168,15 +169,16 @@ public class UserDao implements IBaseDao {
 		}catch(SQLException e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
-			status = Errorcode.EC_RESET_PASSWORD_FAILED.getValue();
+//			status = Errorcode.EC_RESET_PASSWORD_FAILED.getValue();
 		}
 		finally {
 			ConnectionHandler.closeConnection();
 		}	
-		return status;
+//		return status;
+		return 0;
 	}
 	public int updateProfile(User olduser, User user) {
-		int status = Errorcode.EC_SUCCESS.getValue();
+//		int status = Errorcode.EC_SUCCESS.getValue();
 		String sql = null;
 		Connection conn = null;
 		PreparedStatement preparedStmt = null;		
@@ -216,12 +218,13 @@ public class UserDao implements IBaseDao {
 			
 		}catch(SQLException e) {
 			System.out.println(e.toString());
-			status = Errorcode.EC_PROFILE_UPDATE_FAILED.getValue();
+//			status = Errorcode.EC_PROFILE_UPDATE_FAILED.getValue();
 		}
 		finally {
 			ConnectionHandler.closeConnection();
 		}
-		return status;		
+//		return status;	
+		return 0;	
 	}	
 	
 	private static String getResetPasswordQuery() {
