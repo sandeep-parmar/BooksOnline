@@ -19,5 +19,19 @@
 <%
 	out.println(session.getAttribute("usermail"));
 %>
+<div id="container" class="width100per">  
+		<div class="row">
+		<div class="col-sm-2">
+			<h4>
+				<b>Title : </b>
+			</h4>
+		</div>
+		<div class="col-sm-10">
+			<h5>
+				<c:out value="${bd.getBooktitle()}" />
+			</h5>
+		</div>		
+	</div>
+</div>
 </body>
 </html>

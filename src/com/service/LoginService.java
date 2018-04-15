@@ -27,7 +27,7 @@ import com.bean.User;
 import com.dao.DBFacade;
 import com.dao.UserDao;
 import com.dao.UserRealm;
-import com.utility.Errorcode;
+//import com.utility.Errorcode;
 
 @Path("/login")
 public class LoginService {
@@ -44,13 +44,14 @@ public class LoginService {
 	
 	public String sendResponse(int status)
 	{
-		String response = Errorcode.errmsgstr[status];
-		
-		JSONObject json = new JSONObject();
-		json.put("status", status);
-		json.put("errmsg", response);
-		
-		return json.toString();
+//		String response = Errorcode.errmsgstr[status];
+//		
+//		JSONObject json = new JSONObject();
+//		json.put("status", status);
+//		json.put("errmsg", response);
+//		
+//		return json.toString();
+		return null;
 	}
 	
 	@POST
@@ -71,18 +72,19 @@ public class LoginService {
 		user.setUuid(uuid.toString());
 		user.setActive(0);
 				
-		int status = Errorcode.EC_SUCCESS.getValue();
+//		int status = Errorcode.EC_SUCCESS.getValue();
 		do
 		{
-			status = DBFacade.saveUser(user);
-			if(status != Errorcode.EC_SUCCESS.getValue())
+//			status = DBFacade.saveUser(user);
+//			if(status != Errorcode.EC_SUCCESS.getValue())
 				break;
 			
-			status = UserRealm.sendVerificationEmail(user);
+//			status = UserRealm.sendVerificationEmail(user);
 		
 		}while(false);		
 		
-		return sendResponse(status);
+//		return sendResponse(status);
+		return null;
 	}
 	
 	@POST
@@ -93,21 +95,22 @@ public class LoginService {
 	{						
 		User olduser = UserRealm.getLoggedInUser();				
 		
-		int status = Errorcode.EC_SUCCESS.getValue();		
+//		int status = Errorcode.EC_SUCCESS.getValue();		
 		
-		status = DBFacade.updateProfile(olduser, user);
-		
-		if(status != Errorcode.EC_SUCCESS.getValue())
-		{
-			return sendResponse(status);
-		}
+//		status = DBFacade.updateProfile(olduser, user);
+//		
+//		if(status != Errorcode.EC_SUCCESS.getValue())
+//		{
+//			return sendResponse(status);
+//		}
 				
-		if(user.getEmail() != null)
-		{			
-			user.setUuid(olduser.getUuid());
-			status = UserRealm.sendVerificationEmail(user);			
-		}
-		return sendResponse(status);
+//		if(user.getEmail() != null)
+//		{			
+//			user.setUuid(olduser.getUuid());
+//			status = UserRealm.sendVerificationEmail(user);			
+//		}
+//		return sendResponse(status);
+		return null;
 	}
 	
 	
@@ -118,7 +121,7 @@ public class LoginService {
 	public String validate(final User user)
 	{
 			
-		int status = Errorcode.EC_SUCCESS.getValue();
+//		int status = Errorcode.EC_SUCCESS.getValue();
 		org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();			
 		
 		User usrDetails = DBFacade.isUserAccountActive("email", user.getEmail());
@@ -134,21 +137,21 @@ public class LoginService {
 				try {
 					currentUser.login(token);            
 				} catch (UnknownAccountException uae) {
-					status = Errorcode.EC_ACCOUNT_UNKNOWN.getValue();            
+//					status = Errorcode.EC_ACCOUNT_UNKNOWN.getValue();            
 					log.info("There is no user with an email " + token.getPrincipal());
 					
 				} catch (IncorrectCredentialsException ice) {
-					status = Errorcode.EC_INCORRECT_CREDENTIALS.getValue();            	            
+//					status = Errorcode.EC_INCORRECT_CREDENTIALS.getValue();            	            
 					log.info("Password for account " + token.getPrincipal() + " was incorrect!");
 					
 				} catch (LockedAccountException lae) {
-					status = Errorcode.EC_ACCOUNT_LOCKED.getValue();            	            	
+//					status = Errorcode.EC_ACCOUNT_LOCKED.getValue();            	            	
                 
 					log.info("The account for username " + token.getPrincipal() + " is locked.  " +
                         "Please contact your administrator to unlock it.");
 				}            
 				catch (AuthenticationException ae) {
-					status = Errorcode.EC_USER_NOT_AUTHENTICATED.getValue();            	            	
+//					status = Errorcode.EC_USER_NOT_AUTHENTICATED.getValue();            	            	
                 
 					log.info(ae.getMessage());
 				}
@@ -156,12 +159,12 @@ public class LoginService {
 		}
 		else
 		{
-			status = Errorcode.EC_USER_NOT_VERIFIED.getValue();
+//			status = Errorcode.EC_USER_NOT_VERIFIED.getValue();
 		}
 		//this logic needs to check
 		JSONObject json = new JSONObject();
-		json.put("status", status);
-		json.put("errmsg", Errorcode.errmsgstr[status]);
+//		json.put("status", status);
+//		json.put("errmsg", Errorcode.errmsgstr[status]);
 		json.put("accountStatus", accountActive);
 		json.put("userMobile", usrDetails.getMobile());
 		json.put("userEmail", usrDetails.getEmail());
@@ -175,27 +178,27 @@ public class LoginService {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String verifyUser(@PathParam("username") String username, @PathParam("hash") String hash)
 	{
-		int status = Errorcode.EC_SUCCESS.getValue();
+//		int status = Errorcode.EC_SUCCESS.getValue();
 		String response = null;
-		status = UserRealm.verify(username,hash);
-		do
-		{
-			if(status == Errorcode.EC_SUCCESS.getValue())
-			{				
-				response = "User is verified successfully, Please login";
-				break;
-			}
-			else if(status ==  Errorcode.EC_USER_VERIFICATION_FAILED.getValue())
-			{
-				response = "Verification failed, Please signup again";
-				break;
-			}
-			else
-			{
-				response = "User already active, Please login";
-				break;
-			}
-		}while(false);
+//		status = UserRealm.verify(username,hash);
+//		do
+//		{
+//			if(status == Errorcode.EC_SUCCESS.getValue())
+//			{				
+//				response = "User is verified successfully, Please login";
+//				break;
+//			}
+//			else if(status ==  Errorcode.EC_USER_VERIFICATION_FAILED.getValue())
+//			{
+//				response = "Verification failed, Please signup again";
+//				break;
+//			}
+//			else
+//			{
+//				response = "User already active, Please login";
+//				break;
+//			}
+//		}while(false);
 		
 		return response;
 	}
@@ -205,9 +208,10 @@ public class LoginService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String forgetpassword(@PathParam("email") String email)
 	{		
-		int status = Errorcode.EC_SUCCESS.getValue();
-		status = UserRealm.sendResetPasswordLink(email);				
-		return sendResponse(status);
+//		int status = Errorcode.EC_SUCCESS.getValue();
+//		status = UserRealm.sendResetPasswordLink(email);				
+//		return sendResponse(status);
+		return null;
 	}
 	
 	@GET

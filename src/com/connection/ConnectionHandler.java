@@ -17,13 +17,23 @@ public class ConnectionHandler {
 			  		Class.forName("com.mysql.jdbc.Driver");
 			  		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookDB", user, passwd);
 			  	}
-		  	}
-		    catch (ClassNotFoundException e) {
+		  	}catch (ClassNotFoundException e) {
 		        System.out.println("Driver not found");
 		        e.printStackTrace();
-		    }
-		    catch (SQLException e) {
-		        e.printStackTrace();
+		    }catch (SQLException sqle) {
+		    	try {
+				  	if(conn == null)
+				  	{
+				  		Class.forName("com.mysql.jdbc.Driver");
+				  		conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookDB", user, "root");
+				  	}
+			  	}catch (ClassNotFoundException e) {
+			        System.out.println("Driver not found");
+			        e.printStackTrace();
+			    }catch (SQLException e) {
+			    	 e.printStackTrace();
+			    }
+		        
 		    }
 		  return conn;
 	  }

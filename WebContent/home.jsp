@@ -14,16 +14,19 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-
-<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <title>Books Online</title>
 <%@ include file="BootConfig/bootstrap.jsp"%>
 <link rel="stylesheet" type="text/css" href="Css/style.css"></link>
 
 <script src="Js/basicB.js"></script>
-
+<script type="text/javascript">
+function getBookUser(userId,bookId){
+	console.log("called:"+userId+"bookid"+bookId);
+	var url = "http://localhost:8080";
+	document.location.href = url + "/BooksOnline/getMoreBookDetails?userId=" + encodeURIComponent(userId) + "&bookId=" + encodeURIComponent(bookId); 
+}
+</script>
 <script type="text/javascript">
 function getBookUser(userId,bookId){
 	console.log("called:"+userId+"bookid"+bookId);
