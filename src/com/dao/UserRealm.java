@@ -201,4 +201,90 @@ public class UserRealm extends AuthorizingRealm{
 //		return status;
 		return 0;
 	}	
+	
+	public static int sendSelectedBookAdOverEmail(String messagetobesent, String receiver, Boolean subjectFlag) {
+//		int status = Errorcode.EC_SUCCESS.getValue();
+		
+		//InputStream eamilProps = getCl;
+		Properties properties = new Properties();
+		String fromProp = new String();
+		String passwordProp = new String();
+		ClassLoader loader = Thread.currentThread().getContextClassLoader(); 
+		InputStream fstream = loader.getResourceAsStream("/com/properties/email.properties");
+		do
+		{
+			try {
+				properties.load(fstream);
+			
+			} catch (IOException e) {
+//				status = Errorcode.EC_FILE_READ_FAILED.getValue();
+				break;
+			}
+		
+			if(null != fstream){
+				fromProp = properties.getProperty("username");
+				passwordProp = properties.getProperty("password");
+			}
+			else
+			{
+//				status = Errorcode.EC_FILE_READ_FAILED.getValue();
+				break;
+			}
+		
+			// Recipient's email ID needs to be mentioned.
+			String to = receiver;
+	   
+			// Assuming you are sending email from localhost
+			String host = "localhost";
+
+			// Get system properties object
+			properties = System.getProperties();
+
+			final String from = fromProp;
+			final String password = passwordProp;
+	   
+			// Setup mail server
+			properties.put("mail.smtp.host", "smtp.gmail.com"); //SMTP Host
+			properties.put("mail.smtp.socketFactory.port", "465"); //SSL Port
+			properties.put("mail.smtp.socketFactory.class","javax.net.ssl.SSLSocketFactory"); //SSL Factory Class
+			properties.put("mail.smtp.auth", "true"); //Enabling SMTP Authentication
+			properties.put("mail.smtp.port", "465"); //SMTP Port
+		
+			Authenticator auth = new Authenticator() {
+				//override the getPasswordAuthentication method
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication(from, password);
+				}
+			};
+			// Get the default Session object.
+			Session mailSession = Session.getDefaultInstance(properties, auth);
+
+			try {
+				// Create a default MimeMessage object.
+				MimeMessage message = new MimeMessage(mailSession);
+	      
+				// Set From: header field of the header.
+				message.setFrom(new InternetAddress(from));
+	      
+				// Set To: header field of the header.
+				message.addRecipient(Message.RecipientType.TO,
+	                               new InternetAddress(to));
+				// Set Subject: header field
+				
+				message.setSubject(subjectFlag ? "Your Book Details" : "Someone Intrested in Purchase of Book");
+	      
+				// Now set the actual message
+				message.setContent(messagetobesent, "text/html" );
+	      
+				// Send message
+				Transport.send(message);
+			} catch (MessagingException mex) {
+//				status = Errorcode.EC_FILE_READ_FAILED.getValue();
+				break;				
+			}
+		}while(false);
+		
+//		return status;
+		return 0;
+	}	
 }

@@ -51,82 +51,71 @@
     <servlet-name>signup</servlet-name>
     <url-pattern>/signup</url-pattern>
   </servlet-mapping>
-
- <servlet>
-  	<servlet-name>forgetpassword</servlet-name>
-  	<jsp-file>/forgetpassword.jsp</jsp-file>
+  <servlet>
+    <servlet-name>forgetpassword</servlet-name>
+    <jsp-file>/forgetpassword.jsp</jsp-file>
   </servlet>
   <servlet-mapping>
-  	<servlet-name>forgetpassword</servlet-name>
-  	<url-pattern>/forgetpassword</url-pattern>
+    <servlet-name>forgetpassword</servlet-name>
+    <url-pattern>/forgetpassword</url-pattern>
   </servlet-mapping>
-
- <servlet>
-  	<servlet-name>resetpassword</servlet-name>
-  	<jsp-file>/resetpassword.jsp</jsp-file>
+  <servlet>
+    <servlet-name>resetpassword</servlet-name>
+    <jsp-file>/resetpassword.jsp</jsp-file>
   </servlet>
   <servlet-mapping>
-  	<servlet-name>resetpassword</servlet-name>
-  	<url-pattern>/resetpassword</url-pattern>
+    <servlet-name>resetpassword</servlet-name>
+    <url-pattern>/resetpassword</url-pattern>
   </servlet-mapping>
-
-
- <servlet>
-  	<servlet-name>isbnquery</servlet-name>
-  	<jsp-file>/Secure/isbnquery.jsp</jsp-file>
+  <servlet>
+    <servlet-name>isbnquery</servlet-name>
+    <jsp-file>/Secure/isbnquery.jsp</jsp-file>
   </servlet>
   <servlet-mapping>
     <servlet-name>isbnquery</servlet-name>
     <url-pattern>/Secure/isbnquery</url-pattern>
   </servlet-mapping>
-
- <servlet>
-  	<servlet-name>custombooks</servlet-name>
-  	<jsp-file>/custombooks.jsp</jsp-file>
+  <servlet>
+    <servlet-name>custombooks</servlet-name>
+    <jsp-file>/custombooks.jsp</jsp-file>
   </servlet>
   <servlet-mapping>
-  	<servlet-name>custombooks</servlet-name>
-  	<url-pattern>/custombooks</url-pattern>
-  	<url-pattern>/Secure/custombooks</url-pattern>
+    <servlet-name>custombooks</servlet-name>
+    <url-pattern>/custombooks</url-pattern>
+    <url-pattern>/Secure/custombooks</url-pattern>
   </servlet-mapping>
-
- <servlet>
-  	<servlet-name>myads</servlet-name>
-  	<jsp-file>/Secure/myads.jsp</jsp-file>
+  <servlet>
+    <servlet-name>myads</servlet-name>
+    <jsp-file>/Secure/myads.jsp</jsp-file>
   </servlet>
   <servlet-mapping>
-  	<servlet-name>myads</servlet-name>  	
-  	<url-pattern>/Secure/myads</url-pattern>
+    <servlet-name>myads</servlet-name>
+    <url-pattern>/Secure/myads</url-pattern>
   </servlet-mapping>
-
- <servlet>
-  	<servlet-name>myprofile</servlet-name>
-  	<jsp-file>/Secure/myprofile.jsp</jsp-file>
+  <servlet>
+    <servlet-name>myprofile</servlet-name>
+    <jsp-file>/Secure/myprofile.jsp</jsp-file>
   </servlet>
   <servlet-mapping>
-  	<servlet-name>myprofile</servlet-name>  	
-  	<url-pattern>/Secure/myprofile</url-pattern>
+    <servlet-name>myprofile</servlet-name>
+    <url-pattern>/Secure/myprofile</url-pattern>
   </servlet-mapping>
-        
- <servlet>
-  	<servlet-name>getdeal</servlet-name>
-  	<jsp-file>/getdeal.jsp</jsp-file>
+  <servlet>
+    <servlet-name>getdeal</servlet-name>
+    <jsp-file>/getdeal.jsp</jsp-file>
   </servlet>
   <servlet-mapping>
-  	<servlet-name>getdeal</servlet-name>  	
-  	<url-pattern>/getdeal</url-pattern>
+    <servlet-name>getdeal</servlet-name>
+    <url-pattern>/getdeal</url-pattern>
   </servlet-mapping>
- 
- <servlet>
-  	<servlet-name>bookdetails</servlet-name>
-  	<jsp-file>/bookdetails.jsp</jsp-file>
+  <servlet>
+    <servlet-name>bookdetails</servlet-name>
+    <jsp-file>/bookdetails.jsp</jsp-file>
   </servlet>
   <servlet-mapping>
-  	<servlet-name>bookdetails</servlet-name>  	
-  	<url-pattern>/bookdetails</url-pattern>
+    <servlet-name>bookdetails</servlet-name>
+    <url-pattern>/bookdetails</url-pattern>
   </servlet-mapping>
-   
-  
   <listener>
     <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
   </listener>
@@ -148,7 +137,6 @@
     <param-name>uploadfolder</param-name>
     <param-value>C:\Users\sandeep.parmar\eclipse-workspace\BooksOnline\UploadImages\</param-value>
   </context-param>
-  
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
     <welcome-file>index.htm</welcome-file>

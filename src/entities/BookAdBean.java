@@ -17,6 +17,7 @@ public class BookAdBean implements Serializable{
 	private int pin;
 	private String city;
 	private String area;
+	private String buyerEmail;
 	
 	public String getBookid() {
 		return bookid;
@@ -90,6 +91,13 @@ public class BookAdBean implements Serializable{
 	public void setArea(String area) {
 		this.area = area;
 	}
+	
+	public String getBuyerEmail() {
+		return buyerEmail;
+	}
+	public void setBuyerEmail(String buyerEmail) {
+		this.buyerEmail = buyerEmail;
+	}
 	public BookAdBean(String bookid, String booktitle, String bookauthor, String bookdesc, String thumbnail,
 			String name, int price, int soldstatus, String email, int pin, String city, String area) {
 		super();
@@ -108,6 +116,23 @@ public class BookAdBean implements Serializable{
 	}
 	public BookAdBean() {
 		super();
+	}
+	public BookAdBean(String bookid, String booktitle, String bookauthor, String bookdesc, String thumbnail,
+			String name, int price, int soldstatus, String email, int pin, String city, String area, String buyerEmail) {
+		super();
+		this.bookid = bookid;
+		this.booktitle = booktitle;
+		this.bookauthor = bookauthor;
+		this.bookdesc = bookdesc;
+		this.thumbnail = thumbnail;
+		this.name = name;
+		this.price = price;
+		this.soldstatus = soldstatus;
+		this.email = email;
+		this.pin = pin;
+		this.city = city;
+		this.area = area;
+		this.buyerEmail = buyerEmail;
 	}
 	@Override
 	public String toString() {

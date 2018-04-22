@@ -18,20 +18,47 @@
 <body>
 <%
 	out.println(session.getAttribute("usermail"));
+	BookAdBean bd = (BookAdBean)(session.getAttribute("bookAdObj"));
+	out.println(bd.getBooktitle());
+	String title = (String)bd.getBooktitle();
 %>
 <div id="container" class="width100per">  
+	<form action = "sendBookAdOverEmail" method="post">
+	<input type="hidden" value="<%=bd.getBookid() %>" name="bookid">
+	<input type="hidden" value="<%=bd.getBooktitle() %>" name="booktitle">
+	<input type="hidden" value="<%=bd.getBookauthor() %>" name="bookauthor">
+	<input type="hidden" value="<%=bd.getBookdesc() %>" name="bookdesc">
+	<input type="hidden" value="<%=bd.getThumbnail() %>" name="thumbnail">
+	<input type="hidden" value="<%=bd.getName() %>" name="name">
+	<input type="hidden" value="<%=bd.getPrice() %>" name="price">
+	<input type="hidden" value="<%=bd.getSoldstatus() %>" name="soldstatus">
+	<input type="hidden" value="<%=bd.getEmail() %>" name="email">
+	<input type="hidden" value="<%=bd.getPin() %>" name="pin">
+	<input type="hidden" value="<%=bd.getCity() %>" name="city">
+	<input type="hidden" value="<%=bd.getArea() %>" name="area">
 		<div class="row">
-		<div class="col-sm-2">
-			<h4>
-				<b>Title : </b>
-			</h4>
+			<div class="col-sm-2">
+				<h4>
+					<b>Email : </b>
+				</h4>
+			</div>
+			<div class="col-sm-10">
+				<h5>
+					<input type="text" value="" id="buyerEmail" name ="buyerEmail">
+				</h5>
+			</div>		
 		</div>
-		<div class="col-sm-10">
-			<h5>
-				<c:out value="${bd.getBooktitle()}" />
-			</h5>
-		</div>		
-	</div>
+		<div class="row">
+			<div class="col-sm-2">
+				<h4></h4>
+			</div>
+			<div class="col-sm-10">
+				<h5>
+					<input type="submit" value="Get Data" id="sendBookAdData">
+				</h5>
+			</div>		
+		</div>
+	</form>
 </div>
 </body>
 </html>
