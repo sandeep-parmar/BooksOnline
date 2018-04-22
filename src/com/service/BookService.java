@@ -42,6 +42,8 @@ import com.dao.DBFacade;
 import com.dao.UserRealm;
 import com.utility.*;
 
+import entities.BookAdBean;
+
 @Path("/books")
 public class BookService {
 	
@@ -351,5 +353,12 @@ public class BookService {
 		if (!theDir.exists()) {
 			theDir.mkdir();
 		}
+	}
+	
+	public static void sendDetailsOfBookAd(BookAdBean bd){
+		System.out.println("called sendDetailsOfBookAd:"+bd.getBooktitle());
+		
+		int b = UserRealm.sendSelectedBookAdOverEmail("hi", bd.getBuyerEmail(), true);
+		int r = UserRealm.sendSelectedBookAdOverEmail("hi", bd.getEmail(), false);
 	}
 }

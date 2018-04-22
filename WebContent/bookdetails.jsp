@@ -48,6 +48,7 @@ function openPopup(url, title, w, h) {
 	BookAdBean bd = (BookAdBean) request.getAttribute("bookad");
 	request.setAttribute("bd", bd);
 	session.setAttribute("usermail", bd.getEmail());
+	session.setAttribute("bookAdObj", bd);
 %>
 <br><br><br> <!-- To be removed  -->
 

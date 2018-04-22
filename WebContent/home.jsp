@@ -27,13 +27,6 @@ function getBookUser(userId,bookId){
 	document.location.href = url + "/BooksOnline/getMoreBookDetails?userId=" + encodeURIComponent(userId) + "&bookId=" + encodeURIComponent(bookId); 
 }
 </script>
-<script type="text/javascript">
-function getBookUser(userId,bookId){
-	console.log("called:"+userId+"bookid"+bookId);
-	var url = "http://localhost:8080";
-	document.location.href = url + "/BooksOnline/getMoreBookDetails?userId=" + encodeURIComponent(userId) + "&bookId=" + encodeURIComponent(bookId); 
-}
-</script>
 
 </head>
 <body class = "body-grey">
