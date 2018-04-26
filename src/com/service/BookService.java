@@ -69,7 +69,7 @@ public class BookService {
 		String query = key + "=" + value;
 		String charset = "UTF-8";
 	 
-		/*int status = Errorcode.EC_SUCCESS.getValue();*/
+		int status = Errorcode.EC_SUCCESS.getValue();
 		
 		URL url;
 		String str;
@@ -94,7 +94,7 @@ public class BookService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getBookList(@PathParam("author") String author)
 	{
-//		int status = Errorcode.EC_SUCCESS.getValue();
+		int status = Errorcode.EC_SUCCESS.getValue();
 		String jsonres= sendBookRequest(JsonStrings.AUTHOR, author);
 		
 		JsonStrings jsonSTR = new JsonStrings(jsonres);
