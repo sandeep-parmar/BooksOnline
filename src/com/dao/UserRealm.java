@@ -26,7 +26,7 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import com.bean.User;
-//import com.utility.Errorcode;
+import com.utility.Errorcode;
 import com.utility.UserField;
 
 public class UserRealm extends AuthorizingRealm{
@@ -72,7 +72,7 @@ public class UserRealm extends AuthorizingRealm{
 
 	public static int verify(String username, String hash) {
 	
-//		int status = Errorcode.EC_SUCCESS.getValue();
+		int status = Errorcode.EC_SUCCESS.getValue();
 		User user = DBFacade.getUserAccount(username, "username");
 		if(user.getActive() == 0)
 		{
@@ -82,15 +82,14 @@ public class UserRealm extends AuthorizingRealm{
 			}
 			else
 			{
-//				status = Errorcode.EC_USER_VERIFICATION_FAILED.getValue();
+				status = Errorcode.EC_USER_VERIFICATION_FAILED.getValue();
 			}
 		}
 		else
 		{
-//			status = 1;
+			status = 1;
 		}
-//		return status;
-		return 0;
+		return status;
 	}
 
 	public static int sendVerificationEmail(User user) throws IOException
@@ -105,20 +104,19 @@ public class UserRealm extends AuthorizingRealm{
 	}
 
 	public static int sendResetPasswordLink(String email) {
-//		int status = Errorcode.EC_SUCCESS.getValue();
+		int status = Errorcode.EC_SUCCESS.getValue();
 		
 		User user = DBFacade.getUserAccount(email, "email");
 		
 		final String resetUrl = "http://localhost:8080/BooksOnline/resetpassword?username=" + user.getUsername() + "&uuid=" +user.getUuid();
 	    String message = "<h3>Hello " + user.getUsername() +"</h3>" + "<h3>Please click on the link below to reset your password.</h3>" + "<a href=" + resetUrl + ">reset password</a>";		
 	    
-//	    status = SendEmail(message, user.getEmail());
-//		return status;
-	    return 0;
+	    status = SendEmail(message, user.getEmail());
+		return status;
 	}
 
 	private static int SendEmail(String messagetobesent, String receiver) {
-//		int status = Errorcode.EC_SUCCESS.getValue();
+		int status = Errorcode.EC_SUCCESS.getValue();
 		
 		//InputStream eamilProps = getCl;
 		Properties properties = new Properties();
@@ -132,7 +130,7 @@ public class UserRealm extends AuthorizingRealm{
 				properties.load(fstream);
 			
 			} catch (IOException e) {
-//				status = Errorcode.EC_FILE_READ_FAILED.getValue();
+				status = Errorcode.EC_FILE_READ_FAILED.getValue();
 				break;
 			}
 		
@@ -142,7 +140,7 @@ public class UserRealm extends AuthorizingRealm{
 			}
 			else
 			{
-//				status = Errorcode.EC_FILE_READ_FAILED.getValue();
+				status = Errorcode.EC_FILE_READ_FAILED.getValue();
 				break;
 			}
 		
@@ -193,13 +191,12 @@ public class UserRealm extends AuthorizingRealm{
 				// Send message
 				Transport.send(message);
 			} catch (MessagingException mex) {
-//				status = Errorcode.EC_FILE_READ_FAILED.getValue();
+				status = Errorcode.EC_FILE_READ_FAILED.getValue();
 				break;				
 			}
 		}while(false);
 		
-//		return status;
-		return 0;
+		return status;
 	}	
 	
 	public static int sendSelectedBookAdOverEmail(String messagetobesent, String receiver, Boolean subjectFlag) {
