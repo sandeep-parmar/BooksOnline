@@ -35,9 +35,9 @@
     			<input type="password" class="form-control" id="loginpassword" name="loginpassword">
     			<!--<input type="password" class="form-control" id="password" name="password">-->
   			</div>
-  			  
-  			 <a href = "forgetpassword.jsp"> Forget Password </a>
+  			    			 
   			<button type="button" class="btn btn-primary btn-lg buttonclass" id="loginformsubmitbutton">Login</button>
+  			<a href = "forgetpassword.jsp"> Forget Password </a>
   			<!--<button type="submit" class="btn btn-primary  btn-lg" >Login</button>-->
   			<div id="logincomment">
   			</div>
