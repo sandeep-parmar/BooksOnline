@@ -52,6 +52,16 @@ public class BookService {
 	public BookService() {
 		
 	}
+	public String sendResponse(int status)
+	{
+		String response = Errorcode.errmsgstr[status];
+		
+		JSONObject json = new JSONObject();
+		json.put("status", status);
+		json.put("errmsg", response);
+		
+		return json.toString();
+	}
 	
 	private String sendBookRequest(String key, String value)
 	{
@@ -73,8 +83,7 @@ public class BookService {
 				jsonres+=str;
 			}		
 		}catch (IOException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
+			System.out.println(e.getMessage());			
 			status = Errorcode.EC_FILE_READ_FAILED.getValue();			
 		}
 		return jsonres;
@@ -104,10 +113,10 @@ public class BookService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String setSoldStatusTrue(@PathParam("param1") String bookId)
 	{
-		System.out.println(bookId);
+		int status = Errorcode.EC_SUCCESS.getValue();
 		User user = UserRealm.getLoggedInUser();
-		DBFacade.setSoldStatusTrue(user.getMobile(), bookId);
-		return "Success";
+		status = DBFacade.setSoldStatusTrue(user.getMobile(), bookId);
+		return sendResponse(status);
 	}
 	
 	
@@ -115,7 +124,7 @@ public class BookService {
 	@Path("/getbookinfo/{param1}/{param2}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getBookDetails(@PathParam("param1") String key, @PathParam("param2") String value)
-	{			
+	{					
 		String jsonres= sendBookRequest(key, value);
 		
 		JsonStrings jsonSTR = new JsonStrings(jsonres);
@@ -157,7 +166,7 @@ public class BookService {
 	
 	@POST
 	@Path("/savebook")
-	public void saveBook(@FormParam("title") String title,
+	public String saveBook(@FormParam("title") String title,
 			@FormParam("author") String author,
 			@FormParam("description") String desc,
 			@FormParam("isbn") String id,
@@ -170,24 +179,24 @@ public class BookService {
 			@FormParam("offPrice") String offPrice
 			)			
 	{
+		int status = Errorcode.EC_SUCCESS.getValue();
 		//System.out.println(title+" "+author+" "+desc+" "+id+" "+thumbnail+" "+lname+" "+lphno+" "+lcity+" "+llocality+" "+lpin+" "+offPrice);
 		
 		/*Get current logged in user object from shiro*/
 		User user = UserRealm.getLoggedInUser();
 		
-		DBFacade.saveBookUser(user, title, author, desc, id, thumbnail, lpin, lcity, llocality, lname, lphno , offPrice);
+		status = DBFacade.saveBookUser(user, title, author, desc, id, thumbnail, lpin, lcity, llocality, lname, lphno , offPrice);
+		return sendResponse(status);
 	}
 	
 	@GET
 	@Path("/updatepriceofbook/{param1}/{param2}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String updateThisBooksprice(@PathParam("param1") String bookId, @PathParam("param2") String newPrice)
-	{
-		System.out.println(bookId+","+newPrice);
-		User user = UserRealm.getLoggedInUser();
-		//DBFacade.setSoldStatusTrue(user.getMobile(), bookId);
-		DBFacade.updateNewOfferPrice(user.getMobile(), bookId, newPrice);
-		return "success";
+	{		
+		User user = UserRealm.getLoggedInUser();		
+		int status = DBFacade.updateNewOfferPrice(user.getMobile(), bookId, newPrice);
+		return sendResponse(status);
 	}
 	
 	@GET
@@ -265,7 +274,7 @@ public class BookService {
 			@FormDataParam("broffPrice") String offPrice
 			)			
 	{		
-		System.out.println("title:"+title+" , author:"+author+ ", desc"+desc);
+		/*System.out.println("title:"+title+" , author:"+author+ ", desc"+desc);
 		System.out.println("isbn"+ id);
 		System.out.println("lname"+ lname);
 		System.out.println("lphno"+ lphno);
@@ -273,7 +282,7 @@ public class BookService {
 		System.out.println("locality"+ llocality);
 		System.out.println("lpin"+ lpin);
 		System.out.println("offer price"+ offPrice);
-		System.out.println("file name"+ fileDetail.getFileName());
+		System.out.println("file name"+ fileDetail.getFileName());*/
 //		String uploadDirectory = (String) context.getInitParameter("dataStoragePath");
 		String UPLOAD_FOLDER = this.context.getInitParameter("uploadfolder");
 		

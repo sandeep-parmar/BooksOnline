@@ -83,7 +83,7 @@ public class DBFacade {
 	}
 
 	/*Save model 1 info*/
-	public static void saveBookUser(User user, String title, String author, String desc, String id, String thumbnail, String lpin,
+	public static int saveBookUser(User user, String title, String author, String desc, String id, String thumbnail, String lpin,
 		String lcity, String larea, String lname, String lphno, String offPrice) {
 		
 		/*create required entities*/
@@ -96,7 +96,7 @@ public class DBFacade {
 		saveLocaity(locality);
 		
 		/*save composite details in book_user table*/	
-		bookUserDao.saveBookUser(bookUser);
+		return bookUserDao.saveBookUser(bookUser);
 	}
 	
 	public static List<BookUser> getMyBooks()
@@ -121,9 +121,9 @@ public class DBFacade {
 		localityDao.saveLocality(locality);
 	}
 
-	public static void setSoldStatusTrue(String mobile, String bookId) {
+	public static int setSoldStatusTrue(String mobile, String bookId) {
 
-		bookUserDao.setSoldStatusTrue(mobile, bookId);
+		return bookUserDao.setSoldStatusTrue(mobile, bookId);
 	}
 
 	public static List<String> getCityList(String phrase) {
@@ -139,8 +139,8 @@ public class DBFacade {
 		return UserDao.resetPassword(uuid, hashedPasswordBase64, salt);		
 	}
 
-	public static void updateNewOfferPrice(String mobile, String bookId, String newPrice) {
-		bookUserDao.updateNewOfferPrice(mobile, bookId, newPrice);
+	public static int updateNewOfferPrice(String mobile, String bookId, String newPrice) {
+		return bookUserDao.updateNewOfferPrice(mobile, bookId, newPrice);
 	}
 
 	public static int updateProfile(User olduser, User user) {

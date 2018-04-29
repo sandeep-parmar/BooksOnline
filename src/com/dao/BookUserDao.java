@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.bean.BookUser;
 import com.connection.ConnectionHandler;
+import com.utility.Errorcode;
 
 public class BookUserDao implements IBaseDao {
 
@@ -43,11 +44,12 @@ public class BookUserDao implements IBaseDao {
 		return sql;
 	}
 
-	public void saveBookUser(BookUser bookUser) {
+	public int saveBookUser(BookUser bookUser) {
 		
 		/*PENDING*/
 		/*Do not savre if already exists*/
 		 
+		int status = Errorcode.EC_SUCCESS.getValue();
 		String sql = getInsertQuery();
 		Connection conn = null;
 		try {
@@ -63,14 +65,17 @@ public class BookUserDao implements IBaseDao {
 			preparedStmt.execute();
 			
 		}catch (SQLIntegrityConstraintViolationException e) {
+			status = Errorcode.EC_FAILED_DB_UPDATE.getValue();
 			System.out.println(e.toString());
 		}
 		catch(SQLException e) {
+			status = Errorcode.EC_FAILED_DB_UPDATE.getValue();
 			System.out.println(e.toString());
 		}
 		finally {
 			ConnectionHandler.closeConnection();
 		}
+		return status;
 	}
 
 	public List<BookUser> getBookList() {
@@ -141,25 +146,29 @@ public class BookUserDao implements IBaseDao {
 	}
 
 
-	public void setSoldStatusTrue(String uid, String bookid) {
+	public int setSoldStatusTrue(String uid, String bookid) {
 		String sql = getUpdateQuery();
+		int status = Errorcode.EC_SUCCESS.getValue();
 		try {
 			Connection conn = ConnectionHandler.getConnection();
 			PreparedStatement preparedStmt = conn.prepareStatement(sql);
 			preparedStmt.setString(1, uid);
 			preparedStmt.setString(2, bookid);
-			System.out.println(preparedStmt);
+			//System.out.println(preparedStmt);
 			preparedStmt.execute();
 		}catch(SQLException e)
 		{
+			status = Errorcode.EC_FAILED_DB_UPDATE.getValue();
 			e.printStackTrace();
 		}finally
 		{
 			ConnectionHandler.closeConnection();
 		}
+		return status;
 	}
 	
-	public void updateNewOfferPrice(String uid, String bookid, String newprice) {		
+	public int updateNewOfferPrice(String uid, String bookid, String newprice) {
+		int status = Errorcode.EC_SUCCESS.getValue();
 		String sql = getUpdatePriceQuery();
 		try {
 			Connection conn = ConnectionHandler.getConnection();
@@ -172,11 +181,13 @@ public class BookUserDao implements IBaseDao {
 			preparedStmt.execute();
 		}catch(SQLException e)
 		{
+			status = Errorcode.EC_FAILED_DB_UPDATE.getValue();
 			e.printStackTrace();
 		}finally
 		{
 			ConnectionHandler.closeConnection();
 		}
+		return status;
 	}
 
 	public List<BookUser> getBookListByCriteria(String city, String area, String criteria) {
