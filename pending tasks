@@ -32,6 +32,7 @@ Midcellaneous:
   . validate various form fields in javascript client side
   . validate if data not already exists in db before insert
   . Have Shiro session for appropriate logout handler
+  . Use jquery easyautocomplete with min length of 3
   
   
 Add your points as and when remember ot mark above points complete whenver done.
