@@ -170,10 +170,6 @@ public class UserDao implements IBaseDao {
 			ConnectionHandler.closeConnection();
 		}	
 		return status;
-<<<<<<< Updated upstream
-=======
-//		return 0;
->>>>>>> Stashed changes
 	}
 	public int updateProfile(User olduser, User user) {
 		int status = Errorcode.EC_SUCCESS.getValue();
@@ -221,12 +217,8 @@ public class UserDao implements IBaseDao {
 		finally {
 			ConnectionHandler.closeConnection();
 		}
-<<<<<<< Updated upstream
-		return status;		
-=======
 		return status;	
 //		return 0;	
->>>>>>> Stashed changes
 	}	
 	
 	private static String getResetPasswordQuery() {

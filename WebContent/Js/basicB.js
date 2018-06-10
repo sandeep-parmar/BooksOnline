@@ -569,21 +569,4 @@ $(document).ready(function(){
 	      }
 	  }
 	  
-	  
-	  
-	  /*Netbackup specific*/
-	  $("#ping").click(function() {
-						
-			var master = $("#nbmaster").val();
-			var url = "https" + "://" + master + ":" + "1556" + "/netbackup/ping";
-			alert(url);
-			$.get(url,
-					function(data, status){					
-							alert(status);
-					})
-					.fail(function(res,status,error) {
-						console.log(res.responseText);
-						alert( res.responseText+" "+status+" "+error);
-					});		    	
-		});
 });
