@@ -23,12 +23,11 @@ public class UserDao implements IBaseDao {
 			conn = ConnectionHandler.getConnection();
 			PreparedStatement preparedStmt = conn.prepareStatement(sql);
 			preparedStmt.setString(1, user.getUsername());
-			preparedStmt.setString(2, user.getPassword());
-			preparedStmt.setString(3, user.getMobile());
-			preparedStmt.setString(4, user.getEmail());
-			preparedStmt.setString(5, user.getSalt());
-			preparedStmt.setString(6, user.getUuid());
-			preparedStmt.setInt(7, user.getActive());
+			preparedStmt.setString(2, user.getPassword());			
+			preparedStmt.setString(3, user.getEmail());
+			preparedStmt.setString(4, user.getSalt());
+			preparedStmt.setString(5, user.getUuid());
+			preparedStmt.setInt(6, user.getActive());
 			preparedStmt.execute();
 			
 		}catch(SQLException e) {
@@ -45,17 +44,15 @@ public class UserDao implements IBaseDao {
 		ResultSet rs = null;
 		
 		boolean valid = false;
-		String sql = getUserByFieldQuery("mobile");
+		String sql = getUserByFieldQuery(User.emailStr);
 		try {
 			Connection conn = ConnectionHandler.getConnection();
 			PreparedStatement preparedStmt = conn.prepareStatement(sql);
-			preparedStmt.setString(1, user.getMobile());
+			preparedStmt.setString(1, user.getEmail());
 			rs = preparedStmt.executeQuery();
 			if(rs.next())
 			{		
-			
-				String password = rs.getString("password");
-			
+				String password = rs.getString(User.passwordStr);
 				if(password.equals(user.getPassword()))
 				{
 					valid = true;
@@ -70,29 +67,28 @@ public class UserDao implements IBaseDao {
 		}
 		return valid;
 	}
-	public User getUserAccount(String fieldName, String field)
+	public User getUserAccount(String fieldName, String fieldvalue)
 	{
 		ResultSet rs = null;
 		User user = null;
 		String sql = null;
 		
-		sql = getUserByFieldQuery(field);
+		sql = getUserByFieldQuery(fieldName);
 		
 		try {
 			Connection conn = ConnectionHandler.getConnection();
 			PreparedStatement preparedStmt = conn.prepareStatement(sql);
-			preparedStmt.setString(1, fieldName);
+			preparedStmt.setString(1, fieldvalue);
 			System.out.println(preparedStmt.toString());
 			rs = preparedStmt.executeQuery();
 			if(rs.next())
 			{		
-				user = new User(rs.getString("username"),
-						rs.getString("password"),
-						rs.getString("mobile"),
-						rs.getString("email"),
-						rs.getString("salt"),
-						rs.getString("uuid"),
-						rs.getInt("active"));
+				user = new User(rs.getString(User.usernameStr),
+						rs.getString(User.passwordStr),						
+						rs.getString(User.emailStr),
+						rs.getString(User.saltStr),
+						rs.getString(User.uuidStr),
+						rs.getInt(User.activeStr));
 			}
 		}catch(SQLException e)
 		{
@@ -121,8 +117,7 @@ public class UserDao implements IBaseDao {
 			if(rs.next())
 			{	
 				user = new User(
-						rs.getString("username"),
-						rs.getString("mobile"),
+						rs.getString("username"),					
 						rs.getString("email"),
 						rs.getInt("active")
 						);
@@ -137,13 +132,14 @@ public class UserDao implements IBaseDao {
 		return user;
 	}
 
-	public void activateAccount(String username) {
+	public void activateAccount(String uuid) {
 		String sql = getUpdateQuery();
 		Connection conn = null;
 		try {
 			conn = ConnectionHandler.getConnection();
 			PreparedStatement preparedStmt = conn.prepareStatement(sql);
-			preparedStmt.setString(1, username);			
+			preparedStmt.setString(1, uuid);			
+			System.out.println(preparedStmt.toString());
 			preparedStmt.execute();
 			
 		}catch(SQLException e) {
@@ -174,6 +170,10 @@ public class UserDao implements IBaseDao {
 			ConnectionHandler.closeConnection();
 		}	
 		return status;
+<<<<<<< Updated upstream
+=======
+//		return 0;
+>>>>>>> Stashed changes
 	}
 	public int updateProfile(User olduser, User user) {
 		int status = Errorcode.EC_SUCCESS.getValue();
@@ -185,29 +185,29 @@ public class UserDao implements IBaseDao {
 			
 			if(user.getUsername() != null)
 			{
-				sql = getProfileUpdateQuery("username");
+				sql = getProfileUpdateQuery(User.usernameStr);
 				preparedStmt = conn.prepareStatement(sql);
 				preparedStmt.setString(1, user.getUsername());			
 				preparedStmt.setString(2, olduser.getUuid());
 				preparedStmt.execute();
 			}
-			if(user.getMobile() != null)
+/*			if(user.getMobile() != null)
 			{
-				sql = getProfileUpdateQuery("mobile");
+				sql = getProfileUpdateQuery(user.mobileStr);
 				preparedStmt = conn.prepareStatement(sql);
 				preparedStmt.setString(1, user.getMobile());			
 				preparedStmt.setString(2, olduser.getUuid());
 				preparedStmt.execute();
-			}
+			}*/
 			if(user.getEmail() != null)
 			{
-				sql = getProfileUpdateQuery("email");
+				sql = getProfileUpdateQuery(User.emailStr);
 				preparedStmt = conn.prepareStatement(sql);
 				preparedStmt.setString(1, user.getEmail());			
 				preparedStmt.setString(2, olduser.getUuid());
 				preparedStmt.execute();
 				
-				sql = getProfileUpdateQuery("status");
+				sql = getProfileUpdateQuery(User.activeStr);
 				preparedStmt = conn.prepareStatement(sql);
 				preparedStmt.setInt(1, 0);			
 				preparedStmt.setString(2, olduser.getUuid());
@@ -221,7 +221,12 @@ public class UserDao implements IBaseDao {
 		finally {
 			ConnectionHandler.closeConnection();
 		}
+<<<<<<< Updated upstream
 		return status;		
+=======
+		return status;	
+//		return 0;	
+>>>>>>> Stashed changes
 	}	
 	
 	private static String getResetPasswordQuery() {
@@ -237,7 +242,7 @@ public class UserDao implements IBaseDao {
 
 	@Override
 	public String getInsertQuery() {
-		String sql = "insert into USER(username,password,mobile,email,salt,uuid,active) values(?,?,?,?,?,?,?)";
+		String sql = "insert into USER(username,password,email,salt,uuid,active) values(?,?,?,?,?,?)";
 		return sql;
 	}
 	
@@ -250,7 +255,7 @@ public class UserDao implements IBaseDao {
 	}
 	public static String getUpdateQuery()
 	{
-		String sql = "update user set active = 1 where username = ?";
+		String sql = "update user set active = 1 where uuid = ?";
 		return sql;
 	}
 

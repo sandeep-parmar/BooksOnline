@@ -27,7 +27,8 @@ $(document).ready(function(){
 					}
 						
 					$('select[name="booklist"]').append(options);
-					$('#myModal2').modal('toggle');
+					$("#booklistrow").toggleClass("hidden");
+					//$('#myModal2').modal('toggle');
 				})
 				.fail(function(res,status,error) {
 					console.log(res.responseText);
@@ -36,10 +37,11 @@ $(document).ready(function(){
 	}
 	
 	function getBookInfoAndSetModal1(searchKey, searchVal)
-	{
+	{		
 		//alert(host + port + webservice + bookservice + "/getbookinfo/" + searchKey + "/" + searchVal);
 		$.get(host + port + webservice + bookservice + "/getbookinfo/" + searchKey + "/" + searchVal,
-				function(data, status){					
+				function(data, status){
+				$("#bookform").removeClass('hidden');
 				//console.log(data);
 				var title = data["title"];									
 				var author = data["author"];
@@ -60,7 +62,8 @@ $(document).ready(function(){
 				$("#description").prop("readonly",true);
 				$("#isbn").prop("readonly",true);
 									 
-				$('#myModal1').modal('toggle');
+				//$('#myModal1').modal('toggle');
+				
 									 
 				})
 				.fail(function(res,status,error) {
@@ -69,7 +72,27 @@ $(document).ready(function(){
 				});
 	}
 	
+	function resetBookForm()
+	{
+		$("#title").val("");
+		$("#author").val("");										 
+		$("#description").val("");
+		$("#isbn").val("");
+		$("#thumbnail").val("");
+		$("#lname").val("");
+		$("#lcity").val("");
+		$("#llocality").val("");
+		$("#offprice").val("");			
+		$('#bookImg').attr('src',"");
+	}
+	
 	$("#searchIsbn").click(function(){
+		
+		/*This is because of using same form for submitting form data and browse image data*/
+		//$("#bookform").attr("enctype","application/x-www-form-urlencoded");
+		$("#bookform").addClass('type1');
+		$("#bookImgRow").removeClass('hidden');
+		$("#browseImgRow").addClass('hidden');
 				
 		var searchKey = $("#searchkey").val();
 		var searchVal = $("#inputfield").val();
@@ -85,13 +108,14 @@ $(document).ready(function(){
 		else
 		{		
 			//alert(searchKey+" "+searchVal);
+			//alert("sss-1");
 			getBookInfoAndSetModal1(searchKey, searchVal);
 		}
 	});
 	
 	$("#searchbytitle").click(function(){
 		
-		$('#myModal2').modal('toggle');
+		//$('#myModal2').modal('toggle');
 		var searchVal = $("#booklist").val();
 		//alert(searchVal);
 		if(!searchVal)
@@ -103,22 +127,36 @@ $(document).ready(function(){
 			//alert(searchKey+" "+searchVal);
 			getBookInfoAndSetModal1("title", searchVal);
 		}
+		$("#booklistrow").toggleClass("hidden");
 	});
 	
+	
+	$("#cancelbookdetails").click(function() {
+		resetBookForm();
+		$("#bookform").addClass('hidden');
+		
+	});
 	
 	$("#submitbookdetails").click(function() {
 		
 		//saving book
-		
-		$("#bookform").attr("action",host + port + webservice + bookservice + "/savebook").submit();
-		
-		//saving book ad
-		//$("#bookform").attr("action",host + port + webservice + bookAdservice + "/saveBookAd").submit();
-	    
-		$('#myModal1').modal('toggle');
-	    $("#comment").html("book saved successfully")
-	    
-	    //window.location.replace(host+port+"/BooksOnline/home.jsp");
+		if($("#bookform").hasClass("type1"))
+		{
+			alert("bookform has type 1");
+			$("#bookform").attr("action",host + port + webservice + bookservice + "/savebook").submit();
+				
+			//$("#comment").html("book saved successfully");
+			alert("book type-1 saved successfully");	
+			$("#bookform").addClass("hidden");
+			//sleep(1000);
+			//location.replace("/BooksOnline/home.jsp");
+		}	
+		else
+		{
+			alert("bookform do not have type 1");
+			submitcustomform();
+		}
+		resetBookForm();
 	    return false;
 	});
 	
@@ -141,7 +179,7 @@ $(document).ready(function(){
 		    	var errmsg = data[ERRMSG];
 		    	var active = data["accountStatus"];
 		    	var userEmail = data["userEmail"];
-		    	var userMobile = data["userMobile"];
+		    	//var userMobile = data["userMobile"];
 		    	
 		    	if(status == 0)
 		    	{				    
@@ -167,8 +205,9 @@ $(document).ready(function(){
 	});
 	
 	$(".soldbutton").click(function() {
-		  var bookid = $(this).attr("value");
-		 // alert("The value is "+ $(this).attr("value") );
+		  var count = $(this).attr("value");
+		  var bookid = $("#soldthisbook_" + count).val(); 
+		  alert(bookid);
 		  $.get(host + port + webservice + bookservice + "/soldthisbook/" + bookid,
 				function(data, status){					
 					$(location).attr('href', '/BooksOnline/Secure/myads.jsp');
@@ -208,7 +247,7 @@ $(document).ready(function(){
 			    type: 'post',
 			    data: JSON.stringify({ 
 			    	"username": $("#name").val(),
-					"mobile": $("#mobile").val(),
+					//"mobile": $("#mobile").val(),
 					"email": $("#email").val(),
 					"password": $("#password").val()
 			    }),	
@@ -233,7 +272,7 @@ $(document).ready(function(){
 	$("#profileupdateformsubmitbutton").click(function() {
 		
 		var profname;
-		var profmobile;
+		//var profmobile;
 		var profemail;
 		var somethingtoupdate = false;
 		if($('#namecheckbox').is(":checked"))
@@ -241,11 +280,11 @@ $(document).ready(function(){
 			profname = $("#profname").val();
 			somethingtoupdate = true;
 		}
-		if($('#mobilecheckbox').is(":checked"))
+		/*if($('#mobilecheckbox').is(":checked"))
 		{			
 			profmobile = $("#profmobile").val();
 			somethingtoupdate = true;
-		}
+		}*/
 		if($('#emailcheckbox').is(":checked"))
 		{			
 			profemail = $("#profemail").val();
@@ -259,7 +298,7 @@ $(document).ready(function(){
 		    type: 'post',
 		    data: JSON.stringify({ 
 		    	"username": profname,
-				"mobile": profmobile,
+				//"mobile": profmobile,
 				"email": profemail
 		    }),	
 		    dataType: 'json',
@@ -268,9 +307,15 @@ $(document).ready(function(){
 		    	var status= data["status"];
 		    	var errmsg = data[ERRMSG];
 		    	
-		    	if(!status){		    		
-		    		$("#profilecomment").html("User profile is updated successfully, " +
-		    				"Please verify your account by clicking on verification link sent to your registered email");
+		    	if(!status){
+		    		if(!profemail)
+		    		{
+		    			$("#profilecomment").html("user profile is updated successfully");
+		    		}
+		    		else
+		    		{
+		    			$("#profilecomment").html("user email is updated successfully. verification link has been sent to your new email");
+		    		}
 		    		
 		    		//$(location).attr('href', 'login.jsp');
 		    	}else{
@@ -349,6 +394,52 @@ $(document).ready(function(){
 	});
 		
 	
+	function submitcustomform()
+	{
+		 //	alert("sandeep");
+	 	console.log("sandeep");
+        //stop submit the form, we will post it manually.
+
+        // Get form
+        var form = $('#bookform')[0];
+
+		// Create an FormData object 
+        var data = new FormData(form);
+
+		// If you want to add an extra field for the FormData
+        //data.append("CustomField", "This is some extra data, testing");
+
+		// disabled the submit button
+       // $("#submitcustomdata").prop("disabled", true);
+        
+        	
+        $.ajax({
+            type: "POST",
+            enctype: 'multipart/form-data',
+            url: host + port + webservice + bookservice + "/brbook",
+            data: data,
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+
+                //$("#brresult").text(data);
+            	$("#bookform").addClass("hidden");
+                console.log("SUCCESS : ", data);
+                //$("#submitcustomdata").prop("disabled", false);
+
+            },
+            error: function (e) {
+
+                //$("#brresult").text(e.responseText);
+            	alert("book saved successfully");
+                console.log("ERROR : ", e);
+                //$("#submitcustomdata").prop("disabled", false);
+
+            }
+        });
+	}
 	/*Upload custom images*/
 	 $("#submitcustomdata").click(function (event) {
 
@@ -399,7 +490,13 @@ $(document).ready(function(){
 
 	 $("#manualfileloadbutton").click(function (event) {
 		// alert("parmar");
-		$("#customedataform").removeClass('invisible');
+		//$("#customedataform").toggleClass('hidden');
+		$("#bookImgRow").addClass('hidden');
+		$("#browseImgRow").removeClass('hidden');
+		
+		//$("#bookform").attr("enctype","multipart/form-data");
+		$("#bookform").removeClass('type1');
+		$("#bookform").removeClass('hidden');
 		$("#manualfileloadbutton").hide();
 	 });
 		 
@@ -418,18 +515,20 @@ $(document).ready(function(){
 	 
 	 
 	 // easy auto complete
-	 
-	 		var options = {
+	 			 		
+	 		
+	 		var options1 = {
 				url: function(phrase) {
 					return host + port + webservice + bookservice + "/getcitysuggestion?phrase=" + phrase + "&format=json";
 				},
 
 				getValue: "name"
-			};
+			};	 	
 
-			$("#entercity").easyAutocomplete(options);
+			$("#entercity").easyAutocomplete(options1);
 			
-			var options = {
+						 
+			var options2 = {
 				url: function(phrase) {
 					return host + port + webservice + bookservice + "/getlocalitysuggestion?phrase=" + phrase + "&format=json";
 				},
@@ -437,9 +536,9 @@ $(document).ready(function(){
 				getValue: "name"
 			};
 
-			$("#enterlocality").easyAutocomplete(options);
+			$("#enterlocality").easyAutocomplete(options2);
 
-			var options = {					
+			var options3 = {					
 					url: function(phrase) {
 						return host + port + webservice + bookservice + "/getbooksuggestion?phrase=" + phrase + "&format=json";
 					},
@@ -447,18 +546,19 @@ $(document).ready(function(){
 					getValue: "name"
 				};
 
-				$("#searchbookbytai").easyAutocomplete(options);
+				$("#searchbookbytai").easyAutocomplete(options3);
 		 
+				
 			$(document).ajaxStart(function(){
 					 // Show image container
-					$("#loader").show();
+					$("#loadgif").show();
 			});
 			$(document).ajaxComplete(function(){
 					 // Hide image container
-					$("#loader").hide();
+					$("#loadgif").hide();
 			});
-				
-				
+										
+			
 	  function validateEmail(sEmail) {
 	      var filter = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
 	      if (filter.test(sEmail)) {
@@ -468,4 +568,22 @@ $(document).ready(function(){
 	          return false;
 	      }
 	  }
+	  
+	  
+	  
+	  /*Netbackup specific*/
+	  $("#ping").click(function() {
+						
+			var master = $("#nbmaster").val();
+			var url = "https" + "://" + master + ":" + "1556" + "/netbackup/ping";
+			alert(url);
+			$.get(url,
+					function(data, status){					
+							alert(status);
+					})
+					.fail(function(res,status,error) {
+						console.log(res.responseText);
+						alert( res.responseText+" "+status+" "+error);
+					});		    	
+		});
 });

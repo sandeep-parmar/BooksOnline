@@ -48,6 +48,9 @@ import entities.BookAdBean;
 public class BookService {
 	
 	@Context ServletContext context;
+	
+	public static String statusStr = "status";
+	public static String errmsgStr = "errmsg";
 
 	public BookService() {
 		
@@ -57,16 +60,35 @@ public class BookService {
 		String response = Errorcode.errmsgstr[status];
 		
 		JSONObject json = new JSONObject();
-		json.put("status", status);
-		json.put("errmsg", response);
+		json.put(statusStr, status);
+		json.put(errmsgStr, response);
 		
 		return json.toString();
 	}
 	
+	
+	/*
+	 * Performing a search You can perform a volumes search by sending an HTTP GET request to the following URI:
+		https://www.googleapis.com/books/v1/volumes?q=search+terms
+		This request has a single required parameter:
+
+		q - Search for volumes that contain this text string. There are special keywords you can specify in the search terms to search in particular fields, such as:
+		intitle: Returns results where the text following this keyword is found in the title.
+		inauthor: Returns results where the text following this keyword is found in the author.
+		inpublisher: Returns results where the text following this keyword is found in the publisher.
+		subject: Returns results where the text following this keyword is listed in the category list of the volume.
+		isbn: Returns results where the text following this keyword is the ISBN number.
+		lccn: Returns results where the text following this keyword is the Library of Congress Control Number.
+		oclc: Returns results where the text following this keyword is the Online Computer Library Center number.
+		Request
+		Here is an example of searching for Daniel Keyes' "Flowers for Algernon":
+
+		GET https://www.googleapis.com/books/v1/volumes?q=flowers+inauthor:keyes&key=yourAPIKey
+	 */
 	private String sendBookRequest(String key, String value)
 	{
 		String address = "https://www.googleapis.com/books/v1/volumes?q=";
-		String query = key + "=" + value;
+		String query = key + ":" + value;
 		String charset = "UTF-8";
 	 
 		int status = Errorcode.EC_SUCCESS.getValue();
@@ -84,7 +106,7 @@ public class BookService {
 			}		
 		}catch (IOException e) {
 			System.out.println(e.getMessage());			
-			status = Errorcode.EC_FILE_READ_FAILED.getValue();			
+			//status = Errorcode.EC_FILE_READ_FAILED.getValue();			
 		}
 		return jsonres;
 	}
@@ -94,8 +116,8 @@ public class BookService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getBookList(@PathParam("author") String author)
 	{
-		int status = Errorcode.EC_SUCCESS.getValue();
-		String jsonres= sendBookRequest(JsonStrings.AUTHOR, author);
+//		int status = Errorcode.EC_SUCCESS.getValue();
+		String jsonres= sendBookRequest(JsonStrings.INAUTHOR, author);
 		
 		JsonStrings jsonSTR = new JsonStrings(jsonres);
 
@@ -104,6 +126,7 @@ public class BookService {
 
 		JSONObject returnJson = jsonSTR.getNewJsonObject();
 		returnJson.put(JsonStrings.BOOKS, titles);
+		//System.out.println("returning:"+returnJson.toString());
 		return returnJson.toString();
 	}
 	
@@ -113,9 +136,10 @@ public class BookService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String setSoldStatusTrue(@PathParam("param1") String bookId)
 	{
+		System.out.println(bookId);
 		int status = Errorcode.EC_SUCCESS.getValue();
 		User user = UserRealm.getLoggedInUser();
-		status = DBFacade.setSoldStatusTrue(user.getMobile(), bookId);
+		status = DBFacade.setSoldStatusTrue(user.getEmail(), bookId);
 		return sendResponse(status);
 	}
 	
@@ -124,7 +148,11 @@ public class BookService {
 	@Path("/getbookinfo/{param1}/{param2}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getBookDetails(@PathParam("param1") String key, @PathParam("param2") String value)
-	{					
+	{				
+		if(key.compareTo("TITLE") == 0 || key.compareTo("title")==0)
+		{
+			key = JsonStrings.INTITLE;
+		}
 		String jsonres= sendBookRequest(key, value);
 		
 		JsonStrings jsonSTR = new JsonStrings(jsonres);
@@ -138,6 +166,7 @@ public class BookService {
 		JSONObject jsonvolume = jsonSTR.getVolumesInfoFromObject(obj0);
 		
 		JSONArray authors = jsonSTR.getAuthorsArrayFromVolumeObject(jsonvolume);
+		System.out.println(authors);
 		JSONObject imagelinks = jsonSTR.getImageLinksFromVolumeObject(jsonvolume);
 		
 		String authorlist = "";
@@ -172,20 +201,19 @@ public class BookService {
 			@FormParam("isbn") String id,
 			@FormParam("thumbnail") String thumbnail,
 			@FormParam("lname") String lname,
-			@FormParam("lphno") String lphno,
 			@FormParam("lcity") String lcity,
 			@FormParam("llocality") String llocality,
-			@FormParam("lpin") String lpin,
+			//@FormParam("lpin") String lpin,
 			@FormParam("offPrice") String offPrice
 			)			
-	{
+	{		
 		int status = Errorcode.EC_SUCCESS.getValue();
-		//System.out.println(title+" "+author+" "+desc+" "+id+" "+thumbnail+" "+lname+" "+lphno+" "+lcity+" "+llocality+" "+lpin+" "+offPrice);
+		System.out.println(title+" "+author+" "+desc+" "+id+" "+thumbnail+" "+lname+" "+lcity+" "+llocality+" "+offPrice);
 		
 		/*Get current logged in user object from shiro*/
 		User user = UserRealm.getLoggedInUser();
-		
-		status = DBFacade.saveBookUser(user, title, author, desc, id, thumbnail, lpin, lcity, llocality, lname, lphno , offPrice);
+		System.out.println("aaaa");
+		status = DBFacade.saveBookUser(user, title, author, desc, id, thumbnail, lcity, llocality, lname , offPrice);
 		return sendResponse(status);
 	}
 	
@@ -194,8 +222,9 @@ public class BookService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String updateThisBooksprice(@PathParam("param1") String bookId, @PathParam("param2") String newPrice)
 	{		
+		//System.out.println("aaaaa");
 		User user = UserRealm.getLoggedInUser();		
-		int status = DBFacade.updateNewOfferPrice(user.getMobile(), bookId, newPrice);
+		int status = DBFacade.updateNewOfferPrice(user.getEmail(), bookId, newPrice);
 		return sendResponse(status);
 	}
 	
@@ -211,7 +240,8 @@ public class BookService {
 			JSONObject obj = new JSONObject();
 			obj.put("name", city);
 			jsonArr.put(obj);
-		}				
+		}		
+		System.out.println(jsonArr.toString());
 		return jsonArr.toString();
 	}
 	
@@ -221,9 +251,9 @@ public class BookService {
 	public String getBookSuggestion(@QueryParam("phrase") String phrase)
 	{			
 		List<String> glist = new ArrayList<String>();
-		List<String> tlist = DBFacade.getBookList(phrase, "booktitle");
-		List<String> alist = DBFacade.getBookList(phrase, "bookauthor");
-		List<String> ilist = DBFacade.getBookList(phrase, "bookid");
+		List<String> tlist = DBFacade.getBookList(phrase, Book.booktitleStr);
+		List<String> alist = DBFacade.getBookList(phrase, Book.bookauthorStr);
+		List<String> ilist = DBFacade.getBookList(phrase, Book.bookidStr);
 		glist.addAll(tlist);
 		glist.addAll(alist);
 		glist.addAll(ilist);
@@ -253,6 +283,7 @@ public class BookService {
 			obj.put("name", city);
 			jsonArr.put(obj);
 		}				
+		System.out.println(jsonArr.toString());
 		return jsonArr.toString();
 	}
 	
@@ -262,16 +293,15 @@ public class BookService {
 	public Response saveBrowseBook(
 			@FormDataParam("bootfileinput") InputStream uploadedInputStream,
 			@FormDataParam("bootfileinput") FormDataContentDisposition fileDetail,
-			@FormDataParam("brtitle") String title,
-			@FormDataParam("brauthor") String author,
-			@FormDataParam("brdesc") String desc,
-			@FormDataParam("brisbn") String id,		
-			@FormDataParam("brlname") String lname,
-			@FormDataParam("brlphno") String lphno,
-			@FormDataParam("brlcity") String lcity,
-			@FormDataParam("brllocality") String llocality,
-			@FormDataParam("brlpin") String lpin,
-			@FormDataParam("broffPrice") String offPrice
+			@FormDataParam("title") String title,
+			@FormDataParam("author") String author,
+			@FormDataParam("description") String desc,
+			@FormDataParam("isbn") String id,					
+			@FormDataParam("lname") String lname,
+			@FormDataParam("lcity") String lcity,
+			@FormDataParam("llocality") String llocality,
+			//@FormDataParam("lpin") String lpin,
+			@FormDataParam("offPrice") String offPrice
 			)			
 	{		
 		/*System.out.println("title:"+title+" , author:"+author+ ", desc"+desc);
@@ -316,7 +346,7 @@ public class BookService {
 				/*Actual operation*/
 				System.out.println("Image location:" + uploadedFileLocation);
 				User user = UserRealm.getLoggedInUser();
-				DBFacade.saveBookUser(user, title, author, desc, id, uploadedFileLocation, lpin, lcity, llocality, lname, lphno , offPrice);
+				DBFacade.saveBookUser(user, title, author, desc, id, uploadedFileLocation,lcity, llocality, lname , offPrice);
 				
 				return Response.status(200)
 						.entity("File saved to " + uploadedFileLocation).build();

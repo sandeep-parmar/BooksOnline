@@ -57,7 +57,7 @@ function getBookUser(userId,bookId){
 									</div>
 									<div class="col-sm-8">
 										<h5 class="h5-spec">
-											<c:out value="${item.getBook().getAuthors()}" />
+											<c:out value="${item.getBook().getBookauthor()}" />
 										</h5>
 									</div>
 								</div>
@@ -69,7 +69,7 @@ function getBookUser(userId,bookId){
 									</div>
 									<div class="col-sm-8">
 										<h5 class="h5-spec">
-											<c:out value="${item.getBook().getTitle()}" />
+											<c:out value="${item.getBook().getBooktitle()}" />
 										</h5>
 									</div>
 								</div>
@@ -93,7 +93,7 @@ function getBookUser(userId,bookId){
 									</div>
 									<div class="col-sm-8">
 										<h5 class="h5-spec">
-											<c:out value="${item.getLocality().getCity()}" />
+											<c:out value="${item.getCity()}" />
 										</h5>
 									</div>
 								</div>
@@ -105,7 +105,7 @@ function getBookUser(userId,bookId){
 									</div>
 									<div class="col-sm-8">
 										<h5 class="h5-spec">
-											<c:out value="${item.getLocality().getArea()}" />
+											<c:out value="${item.getArea()}" />
 										</h5>
 									</div>
 								</div>

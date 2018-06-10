@@ -123,18 +123,6 @@ function openPopup(url, title, w, h) {
 	<div class="row">
 		<div class="col-sm-2">
 			<h5 class="h5-spec">
-				<b>Poster's PINCODE : </b>
-			</h5>
-		</div>
-		<div class="col-sm-10">
-			<h5 class="h5-spec">
-				<c:out value="${bd.getPin()}" />
-			</h5>
-		</div>		
-	</div>
-	<div class="row">
-		<div class="col-sm-2">
-			<h5 class="h5-spec">
 				<b>Poster's City : </b>
 			</h5>
 		</div>

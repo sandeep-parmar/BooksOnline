@@ -32,10 +32,6 @@
     			<input type="text" class="form-control" id="name">
   			</div>
   			<div class="form-group">
-    			<label for="mobile">Mobile number:</label>
-    			<input type="text" class="form-control" id="mobile">
-  			</div>
-  			<div class="form-group">
     			<label for="email">Email address:</label>
     			<input type="text" class="form-control" id="email">
   			</div>

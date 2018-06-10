@@ -50,17 +50,17 @@
   		<img 
     		class = "img-responsive myimgstyle center-block" 
     		src = <c:out value = "${item.getBook().getThumbnail()}"/> 
-    		alt = <c:out value = "${item.getBook().getTitle()}"/>
+    		alt = <c:out value = "${item.getBook().getBooktitle()}"/>
     	> 
   	</div>	
     <div class = "col-sm-6">
     	<div class="row">
     				<div class="col-sm-4"><h5><b>Author</b></h5></div>
-					<div class="col-sm-8"><h5><c:out value = "${item.getBook().getAuthors()}"/></h5></div>
+					<div class="col-sm-8"><h5><c:out value = "${item.getBook().getBookauthor()}"/></h5></div>
 		</div>
 		<div class="row">
 					<div class="col-sm-4"><h5><b>Title</b></h5></div>
-					<div class="col-sm-8"><h5><c:out value = "${item.getBook().getTitle()}"/></h5></div>
+					<div class="col-sm-8"><h5><c:out value = "${item.getBook().getBooktitle()}"/></h5></div>
 		</div>
 		<div class="row">
 					<div class="col-sm-4"><h5><b>Offer Price</b></h5></div>

@@ -7,6 +7,9 @@ public class JsonStrings {
 	
 		public String jsonDetails;
 
+		public static String INAUTHOR			 = "inauthor";
+		public static String INTITLE			 = "intitle";
+		
 		public static String AUTHOR              = "author";
 		public static String AUTHORS             = "authors";
 		public static String ITEMS               = "items";

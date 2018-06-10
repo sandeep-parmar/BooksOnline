@@ -4,11 +4,17 @@ import java.io.Serializable;
 
 public class Book implements Serializable{
 	private static final long serialVersionUID = -451379059366096868L;
-	private String title;
-	private String authors;
-	private String description;
-	private String isbn;
+	private String booktitle;
+	private String bookauthor;
+	private String bookdesc;
+	private String bookid;  //isbn
 	private String thumbnail;
+	
+	public static String booktitleStr = "booktitle";
+	public static String bookauthorStr = "bookauthor";
+	public static String bookdescStr = "bookdesc";
+	public static String bookidStr = "bookid";
+	public static String thumbnailStr = "thumbnail";
 	
 	public Book() {
 		// TODO Auto-generated constructor stub
@@ -16,48 +22,48 @@ public class Book implements Serializable{
 
 	public Book(String title, String authors, String description, String isbn, String thumbnail) {
 		super();
-		this.title = title;
-		this.authors = authors;
-		this.description = description;
-		this.isbn = isbn;
+		this.booktitle = title;
+		this.bookauthor = authors;
+		this.bookdesc = description;
+		this.bookid = isbn;
 		this.thumbnail = thumbnail;
 	}
 
 	public Book(String bookid) {
 		super();
-		this.isbn = bookid;
+		this.bookid = bookid;
 	}
 
-	public String getTitle() {
-		return title;
+	public String getBooktitle() {
+		return booktitle;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public void setBooktitle(String booktitle) {
+		this.booktitle = booktitle;
 	}
 
-	public String getAuthors() {
-		return authors;
+	public String getBookauthor() {
+		return bookauthor;
 	}
 
-	public void setAuthors(String authors) {
-		this.authors = authors;
+	public void setBookauthor(String bookauthor) {
+		this.bookauthor = bookauthor;
 	}
 
-	public String getDescription() {
-		return description;
+	public String getBookdesc() {
+		return bookdesc;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setBookdesc(String bookdesc) {
+		this.bookdesc = bookdesc;
 	}
 
-	public String getIsbn() {
-		return isbn;
+	public String getBookid() {
+		return bookid;
 	}
 
-	public void setIsbn(String isbn) {
-		this.isbn = isbn;
+	public void setBookid(String bookid) {
+		this.bookid = bookid;
 	}
 
 	public String getThumbnail() {
@@ -70,7 +76,9 @@ public class Book implements Serializable{
 
 	@Override
 	public String toString() {
-		return "Book [title=" + title + ", authors=" + authors + ", description=" + description + ", isbn=" + isbn
-				+ ", thumbnail=" + thumbnail + "]";
+		return "Book [booktitle=" + booktitle + ", bookauthor=" + bookauthor + ", bookdesc=" + bookdesc + ", bookid="
+				+ bookid + ", thumbnail=" + thumbnail + "]";
 	}
+
+	
 }
