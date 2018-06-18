@@ -116,6 +116,15 @@
     <servlet-name>bookdetails</servlet-name>
     <url-pattern>/bookdetails</url-pattern>
   </servlet-mapping>
+   <servlet-mapping>
+    <servlet-name>category</servlet-name>
+    <url-pattern>/category</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>category</servlet-name>
+    <jsp-file>/category.jsp</jsp-file>
+  </servlet>
+  
   <listener>
     <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
   </listener>

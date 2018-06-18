@@ -17,6 +17,8 @@ public enum Errorcode {
 	EC_ACCOUNT_LOCKED(11),
 	
 	EC_FAILED_DB_UPDATE(12),
+	
+	EC_DATA_NOT_FOUND(13),
 	EC_MAX_ERROR(255);
 	
 	
@@ -34,7 +36,8 @@ public enum Errorcode {
 			"User credentials is unknown",
 			"User name or password is incorrect",
 			"User Account is locked",
-			"Unable to update record"
+			"Unable to update record",
+			"Information not found"
 		};
 	
 	private final int value;

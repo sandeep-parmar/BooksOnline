@@ -17,7 +17,7 @@
 <script src="../Js/basicB.js"></script>
 
 </head>
-<body>
+<body class="body-grey">
 
 <%@ include file="../navbar.jsp"%>
 
@@ -31,12 +31,13 @@
 <div id='loadgif' style="display: none">
   <!-- <img src='/BooksOnline/BootConfig/ajax-loader.gif'> -->
 </div>
-
+	
 
 <div class="container">
 
 <div class="row">
 	<div class="col-sm-6 searchContain">
+		
 		<div class="row">
 			<div class="col-sm-2 col-sm-offset-1">
 				<label for="sel1">Search By:</label>
@@ -73,7 +74,14 @@
  		</div>
 	</div>
 	
-	<div class="col-sm-6">
+	<div class="col-sm-6">						
+
+		
+		<div class="alert alert-success" id="alertbox" style="display: none">
+  			<button type="button" class="close" data-hide="alert">&times;</button>
+  			<strong id="alertdata">Success!</strong>		
+  		</div>
+		
 		<form method="post" class="hidden" id="bookform" action="/home.jsp">
 			<h3 class="text-center">Confirm a book</h3>
 			<div class="row pad_row hidden" id="bookImgRow">			
@@ -98,11 +106,19 @@
 				</div>
 			</div>
 			<div class="row pad_row">
-				<label for="isbn" class="col-sm-4  col-sm-offset-1 control-label">Isbn:</label>
+				<label for="isbn_13" class="col-sm-4  col-sm-offset-1 control-label">Isbn:</label>
 				<div class="col-sm-6">
-					<input type="text" class="form-control" id="isbn" name="isbn">
+					<input type="text" class="form-control" id="isbn_13" name="isbn_13">
 				</div>
 			</div>
+			
+			<input type="hidden" class="form-control" id="thumbnail" name="thumbnail" >
+			<input type="hidden" class="form-control" id="isbn_10" name="isbn_10" >
+			<input type="hidden" class="form-control" id="category" name="category">
+			<input type="hidden" class="form-control" id="publisher" name="publisher">
+			<input type="hidden" class="form-control" id="publisheddate" name="publisheddate">	
+			
+			
 			<hr>
 			<div class="row pad_row">
 				<label class="col-sm-4 col-sm-offset-1  control-label">Name:</label>
@@ -128,13 +144,13 @@
 				<div class="col-sm-6">
 					<input type="text" class="form-control" id="offPrice" name="offPrice">
 				</div>
-			</div>
-			<input type="hidden" class="form-control" id="thumbnail" name="thumbnail" >	
+			</div>			
 			<div class="row pad_row hidden" id="browseImgRow">
 				<div class="col-sm-6 col-sm-offset-5">			
   					<input type="file" name="bootfileinput" id="bootfileinput"/><br/><br/>						
 				</div>
 			</div>
+								
 			<div class="row pad_row">				
 				<div class="col-sm-6">
 					<button type="button" class="btn btn-primary" id="cancelbookdetails">Cancel</button>  			
@@ -147,7 +163,7 @@
 	</div>   		
 </div>	
 </div>
-
+		
 <!-- Footer -->
 <footer class="container-fluid bg-4 text-center">
   <p>Online second hand boosstore </p> 

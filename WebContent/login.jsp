@@ -18,11 +18,14 @@
 
 
 </head>
-<body>
+<body class = "body-grey">
 
 	<%@ include file="navbar.jsp"%>
 	
-	<div class="container loginsignup" id="logincontainer">
+	<div id='loadgif' style="display: none">
+  		<!-- <img src='/BooksOnline/BootConfig/ajax-loader.gif'> -->
+	</div>
+	<div class="container loginsignup container_margin" id="logincontainer">
 		<form method="post" id="signup" action="">
 			<h4> Login </h4>
   			<div class="form-group">
@@ -42,6 +45,10 @@
   			<div id="logincomment">
   			</div>
 		</form>
+		<div class="alert alert-success" id="alertbox" style="display: none">
+  			<button type="button" class="close" data-hide="alert">&times;</button>
+  			<strong id="alertdata">Success!</strong>		
+  		</div>
 	</div>
 	<!-- Footer -->
 	<footer class="container-fluid bg-4 text-center">

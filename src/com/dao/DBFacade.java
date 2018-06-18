@@ -2,9 +2,12 @@ package com.dao;
 
 import java.util.List;
 
+import org.json.JSONObject;
+
 import com.bean.Book;
 import com.bean.BookUser;
 import com.bean.User;
+import com.utility.JsonStrings;
 
 public class DBFacade {
 	
@@ -61,6 +64,23 @@ public class DBFacade {
 		}
 		 return list;
 	 }
+	 
+	 /*Used in category page*/
+	 public static List<BookUser> getBookAdListByCategory(String category)
+	 {		
+		 List<BookUser> list = bookUserDao.getBookList(category);		 
+		 for (BookUser bookUser : list) {		
+			 Book book = bookDao.geBook(bookUser.getBookid());
+		
+			 //Locality locality = localityDao.getLocality(bookUser.getPin());
+			 
+			 bookUser.setBook(book);
+			// bookUser.setLocality(locality);
+			 
+			// System.out.println(bookUser);
+		}
+		 return list;
+	 }
 
 	public static int saveUser(User user) {		
 		int status = userDao.saveUser(user);
@@ -82,19 +102,34 @@ public class DBFacade {
 	}
 
 	/*Save model 1 info*/
-	public static int saveBookUser(User user, String title, String author, String desc, String id, String thumbnail,
-		String lcity, String larea, String lname, String offPrice) {
+	public static int saveBookUser(User user,JSONObject userbookdetails) {
 		
 		System.out.println(user.toString());
-		//System.out.println();
+		
 		/*create required entities*/
-		Book book = new Book(title, author, desc, id, thumbnail);
-		//Locality locality = new Locality(lpin,lcity, larea);
-		BookUser bookUser = new BookUser(user.getEmail(), id, larea, lcity, lname, offPrice, 0);
+		Book book = new Book(userbookdetails.getString(JsonStrings.ISBN_13),
+							 userbookdetails.getString(JsonStrings.TITLE), 
+							 userbookdetails.getString(JsonStrings.AUTHOR), 
+							 userbookdetails.getString(JsonStrings.DESCRIPTION), 							 
+							 userbookdetails.getString(JsonStrings.THUMBNAIL),
+							 (userbookdetails.has(JsonStrings.CATEGORIES) ? userbookdetails.getString(JsonStrings.CATEGORIES):""),
+							 (userbookdetails.has(JsonStrings.ISBN_10) ? userbookdetails.getString(JsonStrings.ISBN_10):""),
+							 (userbookdetails.has(JsonStrings.PUBLISHER) ? userbookdetails.getString(JsonStrings.PUBLISHER):""),
+						     (userbookdetails.has(JsonStrings.PUBLISHER) ? userbookdetails.getString(JsonStrings.PUBLISHEDDATE):"")						
+							);
+		
+		BookUser bookUser = new BookUser(user.getEmail(),
+										userbookdetails.getString(JsonStrings.ISBN_13), 
+										userbookdetails.getString(JsonStrings.LLOCALITY), 
+										userbookdetails.getString(JsonStrings.LCITY), 
+										userbookdetails.getString(JsonStrings.LNAME), 
+										userbookdetails.getString(JsonStrings.OFFPRICE), 
+										0);
 		
 		/*save book and locality details*/
+		System.out.println("sssss_1");
 		saveBook(book);
-		//saveLocaity(locality);
+		//saveLocaity(locality);		
 		
 		/*save composite details in book_user table*/	
 		return bookUserDao.saveBookUser(bookUser);

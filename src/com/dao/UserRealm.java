@@ -103,8 +103,8 @@ public class UserRealm extends AuthorizingRealm{
 		 + "<a href=" + verificationUrl + ">Verify Account</a>";
 		
 		int result = Errorcode.EC_SUCCESS.getValue();		
-		if(user.getUsername().compareTo("testuser") != 0)
-			result = SendEmail(message, user.getEmail());
+		/*if(user.getUsername().compareTo("testuser") != 0)
+			result = SendEmail(message, user.getEmail());*/
 		
 		return result;
 	}

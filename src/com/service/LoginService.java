@@ -50,7 +50,7 @@ public class LoginService {
 		
 		JSONObject json = new JSONObject();
 		json.put(statusStr, status);
-		json.put(errmsgStr, response);
+		json.put(errmsgStr, response);		
 		
 		return json.toString();		
 	}
@@ -129,6 +129,7 @@ public class LoginService {
 		org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();			
 		
 		User usrDetails = DBFacade.isUserAccountActive(User.emailStr , user.getEmail());
+		
 		int accountActive = usrDetails.getActive();
 		
 		if(accountActive == 1)

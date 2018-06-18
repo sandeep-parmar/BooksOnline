@@ -31,45 +31,86 @@ $(document).ready(function(){
 					//$('#myModal2').modal('toggle');
 				})
 				.fail(function(res,status,error) {
-					console.log(res.responseText);
-					alert( res.responseText+" "+status+" "+error);
+					showDanger("Something went wrong, we are looking into it");
+					//console.log(res.responseText);
+					//alert( res.responseText+" "+status+" "+error);
 				});
 	}
 	
+	function setReadOnlyTrue()
+	{
+		$("#title").prop("readonly",true);
+		$("#author").prop("readonly",true);
+		$("#description").prop("readonly",true);
+		$("#isbn").prop("readonly",true);
+	}
+	
+	function setReadOnlyFalse()
+	{
+		$("#title").prop("readonly",false);
+		$("#author").prop("readonly",false);
+		$("#description").prop("readonly",false);
+		$("#isbn").prop("readonly",false);
+	}
+	
 	function getBookInfoAndSetModal1(searchKey, searchVal)
-	{		
-		//alert(host + port + webservice + bookservice + "/getbookinfo/" + searchKey + "/" + searchVal);
+	{				
 		$.get(host + port + webservice + bookservice + "/getbookinfo/" + searchKey + "/" + searchVal,
-				function(data, status){
-				$("#bookform").removeClass('hidden');
-				//console.log(data);
-				var title = data["title"];									
-				var author = data["author"];
-				var description = data["description"];
-				var thumbnail = data["thumbnail"];
-				var isbn = data["isbn"];
-									
-									 
-				$("#title").val(title);
-				$("#author").val(author);										 
-				$("#description").val(description);
-				$("#isbn").val(isbn);
-				$("#thumbnail").val(thumbnail);								 
-				$('#bookImg').attr('src',thumbnail);
-									 
-				$("#title").prop("readonly",true);
-				$("#author").prop("readonly",true);
-				$("#description").prop("readonly",true);
-				$("#isbn").prop("readonly",true);
-									 
-				//$('#myModal1').modal('toggle');
+				function(data, status){				
 				
+				var status= data[STATUS];
+	    		var errmsg = data[ERRMSG];
+	    		
+	    		if(status == 0)
+	    		{
+	    			var title = data["title"];									
+	    			var author = data["author"];
+	    			var description = data["description"];
+	    			var thumbnail = data["thumbnail"];
+	    			var isbn_13 = data["ISBN_13"];
+	    			var isbn_10 = data["ISBN_10"];
+	    			var publisher = data["publisher"];
+	    			var publisheddate = data["publishedDate"];
+	    			//alert(publisheddate);
+	    			var category = data["categories"];														
+
+	    			if(status == 0)
+	    			{										
+	    				$("#bookform").removeClass('hidden');				
+	    			}
+	    			else if(status == 13)
+	    			{								
+	    				$("#bookform").addClass('hidden');
+	    				resetBookForm();
+	    			}							
+
+	    			$("#title").val(title);
+	    			$("#author").val(author);										 
+	    			$("#description").val(description);
+	    			$("#isbn_13").val(isbn_13);	
+
+	    			$('#bookImg').attr('src',thumbnail);
+
+	    			/*hidden fields*/
+	    			$("#thumbnail").val(thumbnail);
+	    			$("#isbn_10").val(isbn_10);
+	    			$("#publisher").val(publisher);
+	    			$("#publisheddate").val(publisheddate);
+	    			$("#category").val(category);
+	    		}
+	    		else
+	    		{
+	    			showWarning(errmsg);
+	    		}
+				
+				setReadOnlyTrue();				 
 									 
 				})
 				.fail(function(res,status,error) {
-					console.log(res.responseText);
-					alert( res.responseText+" "+status+" "+error);
-				});
+					//console.log(res.responseText);
+					//alert( res.responseText+" "+status+" "+error);
+					showDanger("Something went wrong, we are looking into it");
+				});		
 	}
 	
 	function resetBookForm()
@@ -84,12 +125,30 @@ $(document).ready(function(){
 		$("#llocality").val("");
 		$("#offprice").val("");			
 		$('#bookImg').attr('src',"");
+		setReadOnlyFalse();	
+	}
+	function validateBookForm()
+	{
+		var title = $("#title").val();
+		var author = $("#author").val();										 
+		var desc = $("#description").val();
+		var isbn = $("#isbn_13").val();		
+		var lname = $("#lname").val();
+		var lcity = $("#lcity").val();
+		var llocality = $("#llocality").val();
+		var offprice = $("#offPrice").val();
+		if(!title || !author || !desc || !isbn || !lname || !lcity || !llocality || !offprice)
+		{
+			showWarning("Form fields can not be empty");
+			return 0;
+		}
+		return 1;	
 	}
 	
 	$("#searchIsbn").click(function(){
 		
 		/*This is because of using same form for submitting form data and browse image data*/
-		//$("#bookform").attr("enctype","application/x-www-form-urlencoded");
+		
 		$("#bookform").addClass('type1');
 		$("#bookImgRow").removeClass('hidden');
 		$("#browseImgRow").addClass('hidden');
@@ -107,10 +166,9 @@ $(document).ready(function(){
 		}
 		else
 		{		
-			//alert(searchKey+" "+searchVal);
-			//alert("sss-1");
-			getBookInfoAndSetModal1(searchKey, searchVal);
+			getBookInfoAndSetModal1(searchKey, searchVal);			
 		}
+		return false;
 	});
 	
 	$("#searchbytitle").click(function(){
@@ -134,6 +192,7 @@ $(document).ready(function(){
 	$("#cancelbookdetails").click(function() {
 		resetBookForm();
 		$("#bookform").addClass('hidden');
+		$("#manualfileloadbutton").show();
 		
 	});
 	
@@ -142,21 +201,24 @@ $(document).ready(function(){
 		//saving book
 		if($("#bookform").hasClass("type1"))
 		{
-			alert("bookform has type 1");
-			$("#bookform").attr("action",host + port + webservice + bookservice + "/savebook").submit();
+			if(validateBookForm())
+			{
+				//$("#bookform").attr("action",host + port + webservice + bookservice + "/savebook").submit();
 				
-			//$("#comment").html("book saved successfully");
-			alert("book type-1 saved successfully");	
-			$("#bookform").addClass("hidden");
-			//sleep(1000);
-			//location.replace("/BooksOnline/home.jsp");
+				submitNormalForm();
+				
+				$("#bookform").addClass("hidden");
+			}				
 		}	
 		else
 		{
 			alert("bookform do not have type 1");
-			submitcustomform();
+			
+			if(validateBookForm())
+			{
+				submitcustomform();
+			}
 		}
-		resetBookForm();
 	    return false;
 	});
 	
@@ -189,17 +251,22 @@ $(document).ready(function(){
 		    	{
 		    		if(active === 0)
 		    		{
-		    			$("#logincomment").html("Your Account is disabled,Please activate your acount by Clicking on verification link" +
-		    					"in your registered email ");
+		    			/*$("#logincomment").html("Your Account is disabled,Please activate your acount by Clicking on verification link" +
+		    					"in your registered email ");*/
+		    			showWarning("Your Account is disabled,Please activate your acount by Clicking on verification link" +
+		    					"in your registered email");
 		    		}
 		    		else
 		    		{
-		    			$("#logincomment").html(errmsg);
+		    			//$("#logincomment").html(errmsg);
+		    			showDanger(errmsg);
 		    		}
 		    	}		        
 		    },
-		    error: function (data){
-		        alert("user validation failed");        
+		    error: function (res,status,error){
+		        //alert("user validation failed");
+		    	//showDanger(res.responseText);
+		    	showDanger("Something went wrong, we are looking into it");
 		    }
 		});
 	});
@@ -213,7 +280,8 @@ $(document).ready(function(){
 					$(location).attr('href', '/BooksOnline/Secure/myads.jsp');
 				})
 				.fail(function(res,status,error) {
-					console.log(res.responseText);
+					showDanger("Something went wrong, we are looking into it");
+					//console.log(res.responseText);
 					//alert( res.responseText+" "+status+" "+error);
 				});
 	});
@@ -229,7 +297,8 @@ $(document).ready(function(){
 					$(location).attr('href', '/BooksOnline/Secure/myads.jsp');
 				})
 				.fail(function(res,status,error) {
-					console.log(res.responseText);
+					showDanger("Something went wrong, we are looking into it");
+					//console.log(res.responseText);
 					//alert( res.responseText+" "+status+" "+error);
 				});
 	});
@@ -257,15 +326,20 @@ $(document).ready(function(){
 			    	var status= data[STATUS];
 			    	var errmsg = data[ERRMSG];
 			    	if(!status){
-			    		$("#signupcomment").html("User registered successfully. Please verify your account by clicking on verification " +
+			    		/*$("#signupcomment").html("User registered successfully. Please verify your account by clicking on verification " +
+			    				"link sent to your registered email address");*/
+			    		showSuccess("User registered successfully. Please verify your account by clicking on verification " +
 			    				"link sent to your registered email address");
-			    		//$(location).attr('href', 'login.jsp');
+
 			    	}else{
-			    		$("#signupcomment").html(ermsg);
+			    		//$("#signupcomment").html(ermsg);
+			    		showWarning(errmsg);
 			    	}		  
 			    },
-			    error: function (data){
-			        alert("user registration failed");        
+			    error: function (res,status,error){
+			    	showDanger("Something went wrong, we are looking into it");
+			        //alert("user registration failed");
+			    	//showDanger(res.responseText);
 			    }
 		    });
 	});
@@ -304,32 +378,38 @@ $(document).ready(function(){
 		    dataType: 'json',
 		    contentType: "application/json; charset=utf-8",
 		    success: function (data){
-		    	var status= data["status"];
+		    	var status= data[STATUS];
 		    	var errmsg = data[ERRMSG];
 		    	
 		    	if(!status){
 		    		if(!profemail)
 		    		{
-		    			$("#profilecomment").html("user profile is updated successfully");
+		    			showSuccess("user profile is updated successfully");
+		    			//$("#profilecomment").html("user profile is updated successfully");
 		    		}
 		    		else
 		    		{
-		    			$("#profilecomment").html("user email is updated successfully. verification link has been sent to your new email");
+		    			//$("#profilecomment").html("user email is updated successfully. verification link has been sent to your new email");
+		    			showSuccess("user email is updated successfully. verification link has been sent to your new email");
 		    		}
 		    		
 		    		//$(location).attr('href', 'login.jsp');
 		    	}else{
-		    		$("#profilecomment").html(errmsg);
+		    		//$("#profilecomment").html(errmsg);
+		    		showDanger(errmsg);
 		    	}		  
 		    },
-		    error: function (data){
-		        alert("user profile update failed");        
+		    error: function (res,status,error){
+		    	showDanger("Something went wrong, we are looking into it");
+		        //alert("user profile update failed");
+		    	//showDanger(res.responseText);
 		    }
 	    });
 		}
 		else
 		{
-	  		$("#profilecomment").html("Please modify proper field to update");
+	  		//$("#profilecomment").html("Please modify proper field to update");
+			showWarning("Please modify proper field to update");
 		}
 });
 	
@@ -353,19 +433,22 @@ $(document).ready(function(){
 		var fpemail = $("#fpemail").val();
 		$.get(host + port + webservice + loginservice + "/forgetpassword/" + fpemail,
 				function(data, status){					
-						var ret= data["status"];						
+						var status = data[STATUS];
+						var error = data[ERROMSG];
 						if(status === "success")
 						{
 							if(ret == 0){
-								$("#fpcomment").html("Password reset link has been sent to your email");							
+								showSuccess("Password reset link has been sent to your email");							
 							}else{
-								$("#fpcomment").html("Invalid email");
+								showDanger(error);
 							}	
 						}
 				})
 				.fail(function(res,status,error) {
-					console.log(res.responseText);
-					alert( res.responseText+" "+status+" "+error);
+					showDanger("Something went wrong, we are looking into it");
+					//showDanger(res.responseText);
+					/*console.log(res.responseText);
+					alert( res.responseText+" "+status+" "+error);*/
 				});		    	
 	});
 	
@@ -377,27 +460,53 @@ $(document).ready(function(){
 		var respasswd = $("#respassword").val();
 		$.get(host + port + webservice + loginservice + "/resetpassword/" + uuid + "/" + respasswd,
 				function(data, status){					
-						var ret= data["status"];						
+						var status = data[STATUS];
+						var error  = data[ERRMSG];
 						if(status === "success")
 						{
-							if(ret == 0){
-								$("#rescomment").html("Password has been reset successfully");							
+							if(status == 0){
+								showSuccess("Password has been reset successfully");							
 							}else{
-								$("#rescomment").html("Password reset successful");
+								showWarning(error);
 							}	
 						}
 				})
 				.fail(function(res,status,error) {
-					console.log(res.responseText);
-					alert( res.responseText+" "+status+" "+error);
+					showDanger("Something went wrong, we are looking into it");
+					//console.log(res.responseText);
+					//alert( res.responseText+" "+status+" "+error);
 				});		    	
 	});
 		
-	
-	function submitcustomform()
+	/*Normal form*/
+	function submitNormalForm()
 	{
-		 //	alert("sandeep");
-	 	console.log("sandeep");
+		
+		$.ajax({
+            type: "POST",       
+            contentType: "application/x-www-form-urlencoded",
+            url: host + port + webservice + bookservice + "/savebook",
+            data: $("#bookform").serialize(),
+            dataType: 'json',
+            success: function (data) {              	
+            	$("#bookform").addClass("hidden");
+            	showSuccess(data[ERRMSG]);            	
+                //console.log("SUCCESS : ", data[ERRMSG]);
+            },
+            error: function (res,status,error) {
+            
+            	showDanger(res.responseText);
+            	//alert("some error:"+e);
+                //console.log("ERROR : ", e);
+
+            }
+        });
+	}
+	
+	/*Upload custom images*/
+	function submitcustomform()
+	{		
+	 	
         //stop submit the form, we will post it manually.
 
         // Get form
@@ -423,80 +532,32 @@ $(document).ready(function(){
             cache: false,
             timeout: 600000,
             success: function (data) {
-
-                //$("#brresult").text(data);
+                         	
+            	alert(data[ERRMSG]);
+            	showSuccess(data[ERRMSG]);
             	$("#bookform").addClass("hidden");
-                console.log("SUCCESS : ", data);
+                //console.log("SUCCESS : ", data);
                 //$("#submitcustomdata").prop("disabled", false);
 
             },
-            error: function (e) {
-
-                //$("#brresult").text(e.responseText);
-            	alert("book saved successfully");
-                console.log("ERROR : ", e);
-                //$("#submitcustomdata").prop("disabled", false);
-
+            error: function (res,status,error) {
+            	showDanger(res.responseText);
+            	//alert("book saved successfully");
+                //console.log("ERROR : ", e);
             }
         });
 	}
-	/*Upload custom images*/
-	 $("#submitcustomdata").click(function (event) {
-
-		 //	alert("sandeep");
-		 	console.log("sandeep");
-	        //stop submit the form, we will post it manually.
-	        event.preventDefault();
-
-	        // Get form
-	        var form = $('#customedataform')[0];
-
-			// Create an FormData object 
-	        var data = new FormData(form);
-
-			// If you want to add an extra field for the FormData
-	        //data.append("CustomField", "This is some extra data, testing");
-
-			// disabled the submit button
-	        $("#submitcustomdata").prop("disabled", true);
-	        
-	        	
-	        $.ajax({
-	            type: "POST",
-	            enctype: 'multipart/form-data',
-	            url: host + port + webservice + bookservice + "/brbook",
-	            data: data,
-	            processData: false,
-	            contentType: false,
-	            cache: false,
-	            timeout: 600000,
-	            success: function (data) {
-
-	                $("#brresult").text(data);
-	                console.log("SUCCESS : ", data);
-	                $("#submitcustomdata").prop("disabled", false);
-
-	            },
-	            error: function (e) {
-
-	                $("#brresult").text(e.responseText);
-	                console.log("ERROR : ", e);
-	                $("#submitcustomdata").prop("disabled", false);
-
-	            }
-	        });
-
-	    });
 
 	 $("#manualfileloadbutton").click(function (event) {
-		// alert("parmar");
-		//$("#customedataform").toggleClass('hidden');
+
+
 		$("#bookImgRow").addClass('hidden');
 		$("#browseImgRow").removeClass('hidden');
-		
-		//$("#bookform").attr("enctype","multipart/form-data");
+				
 		$("#bookform").removeClass('type1');
 		$("#bookform").removeClass('hidden');
+		resetBookForm();
+		
 		$("#manualfileloadbutton").hide();
 	 });
 		 
@@ -512,8 +573,6 @@ $(document).ready(function(){
 		    	}
 		});
 
-	 
-	 
 	 // easy auto complete
 	 			 		
 	 		
@@ -550,14 +609,45 @@ $(document).ready(function(){
 		 
 				
 			$(document).ajaxStart(function(){
-					 // Show image container
+					 // Show image container					
 					$("#loadgif").show();
 			});
 			$(document).ajaxComplete(function(){
-					 // Hide image container
-					$("#loadgif").hide();
+					 // Hide image container				
+					$("#loadgif").hide();					
 			});
 										
+	  function showSuccess(msg)
+	  {		  
+		  $("#alertbox").removeClass("alert-danger");
+		  $("#alertbox").removeClass("alert-warning");
+		  $("#alertbox").addClass("alert-success");
+		  $("#alertdata").html(msg);
+		  $("#alertbox").show();
+	  }
+	  function showWarning(msg)
+	  {
+		  $("#alertbox").removeClass("alert-danger");
+		  $("#alertbox").removeClass("alert-success");
+		  $("#alertbox").addClass("alert-warning");
+		  $("#alertdata").html(msg);
+		  $("#alertbox").show();
+	  }
+	  function showDanger(msg)
+	  {
+		  $("#alertbox").removeClass("alert-warning");
+		  $("#alertbox").removeClass("alert-success");
+		  $("#alertbox").addClass("alert-danger");
+		  $("#alertdata").html(msg);
+		  $("#alertbox").show();
+	  }
+		
+	  /*for hiding and showing alert info*/
+	  $(function(){
+		    $("[data-hide]").on("click", function(){
+		        $(this).closest("." + $(this).attr("data-hide")).hide();
+		    });
+		});
 			
 	  function validateEmail(sEmail) {
 	      var filter = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;

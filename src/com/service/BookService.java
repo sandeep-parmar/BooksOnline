@@ -66,7 +66,6 @@ public class BookService {
 		return json.toString();
 	}
 	
-	
 	/*
 	 * Performing a search You can perform a volumes search by sending an HTTP GET request to the following URI:
 		https://www.googleapis.com/books/v1/volumes?q=search+terms
@@ -92,7 +91,7 @@ public class BookService {
 		String charset = "UTF-8";
 	 
 		int status = Errorcode.EC_SUCCESS.getValue();
-		
+		System.out.println(query);
 		URL url;
 		String str;
 		String jsonres = "";		
@@ -149,48 +148,153 @@ public class BookService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getBookDetails(@PathParam("param1") String key, @PathParam("param2") String value)
 	{				
+				
+		int status = Errorcode.EC_SUCCESS.getValue();
+		int iter = 0;		
 		if(key.compareTo("TITLE") == 0 || key.compareTo("title")==0)
 		{
 			key = JsonStrings.INTITLE;
 		}
-		String jsonres= sendBookRequest(key, value);
-		
-		JsonStrings jsonSTR = new JsonStrings(jsonres);
-		
-		JSONObject returnJson = null;
-		
-		JSONArray jsonArr = jsonSTR.getItemsArray();
-		
-		JSONObject obj0 = jsonSTR.getIthObjectFromArray(jsonArr, 0);
-		
-		JSONObject jsonvolume = jsonSTR.getVolumesInfoFromObject(obj0);
-		
-		JSONArray authors = jsonSTR.getAuthorsArrayFromVolumeObject(jsonvolume);
-		System.out.println(authors);
-		JSONObject imagelinks = jsonSTR.getImageLinksFromVolumeObject(jsonvolume);
-		
-		String authorlist = "";
-		for(int i = 0; i < authors.length(); i++)
+		else if(key.compareTo("ISBN") == 0)
 		{
-			authorlist += authors.getString(i) + " ";
+			key = JsonStrings.INISBN;
 		}
+		do
+		{
+			String jsonres= sendBookRequest(key, value);
+			if(jsonres.isEmpty())
+			{
+				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
+				break;
+			}
 		
-		String isbn = jsonSTR.getIsbnFromVolumeObject(jsonvolume);
-		
-		String title = jsonSTR.getTitleFromVolumeObject(jsonvolume);
-		
-		String thumbnail = jsonSTR.getThumbnailFromImageLinks(imagelinks);
-		
-		String description = jsonSTR.getDescriptionFromVolumeObject(jsonvolume);
-		
-		returnJson = jsonSTR.getNewJsonObject();
-		
-		returnJson.put(JsonStrings.TITLE, title);
-		returnJson.put(JsonStrings.AUTHOR, authorlist);
-		returnJson.put(JsonStrings.DESCRIPTION, description);
-		returnJson.put(JsonStrings.THUMBNAIL, thumbnail);
-		returnJson.put(JsonStrings.ISBN, isbn);
-		return returnJson.toString();
+			JsonStrings jsonSTR = new JsonStrings(jsonres);
+
+			JSONObject returnJson = null;
+
+			JSONArray jsonArr = jsonSTR.getItemsArray();
+			if(jsonArr == null)
+			{
+				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
+				break;
+			}
+
+			JSONObject obj0 = jsonSTR.getIthObjectFromArray(jsonArr, 0);
+			if(obj0 == null)
+			{
+				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
+				break;
+			}
+			
+			JSONObject jsonvolume = jsonSTR.getVolumesInfoFromObject(obj0);
+			if(jsonvolume == null)
+			{
+				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
+				break;
+			}
+			JSONArray authors = jsonSTR.getAuthorsArrayFromVolumeObject(jsonvolume);
+			if(authors == null)
+			{
+				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
+				break;
+			}
+			
+			JSONObject imagelinks = jsonSTR.getImageLinksFromVolumeObject(jsonvolume);
+			if(imagelinks == null)
+			{
+				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
+				break;
+			}
+			
+			String authorlist = "";
+			if(authors != null)
+			{			
+				for(int i = 0; i < authors.length(); i++)
+				{
+					authorlist += authors.getString(i) + " ";
+				}
+			}
+
+			String isbn = jsonSTR.getIsbnFromVolumeObject(jsonvolume);
+			if(isbn == null)
+			{
+				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
+				break;
+			}
+			
+			String isbn10 = jsonSTR.getIsbn10FromVolumeObject(jsonvolume);
+			if(isbn10 == null)
+			{
+				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
+				break;
+			}
+			
+			String publisher = jsonSTR.getPublisherFromVolumeObject(jsonvolume);
+			if(publisher == null)
+			{
+				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
+				break;
+			}
+			
+			String publishedDate = jsonSTR.getPublishedDateFromVolumeObject(jsonvolume);
+			if(publishedDate == null)
+			{
+				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
+				break;
+			}
+			
+			String category = jsonSTR.getCategoryFromVolumeObject(jsonvolume);
+			if(category == null)
+			{
+				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
+				break;
+			}
+			
+			String title = jsonSTR.getTitleFromVolumeObject(jsonvolume);
+			if(title == null)
+			{
+				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
+				break;
+			}
+						
+			String thumbnail = jsonSTR.getThumbnailFromImageLinks(imagelinks);
+			if(thumbnail == null)
+			{
+				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
+				break;
+			}
+			
+			String description = jsonSTR.getDescriptionFromVolumeObject(jsonvolume);
+			if(description == null)
+			{
+				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
+				break;
+			}
+						
+			returnJson = jsonSTR.getNewJsonObject();
+
+			returnJson.put(JsonStrings.TITLE, title);
+			returnJson.put(JsonStrings.AUTHOR, authorlist);
+			returnJson.put(JsonStrings.DESCRIPTION, description);
+			returnJson.put(JsonStrings.THUMBNAIL, thumbnail);
+			returnJson.put(JsonStrings.ISBN_13, isbn);
+			
+			returnJson.put(JsonStrings.ISBN_10, isbn10);
+			returnJson.put(JsonStrings.PUBLISHER, publisher);
+			returnJson.put(JsonStrings.PUBLISHEDDATE, publishedDate);
+			returnJson.put(JsonStrings.CATEGORIES, category);
+			
+			String response = Errorcode.errmsgstr[status];
+
+			returnJson.put(statusStr, status);
+			returnJson.put(errmsgStr, response);
+			
+			System.out.println(returnJson.toString());
+			return returnJson.toString();
+			
+		}while(iter != 0);
+		System.out.println("status:"+status);
+		return sendResponse(status);
 	}
 	
 	@POST
@@ -198,8 +302,12 @@ public class BookService {
 	public String saveBook(@FormParam("title") String title,
 			@FormParam("author") String author,
 			@FormParam("description") String desc,
-			@FormParam("isbn") String id,
-			@FormParam("thumbnail") String thumbnail,
+			@FormParam("isbn_13") String id,
+			@FormParam("isbn_10") String isbn_10,
+			@FormParam("publisher") String publisher,
+			@FormParam("publisheddate") String publisheddate,
+			@FormParam("category") String category,
+			@FormParam("thumbnail") String thumbnail,			
 			@FormParam("lname") String lname,
 			@FormParam("lcity") String lcity,
 			@FormParam("llocality") String llocality,
@@ -208,12 +316,34 @@ public class BookService {
 			)			
 	{		
 		int status = Errorcode.EC_SUCCESS.getValue();
-		System.out.println(title+" "+author+" "+desc+" "+id+" "+thumbnail+" "+lname+" "+lcity+" "+llocality+" "+offPrice);
+		System.out.println("thumbnail:"+thumbnail+",publisher:"+publisher+",publisheddate:"+publisheddate+",category:"+category);
 		
 		/*Get current logged in user object from shiro*/
 		User user = UserRealm.getLoggedInUser();
-		System.out.println("aaaa");
-		status = DBFacade.saveBookUser(user, title, author, desc, id, thumbnail, lcity, llocality, lname , offPrice);
+		//System.out.println("aaaa");
+		
+		JsonStrings jsonSTR = new JsonStrings();
+		JSONObject json = jsonSTR.getNewJsonObject();
+		
+		json.put(JsonStrings.TITLE, title);
+		json.put(JsonStrings.AUTHOR, author);
+		json.put(JsonStrings.DESCRIPTION, desc);
+		json.put(JsonStrings.ISBN_13, id);
+		
+		/*hidden fields*/
+		json.put(JsonStrings.ISBN_10, isbn_10);
+		json.put(JsonStrings.PUBLISHER, publisher);
+		json.put(JsonStrings.PUBLISHEDDATE, publisheddate);
+		json.put(JsonStrings.CATEGORIES, category);
+		json.put(JsonStrings.THUMBNAIL, thumbnail);
+		
+		/*local user details*/
+		json.put(JsonStrings.LNAME, lname);
+		json.put(JsonStrings.LCITY, lcity);
+		json.put(JsonStrings.LLOCALITY, llocality);
+		json.put(JsonStrings.OFFPRICE, offPrice);
+		
+		status = DBFacade.saveBookUser(user, json);
 		return sendResponse(status);
 	}
 	
@@ -290,71 +420,88 @@ public class BookService {
 	@POST
 	@Path("/brbook")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public Response saveBrowseBook(
+	public String saveBrowseBook(
 			@FormDataParam("bootfileinput") InputStream uploadedInputStream,
 			@FormDataParam("bootfileinput") FormDataContentDisposition fileDetail,
 			@FormDataParam("title") String title,
 			@FormDataParam("author") String author,
 			@FormDataParam("description") String desc,
-			@FormDataParam("isbn") String id,					
+			@FormDataParam("isbn_13") String id,
+			@FormDataParam("isbn_10") String isbn_10,
+			@FormDataParam("publisher") String publisher,
+			@FormDataParam("publishedDate") String publisheddate,
+			@FormDataParam("category") String category,
 			@FormDataParam("lname") String lname,
 			@FormDataParam("lcity") String lcity,
-			@FormDataParam("llocality") String llocality,
-			//@FormDataParam("lpin") String lpin,
+			@FormDataParam("llocality") String llocality,			
 			@FormDataParam("offPrice") String offPrice
 			)			
 	{		
-		/*System.out.println("title:"+title+" , author:"+author+ ", desc"+desc);
-		System.out.println("isbn"+ id);
-		System.out.println("lname"+ lname);
-		System.out.println("lphno"+ lphno);
-		System.out.println("lcity"+ lcity);
-		System.out.println("locality"+ llocality);
-		System.out.println("lpin"+ lpin);
-		System.out.println("offer price"+ offPrice);
-		System.out.println("file name"+ fileDetail.getFileName());*/
-//		String uploadDirectory = (String) context.getInitParameter("dataStoragePath");
-		String UPLOAD_FOLDER = this.context.getInitParameter("uploadfolder");
-		
-		// check if all form parameters are provided
 				
+		int status = Errorcode.EC_SUCCESS.getValue();
+		int iter = 0;
+		do
+		{
+			try {
+				String UPLOAD_FOLDER = this.context.getInitParameter("uploadfolder");
+
+				// check if all form parameters are provided
+
 				if (uploadedInputStream == null || fileDetail == null)
-					return Response.status(400).entity("Invalid form data").build();
-				
+				{	
+					status = Errorcode.EC_DATA_NOT_FOUND.getValue();
+					break;
+					//return Response.status(400).entity("Invalid form data").build();
+				}
+
 				// create our destination folder, if it not exists
-				try {
-					
-					createFolderIfNotExists(UPLOAD_FOLDER);
-					
-				} catch (SecurityException se) {
-					
-					return Response.status(500)
-							.entity("Can not create destination folder on server")
-							.build();
-				}
-				
+
+				createFolderIfNotExists(UPLOAD_FOLDER);								
+
 				String uploadedFileLocation = UPLOAD_FOLDER + fileDetail.getFileName();
-				
-				try {
-				
-					saveToFile(uploadedInputStream, uploadedFileLocation);
-				} catch (IOException e) {
-					
-					return Response.status(500).entity("Can not save file").build();
-				}
-				
+
+				saveToFile(uploadedInputStream, uploadedFileLocation);				
+
 				/*Actual operation*/
 				System.out.println("Image location:" + uploadedFileLocation);
 				User user = UserRealm.getLoggedInUser();
-				DBFacade.saveBookUser(user, title, author, desc, id, uploadedFileLocation,lcity, llocality, lname , offPrice);
+
+				JsonStrings jsonSTR = new JsonStrings();
+				JSONObject json = jsonSTR.getNewJsonObject();
+
+				json.put(JsonStrings.TITLE, title);
+				json.put(JsonStrings.AUTHOR, author);
+				json.put(JsonStrings.DESCRIPTION, desc);
+				json.put(JsonStrings.ISBN_13, id);
+
+				/*hidden fields*/
+				json.put(JsonStrings.THUMBNAIL, uploadedFileLocation);
+
+				/*local user details*/
+				json.put(JsonStrings.LNAME, lname);
+				json.put(JsonStrings.LCITY, lcity);
+				json.put(JsonStrings.LLOCALITY, llocality);
+				json.put(JsonStrings.OFFPRICE, offPrice);
+
+
+				status = DBFacade.saveBookUser(user, json);
+		
+			} catch (SecurityException | IOException e) {
 				
+				/*return Response.status(500)
+						.entity("Can not create destination folder on server")
+						.build();*/
+				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
+			}
+		}while(iter!=0);
+				
+		return sendResponse(status);
+				
+				/*
 				return Response.status(200)
-						.entity("File saved to " + uploadedFileLocation).build();
-			
+						.entity("File saved to" + uploadedFileLocation).build();*/
 	}
-	
-	
-	
+		
 	/**
 	 * Utility method to save InputStream data to target location/file
 	 * 
@@ -393,7 +540,7 @@ public class BookService {
 			theDir.mkdir();
 		}
 	}
-	
+
 	public static void sendDetailsOfBookAd(BookAdBean bd){
 		System.out.println("called sendDetailsOfBookAd:"+bd.getBooktitle());
 		
