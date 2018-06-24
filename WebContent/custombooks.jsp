@@ -53,11 +53,11 @@
     		<div class="panel-footer">
 				<div class="row">
 					<div class="col-sm-4"><h5 class="h5-spec"><b>Author</b></h5></div>
-					<div class="col-sm-8"><h5 class="h5-spec"><c:out value = "${item.getBook().getAuthors()}"/></h5></div>
+					<div class="col-sm-8"><h5 class="h5-spec"><c:out value = "${item.getBook().getBookauthor()}"/></h5></div>
 				</div>
 				<div class="row">
 					<div class="col-sm-4"><h5 class="h5-spec"><b>Title</b></h5></div>
-					<div class="col-sm-8"><h5 class="h5-spec"><c:out value = "${item.getBook().getTitle()}"/></h5></div>
+					<div class="col-sm-8"><h5 class="h5-spec"><c:out value = "${item.getBook().getBooktitle()}"/></h5></div>
 				</div>
 				<div class="row">
 					<div class="col-sm-4"><h5 class="h5-spec"><b>Offer Price</b></h5></div>
@@ -65,11 +65,11 @@
 				</div>
 				<div class="row">
 					<div class="col-sm-4"><h5 class="h5-spec"><b>City</b></h5></div>
-					<div class="col-sm-8"><h5 class="h5-spec"><c:out value = "${item.getLocality().getCity()}"/></h5></div>
+					<div class="col-sm-8"><h5 class="h5-spec"><c:out value = "${item.getCity()}"/></h5></div>
 				</div>
 				<div class="row">
 					<div class="col-sm-4"><h5 class="h5-spec"><b>Locality</b></h5></div>
-					<div class="col-sm-8"><h5 class="h5-spec"><c:out value = "${item.getLocality().getArea()}"/></h5></div>
+					<div class="col-sm-8"><h5 class="h5-spec"><c:out value = "${item.getArea()}"/></h5></div>
 				</div>								
     		</div>
   		</div>

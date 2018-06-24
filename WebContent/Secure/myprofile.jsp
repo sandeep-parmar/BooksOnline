@@ -20,11 +20,6 @@
 
 <script src="../Js/basicB.js"></script>
 
-<script>
-
-</script>
-
-
 </head>
 <body>
 
@@ -46,20 +41,7 @@
     			 		</div> 
     				</div>
     			</div>    			
-  			</div>  	
-  			<div class="form-group">
- 	  			<div class="row">
-    				<label for="profmobile" class = "col-sm-4">Mobile:</label>
-    				<div class="col-sm-8">
-    					<div class="input-group">
-    						<span class="input-group-addon">
-        						<input type="checkbox" class="checked" aria-label="..." id="mobilecheckbox" name="mobilecheckbox" value="profmobile">
-      						</span>
-    			 			<input type="text" class="form-control" disabled="true" id="profmobile" name="profmobile" value="<shiro:principal property="mobile"/>">
-    			 		</div> 
-    				</div>
-    			</div>    			
-  			</div>
+  			</div>  	  		
   			<div class="form-group">
  	  			<div class="row">
     				<label for="profemail" class = "col-sm-4">Email: </span></label>

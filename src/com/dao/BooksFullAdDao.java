@@ -31,7 +31,8 @@ public class BooksFullAdDao implements IBaseDao{
 	}
 	
 	public String getSelectQueryForTwoField(String field1, String field2) {
-		String sql = "SELECT b.bookid, b.booktitle,b.bookauthor,b.bookdesc,b.thumbnail,bu.name, bu.price, bu.soldstatus, u.email, l.pin, l.city,l.area FROM book_user bu INNER JOIN books b ON (bu.bookid = b.bookid) INNER JOIN USER u ON (bu.uid = u.mobile) INNER JOIN locality l ON (bu.pin = l.pin) WHERE bu.uid =" + field1 + "  AND bu.bookid = " +field2;
+		String sql = "SELECT b.bookid, b.booktitle,b.bookauthor,b.bookdesc,b.thumbnail,bu.name, bu.price, bu.soldstatus, u.email, bu.city,bu.area FROM book_user bu INNER JOIN books b ON (bu.bookid = b.bookid) INNER JOIN USER u ON (bu.uid = u.email) WHERE bu.uid =\"" + field1 + "\"  AND bu.bookid = \"" +field2+"\"";
+		System.out.println(sql.toString());
 		return sql;
 	}
 
@@ -54,8 +55,7 @@ public class BooksFullAdDao implements IBaseDao{
 									 rs.getString("name"), 
 									 rs.getInt("price"),
 									 rs.getInt("soldstatus"),
-									 rs.getString("email"), 
-									 rs.getInt("pin"),
+									 rs.getString("email"), 									 
 									 rs.getString("city"), 
 									 rs.getString("area")
 									);

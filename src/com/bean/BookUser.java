@@ -5,7 +5,27 @@ import java.io.Serializable;
 public class BookUser implements Serializable {
 
 	Book book;
-	Locality locality;
+	//Locality locality;
+
+	String uid;
+	String bookid;
+	String area;
+	String city;
+	
+	String name;
+	//String phone;
+	String price;
+	int soldstatus;
+	
+	public static String uidStr = "uid";
+	public static String bookidStr = "bookid";
+	//public static String pinStr = "pin";
+	public static String areaStr = "area";
+	public static String cityStr = "city";
+	public static String nameStr = "name";
+	//public static String phoneStr = "phone";
+	public static String priceStr = "price";
+	public static String soldstatusStr = "soldstatus";
 	
 	public Book getBook() {
 		return book;
@@ -15,6 +35,22 @@ public class BookUser implements Serializable {
 		this.book = book;
 	}
 
+	public String getArea() {
+		return area;
+	}
+
+	public void setArea(String area) {
+		this.area = area;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+/*
 	public Locality getLocality() {
 		return locality;
 	}
@@ -22,25 +58,19 @@ public class BookUser implements Serializable {
 	public void setLocality(Locality locality) {
 		this.locality = locality;
 	}
-
-	String uid;
-	String bookid;
-	int pin;
-	
-	String name;
-	String phone;
-	String price;
-	int soldstatus;
+*/
 	public BookUser() {
 	}
 	
-	public BookUser(String uid, String bookid, int pin, String name, String phone, String price, int soldstatus) {
+	public BookUser(String uid, String bookid, String area, String city, String name, String price, int soldstatus) {
 		super();
 		this.uid = uid;
 		this.bookid = bookid;
-		this.pin = pin;
+		//this.pin = pin;
+		this.area = area;
+		this.city = city;
 		this.name = name;
-		this.phone = phone;
+		//this.phone = phone;
 		this.price = price;
 		this.soldstatus = soldstatus;
 	}
@@ -60,7 +90,7 @@ public class BookUser implements Serializable {
 	public void setBookid(String bookid) {
 		this.bookid = bookid;
 	}
-
+/*
 	public int getPin() {
 		return pin;
 	}
@@ -68,19 +98,20 @@ public class BookUser implements Serializable {
 	public void setPin(int pin) {
 		this.pin = pin;
 	}
-
+*/
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
+	/*
 	public String getPhone() {
 		return phone;
 	}
 	public void setPhone(String phone) {
 		this.phone = phone;
-	}
+	}*/
 	public String getPrice() {
 		return price;
 	}
@@ -96,10 +127,8 @@ public class BookUser implements Serializable {
 
 	@Override
 	public String toString() {
-		return "BookUser [book=" + book + ", locality=" + locality + ", uid=" + uid + ", bookid=" + bookid + ", pin="
-				+ pin + ", name=" + name + ", phone=" + phone + ", price=" + price + ", soldstatus=" + soldstatus + "]";
+		return "BookUser [book=" + book + ", uid=" + uid + ", bookid=" + bookid + ", area=" + area + ", city=" + city
+				+ ", name=" + name + ", price=" + price + ", soldstatus=" + soldstatus + "]";
 	}
-
-	
 	
 }

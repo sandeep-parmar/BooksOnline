@@ -29,9 +29,16 @@ public class BookUserDao implements IBaseDao {
 		return sql;
 	}
 	
+	public String getSelectQueryForCategory() {
+		String sql = "select * from book_user where bookid in (select bookid from books where category like ?) and soldstatus = 0";
+		return sql;
+	}
+	
 	@Override
 	public String getInsertQuery() {
-		String sql = "insert into book_user(uid, bookid, pin, name, phone, price, soldstatus) values(?,?,?,?,?,?,?)";
+		String sql = "insert into book_user(uid, bookid, name, price, soldstatus, city, area) select * from (select ? as uid, ? as bid, ? as name, ? price, ? as st, ? as cty, ? as ar) as tmp"
+				+ " where not exists ("
+				+ " select uid,bookid from book_user where uid = ? and bookid = ?) limit 1";
 		return sql;
 	}
 	
@@ -57,18 +64,24 @@ public class BookUserDao implements IBaseDao {
 			PreparedStatement preparedStmt = conn.prepareStatement(sql);
 			preparedStmt.setString(1, bookUser.getUid());
 			preparedStmt.setString(2, bookUser.getBookid());
-			preparedStmt.setInt(3, bookUser.getPin());
-			preparedStmt.setString(4, bookUser.getName());
-			preparedStmt.setString(5, bookUser.getPhone());
-			preparedStmt.setString(6, bookUser.getPrice());
-			preparedStmt.setInt(7, bookUser.getSoldstatus());
+			//preparedStmt.setInt(3, bookUser.getPin());
+			preparedStmt.setString(3, bookUser.getName());
+			//preparedStmt.setString(5, bookUser.getPhone());
+			preparedStmt.setString(4, bookUser.getPrice());
+			preparedStmt.setInt(5, bookUser.getSoldstatus());
+			preparedStmt.setString(6, bookUser.getCity());
+			preparedStmt.setString(7, bookUser.getArea());
+			
+			preparedStmt.setString(8, bookUser.getUid());
+			preparedStmt.setString(9, bookUser.getBookid());
+			
 			preparedStmt.execute();
 			
 		}catch (SQLIntegrityConstraintViolationException e) {
 			status = Errorcode.EC_FAILED_DB_UPDATE.getValue();
 			System.out.println(e.toString());
 		}
-		catch(SQLException e) {
+		catch(SQLException e) {			
 			status = Errorcode.EC_FAILED_DB_UPDATE.getValue();
 			System.out.println(e.toString());
 		}
@@ -77,7 +90,41 @@ public class BookUserDao implements IBaseDao {
 		}
 		return status;
 	}
-
+	
+	/*Get list of books based on category*/
+	public List<BookUser> getBookList(String category) {
+		List<BookUser> list = new ArrayList<BookUser>(0);
+		ResultSet rs = null;		
+		String sql = getSelectQueryForCategory();
+		try {
+			Connection conn = ConnectionHandler.getConnection();
+			PreparedStatement preparedStmt = conn.prepareStatement(sql);
+			preparedStmt.setString(1, "%"+category+"%");
+			System.out.println(preparedStmt.toString());
+			rs = preparedStmt.executeQuery();			
+			while(rs.next())
+			{
+				BookUser bookUser = new BookUser(rs.getString(BookUser.uidStr),
+												 rs.getString(BookUser.bookidStr),
+												 rs.getString(BookUser.areaStr),
+												 rs.getString(BookUser.cityStr),
+												 rs.getString(BookUser.nameStr), 
+												 //rs.getString(BookUser.phoneStr), 
+												 rs.getString(BookUser.priceStr), 
+												 rs.getInt(BookUser.soldstatusStr)
+												 ); 
+				list.add(bookUser);
+			}
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}finally
+		{
+			ConnectionHandler.closeConnection();
+		}
+		return list;
+	}
+	
 	public List<BookUser> getBookList() {
 		List<BookUser> list = new ArrayList<BookUser>(0);
 		ResultSet rs = null;
@@ -88,13 +135,14 @@ public class BookUserDao implements IBaseDao {
 			rs = preparedStmt.executeQuery();
 			while(rs.next())
 			{
-				BookUser bookUser = new BookUser(rs.getString("uid"),
-												 rs.getString("bookid"),
-												 rs.getInt("pin"), 
-												 rs.getString("name"), 
-												 rs.getString("phone"), 
-												 rs.getString("price"), 
-												 rs.getInt("soldstatus")
+				BookUser bookUser = new BookUser(rs.getString(BookUser.uidStr),
+												 rs.getString(BookUser.bookidStr),
+												 rs.getString(BookUser.areaStr),
+												 rs.getString(BookUser.cityStr),
+												 rs.getString(BookUser.nameStr), 
+												 //rs.getString(BookUser.phoneStr), 
+												 rs.getString(BookUser.priceStr), 
+												 rs.getInt(BookUser.soldstatusStr)
 												 ); 
 				list.add(bookUser);
 			}
@@ -114,24 +162,25 @@ public class BookUserDao implements IBaseDao {
 		return null;
 	}
 
-	public List<BookUser> getBookListForUser(String uid) {
+	public List<BookUser> getBookListForUser(String email) {
 		List<BookUser> list = new ArrayList<BookUser>(0);
 		ResultSet rs = null;
-		String sql = getSelectQueryForField("uid");
+		String sql = getSelectQueryForField(BookUser.uidStr);
 		try {
 			Connection conn = ConnectionHandler.getConnection();
 			PreparedStatement preparedStmt = conn.prepareStatement(sql);
-			preparedStmt.setString(1, uid);
+			preparedStmt.setString(1, email);			
 			rs = preparedStmt.executeQuery();
 			while(rs.next())
 			{
-				BookUser bookUser = new BookUser(rs.getString("uid"),
-												 rs.getString("bookid"),
-												 rs.getInt("pin"), 
-												 rs.getString("name"), 
-												 rs.getString("phone"), 
-												 rs.getString("price"), 
-												 rs.getInt("soldstatus")
+				BookUser bookUser = new BookUser(rs.getString(BookUser.uidStr),
+						 rs.getString(BookUser.bookidStr),
+						 rs.getString(BookUser.areaStr),
+						 rs.getString(BookUser.cityStr), 
+						 rs.getString(BookUser.nameStr), 
+						// rs.getString(BookUser.phoneStr), 
+						 rs.getString(BookUser.priceStr), 
+						 rs.getInt(BookUser.soldstatusStr)
 												 ); 
 				list.add(bookUser);
 			}
@@ -154,7 +203,7 @@ public class BookUserDao implements IBaseDao {
 			PreparedStatement preparedStmt = conn.prepareStatement(sql);
 			preparedStmt.setString(1, uid);
 			preparedStmt.setString(2, bookid);
-			//System.out.println(preparedStmt);
+			System.out.println(preparedStmt);
 			preparedStmt.execute();
 		}catch(SQLException e)
 		{
@@ -203,18 +252,19 @@ public class BookUserDao implements IBaseDao {
 			preparedStmt.setString(4, "%"+city+"%");
 			preparedStmt.setString(5, "%"+area+"%");
 			
-			System.out.println(preparedStmt.toString());
+			//System.out.println(preparedStmt.toString());
 			
 			rs = preparedStmt.executeQuery();
 			while(rs.next())
 			{
-				BookUser bookUser = new BookUser(rs.getString("uid"),
-												 rs.getString("bookid"),
-												 rs.getInt("pin"), 
-												 rs.getString("name"), 
-												 rs.getString("phone"), 
-												 rs.getString("price"), 
-												 rs.getInt("soldstatus")
+				BookUser bookUser = new BookUser(rs.getString(BookUser.uidStr),
+						 rs.getString(BookUser.bookidStr),
+						 rs.getString(BookUser.areaStr),
+						 rs.getString(BookUser.cityStr),
+						 rs.getString(BookUser.nameStr), 
+						 //rs.getString(BookUser.phoneStr), 
+						 rs.getString(BookUser.priceStr), 
+						 rs.getInt(BookUser.soldstatusStr)
 												 ); 
 				list.add(bookUser);
 			}
@@ -227,14 +277,42 @@ public class BookUserDao implements IBaseDao {
 		}
 		return list;
 	}
-
-
+	public List<String> getSuggestionList(String phrase, String str) {
+		List<String> clist = new ArrayList<>();
+		ResultSet rs = null;
+		String sql = getStrListQuery(str);
+		try {
+			Connection conn = ConnectionHandler.getConnection();
+			PreparedStatement preparedStmt = conn.prepareStatement(sql);
+			preparedStmt.setString(1, "%" + phrase + "%");			
+			//System.out.println(preparedStmt.toString());
+			rs = preparedStmt.executeQuery();
+			while(rs.next())
+			{
+				clist.add(rs.getString(str));
+			}
+		}catch(SQLException e) {
+			System.out.println(e.toString());
+		}
+		finally {
+			ConnectionHandler.closeConnection();
+		}
+		return clist;
+	}
+	public String getStrListQuery(String str) {
+		String sql = "select distinct " + str + " from book_user where " + str +" like ?" ;
+		return sql;
+	}
 	private String getSelectQueryByCriteria() {
 		//String sql = "select * from book_user where pin in(select pin from locality where city like ? and area like ?)";
 		
 		String sql = "select * from book_user where bookid in "
 				+ "(select bookid from books where booktitle like ? or bookauthor like ? or bookid like ?) "
-				+ "and pin in (select pin from locality where city like ? and area like ?)";
+				+ "and "
+				+ "city like ? and area like ? "
+				+ "and "
+				+ "soldstatus != 1";
+			
 		
 		/*Use below inner join in future if performance impact is bigger*/
 		

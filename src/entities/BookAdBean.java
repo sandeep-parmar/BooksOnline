@@ -14,7 +14,7 @@ public class BookAdBean implements Serializable{
 	private int price;
 	private int soldstatus;
 	private String email;
-	private int pin;
+	//private int pin;
 	private String city;
 	private String area;
 	private String buyerEmail;
@@ -73,12 +73,7 @@ public class BookAdBean implements Serializable{
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public int getPin() {
-		return pin;
-	}
-	public void setPin(int pin) {
-		this.pin = pin;
-	}
+	
 	public String getCity() {
 		return city;
 	}
@@ -99,7 +94,7 @@ public class BookAdBean implements Serializable{
 		this.buyerEmail = buyerEmail;
 	}
 	public BookAdBean(String bookid, String booktitle, String bookauthor, String bookdesc, String thumbnail,
-			String name, int price, int soldstatus, String email, int pin, String city, String area) {
+			String name, int price, int soldstatus, String email, String city, String area) {
 		super();
 		this.bookid = bookid;
 		this.booktitle = booktitle;
@@ -110,7 +105,6 @@ public class BookAdBean implements Serializable{
 		this.price = price;
 		this.soldstatus = soldstatus;
 		this.email = email;
-		this.pin = pin;
 		this.city = city;
 		this.area = area;
 	}
@@ -118,7 +112,7 @@ public class BookAdBean implements Serializable{
 		super();
 	}
 	public BookAdBean(String bookid, String booktitle, String bookauthor, String bookdesc, String thumbnail,
-			String name, int price, int soldstatus, String email, int pin, String city, String area, String buyerEmail) {
+			String name, int price, int soldstatus, String email, String city, String area, String buyerEmail) {
 		super();
 		this.bookid = bookid;
 		this.booktitle = booktitle;
@@ -129,7 +123,7 @@ public class BookAdBean implements Serializable{
 		this.price = price;
 		this.soldstatus = soldstatus;
 		this.email = email;
-		this.pin = pin;
+		
 		this.city = city;
 		this.area = area;
 		this.buyerEmail = buyerEmail;
@@ -138,7 +132,7 @@ public class BookAdBean implements Serializable{
 	public String toString() {
 		return "BookAdBean [bookid=" + bookid + ", booktitle=" + booktitle + ", bookauthor=" + bookauthor
 				+ ", bookdesc=" + bookdesc + ", thumbnail=" + thumbnail + ", name=" + name + ", price=" + price
-				+ ", soldstatus=" + soldstatus + ", email=" + email + ", pin=" + pin + ", city=" + city + ", area="
+				+ ", soldstatus=" + soldstatus + ", email=" + email+ ", city=" + city + ", area="
 				+ area + "]";
 	}
 	

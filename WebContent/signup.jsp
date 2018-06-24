@@ -20,20 +20,19 @@
 
 
 </head>
-<body>
+<body class = "body-grey">
 
 	<%@ include file="navbar.jsp"%>
-	
+
+	<div id='loadgif' style="display: none">
+  		<!-- <img src='/BooksOnline/BootConfig/ajax-loader.gif'> -->
+	</div>  	
 	<div class="container loginsignup" id="signupcontainer">
 		<form method="post" id="signupform">
 			<h4> Create Account </h4>
   			<div class="form-group">
     			<label for="Name">Your Name:</label>
     			<input type="text" class="form-control" id="name">
-  			</div>
-  			<div class="form-group">
-    			<label for="mobile">Mobile number:</label>
-    			<input type="text" class="form-control" id="mobile">
   			</div>
   			<div class="form-group">
     			<label for="email">Email address:</label>
@@ -49,7 +48,10 @@
   			  			
   			<button type="button" class="btn btn-primary buttonclass" id="signupformsubmitbutton" name="signupformsubmitbutton">Submit</button>
 		</form>
-	
+		<div class="alert alert-success" id="alertbox" style="display: none">
+  			<button type="button" class="close" data-hide="alert">&times;</button>
+  			<strong id="alertdata">Success!</strong>		
+  		</div>
 	</div>
 	
 	<!-- Footer -->

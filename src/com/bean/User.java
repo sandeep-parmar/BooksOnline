@@ -14,22 +14,27 @@ public class User implements Serializable{
 	@XmlElement
 	String password;
 	@XmlElement
-	String mobile;
-	@XmlElement
 	String email;
 
 	String salt;
 	String uuid;
 	int active;
+	
+	public static String usernameStr = "username";
+	public static String passwordStr = "password";	
+	public static String emailStr = "email";
+	public static String saltStr = "salt";
+	public static String uuidStr = "uuid";
+	public static String activeStr = "active"; 
+	
 	public User() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public User(String username, String password, String mobile, String email, String salt, String uuid, int active) {
+	public User(String username, String password, String email, String salt, String uuid, int active) {
 		super();
 		this.username = username;
 		this.password = password;
-		this.mobile = mobile;
 		this.email = email;
 		this.salt = salt;
 		this.uuid = uuid;
@@ -37,16 +42,11 @@ public class User implements Serializable{
 	}
 
 	
-	public User(String username, String mobile, String email, int active) {
+	public User(String username, String email, int active) {
 		super();
-		this.username = username;
-		this.mobile = mobile;
+		this.username = username;		
 		this.email = email;
 		this.active = active;
-	}
-
-	public User(String uid) {
-		this.mobile = uid;
 	}
 
 	public String getUuid() {
@@ -77,12 +77,7 @@ public class User implements Serializable{
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public String getMobile() {
-		return mobile;
-	}
-	public void setMobile(String mobile) {
-		this.mobile = mobile;
-	}
+	
 	public String getEmail() {
 		return email;
 	}
@@ -98,7 +93,7 @@ public class User implements Serializable{
 
 	@Override
 	public String toString() {
-		return "User [username=" + username + ", password=" + password + ", mobile=" + mobile + ", email=" + email
+		return "User [username=" + username + ", password=" + password + ", email=" + email
 				+ ", salt=" + salt + ", uuid=" + uuid + ", active=" + active + "]";
 	}
 	

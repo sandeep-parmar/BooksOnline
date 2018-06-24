@@ -32,8 +32,10 @@ import com.utility.Errorcode;
 @Path("/login")
 public class LoginService {
 	
-	 private static final transient org.slf4j.Logger log = LoggerFactory.getLogger(LoginService.class);
-
+	private static final transient org.slf4j.Logger log = LoggerFactory.getLogger(LoginService.class);
+	
+	public static String statusStr = "status";
+	public static String errmsgStr = "errmsg";
 	public LoginService() {
 		/*
 		UserRealm realm = new UserRealm();
@@ -47,10 +49,10 @@ public class LoginService {
 		String response = Errorcode.errmsgstr[status];
 		
 		JSONObject json = new JSONObject();
-		json.put("status", status);
-		json.put("errmsg", response);
+		json.put(statusStr, status);
+		json.put(errmsgStr, response);		
 		
-		return json.toString();
+		return json.toString();		
 	}
 	
 	@POST
@@ -60,6 +62,7 @@ public class LoginService {
 	public String saveUser(final User user) throws IOException
 	{	
 		
+		System.out.println("aaaaaa");
 		/*Wrap it in new class*/
 		RandomNumberGenerator rng = new SecureRandomNumberGenerator();
 		Object salt = rng.nextBytes();
@@ -105,8 +108,12 @@ public class LoginService {
 		if(user.getEmail() != null)
 		{			
 			user.setUuid(olduser.getUuid());
-			status = UserRealm.sendVerificationEmail(user);			
-		}
+			user.setUsername(olduser.getUsername());
+			status = UserRealm.sendVerificationEmail(user);
+			
+			/*Invalidate current logged in user session*/
+			UserRealm.invalidateCurrentSession();
+		}		
 		return sendResponse(status);
 	}
 	
@@ -118,10 +125,11 @@ public class LoginService {
 	public String validate(final User user)
 	{
 			
-		int status = Errorcode.EC_SUCCESS.getValue();
+    		int status = Errorcode.EC_SUCCESS.getValue();
 		org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();			
 		
-		User usrDetails = DBFacade.isUserAccountActive("email", user.getEmail());
+		User usrDetails = DBFacade.isUserAccountActive(User.emailStr , user.getEmail());
+		
 		int accountActive = usrDetails.getActive();
 		
 		if(accountActive == 1)
@@ -159,11 +167,11 @@ public class LoginService {
 			status = Errorcode.EC_USER_NOT_VERIFIED.getValue();
 		}
 		//this logic needs to check
+
 		JSONObject json = new JSONObject();
-		json.put("status", status);
-		json.put("errmsg", Errorcode.errmsgstr[status]);
-		json.put("accountStatus", accountActive);
-		json.put("userMobile", usrDetails.getMobile());
+		json.put(statusStr, status);
+		json.put(errmsgStr, Errorcode.errmsgstr[status]);
+		json.put("accountStatus", accountActive);		
 		json.put("userEmail", usrDetails.getEmail());
 		
 		return json.toString();		

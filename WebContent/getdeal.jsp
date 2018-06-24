@@ -32,8 +32,7 @@
 	<input type="hidden" value="<%=bd.getName() %>" name="name">
 	<input type="hidden" value="<%=bd.getPrice() %>" name="price">
 	<input type="hidden" value="<%=bd.getSoldstatus() %>" name="soldstatus">
-	<input type="hidden" value="<%=bd.getEmail() %>" name="email">
-	<input type="hidden" value="<%=bd.getPin() %>" name="pin">
+	<input type="hidden" value="<%=bd.getEmail() %>" name="email">	
 	<input type="hidden" value="<%=bd.getCity() %>" name="city">
 	<input type="hidden" value="<%=bd.getArea() %>" name="area">
 		<div class="row">

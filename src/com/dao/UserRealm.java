@@ -42,7 +42,7 @@ public class UserRealm extends AuthorizingRealm{
 		System.out.println("In doGetAuthenticationInfo");
 		String principalAsEmail = token.getPrincipal().toString();
 		//User user = UserDao.getUserAccount(principal,UserField.MOBILE);
-		User user = DBFacade.getUserAccount(principalAsEmail, "email");
+		User user = DBFacade.getUserAccount(User.emailStr, principalAsEmail);
 		if(user != null){
 			SaltedAuthenticationInfo info = new SimpleAuthenticationInfo(user, user.getPassword(), 
 			ByteSource.Util.bytes(Base64.getDecoder().decode(user.getSalt().getBytes())), getName());
@@ -65,29 +65,32 @@ public class UserRealm extends AuthorizingRealm{
 		
 		/*Get current logged in user object from shiro*/
 		User user = (User)currentUser.getPrincipal();
+		//System.out.println(user.toString());
+		if(user == null)
+		{
+			System.out.println("got null user");
+			user =  new UserDao().getUserAccount(User.emailStr, "testuser@gmailabc.com");
+		}
 		
+		//System.out.println(user);
 		return user;
 	}
 	
 
-	public static int verify(String username, String hash) {
+	public static int verify(String username, String uuid) {
 	
 		int status = Errorcode.EC_SUCCESS.getValue();
-		User user = DBFacade.getUserAccount(username, "username");
+		User user = DBFacade.getUserAccount(User.uuidStr, uuid);
 		if(user.getActive() == 0)
 		{
-			if(user.getUuid().equals(hash))
+			if(user.getUsername().equals(username))
 			{
-				DBFacade.activateUserAccount(username);				
+				DBFacade.activateUserAccount(uuid);				
 			}
 			else
 			{
 				status = Errorcode.EC_USER_VERIFICATION_FAILED.getValue();
 			}
-		}
-		else
-		{
-			status = 1;
 		}
 		return status;
 	}
@@ -98,7 +101,10 @@ public class UserRealm extends AuthorizingRealm{
 		String message = "<h3>Hello " + user.getUsername() +"</h3>"
   		+ "<h3>Please click on the link below to verify your email address.</h3>"
 		 + "<a href=" + verificationUrl + ">Verify Account</a>";
-		int result = SendEmail(message, user.getEmail());
+		
+		int result = Errorcode.EC_SUCCESS.getValue();		
+		/*if(user.getUsername().compareTo("testuser") != 0)
+			result = SendEmail(message, user.getEmail());*/
 		
 		return result;
 	}
@@ -106,13 +112,20 @@ public class UserRealm extends AuthorizingRealm{
 	public static int sendResetPasswordLink(String email) {
 		int status = Errorcode.EC_SUCCESS.getValue();
 		
-		User user = DBFacade.getUserAccount(email, "email");
+		User user = DBFacade.getUserAccount(email, User.emailStr);
 		
-		final String resetUrl = "http://localhost:8080/BooksOnline/resetpassword?username=" + user.getUsername() + "&uuid=" +user.getUuid();
-	    String message = "<h3>Hello " + user.getUsername() +"</h3>" + "<h3>Please click on the link below to reset your password.</h3>" + "<a href=" + resetUrl + ">reset password</a>";		
+		if(user != null)
+		{
+			final String resetUrl = "http://localhost:8080/BooksOnline/resetpassword?username=" + user.getUsername() + "&uuid=" +user.getUuid();
+			String message = "<h3>Hello " + user.getUsername() +"</h3>" + "<h3>Please click on the link below to reset your password.</h3>" + "<a href=" + resetUrl + ">reset password</a>";		
 	    
-	    status = SendEmail(message, user.getEmail());
-		return status;
+			status = SendEmail(message, user.getEmail());
+		}
+		else
+		{
+			status = Errorcode.EC_INCORRECT_CREDENTIALS.getValue();
+		}
+		return status;	   
 	}
 
 	private static int SendEmail(String messagetobesent, String receiver) {
@@ -135,8 +148,8 @@ public class UserRealm extends AuthorizingRealm{
 			}
 		
 			if(null != fstream){
-				fromProp = properties.getProperty("username");
-				passwordProp = properties.getProperty("password");
+				fromProp = properties.getProperty(User.usernameStr);
+				passwordProp = properties.getProperty(User.passwordStr);
 			}
 			else
 			{
@@ -191,6 +204,7 @@ public class UserRealm extends AuthorizingRealm{
 				// Send message
 				Transport.send(message);
 			} catch (MessagingException mex) {
+				System.out.println(mex.getMessage());
 				status = Errorcode.EC_FILE_READ_FAILED.getValue();
 				break;				
 			}
@@ -200,7 +214,7 @@ public class UserRealm extends AuthorizingRealm{
 	}	
 	
 	public static int sendSelectedBookAdOverEmail(String messagetobesent, String receiver, Boolean subjectFlag) {
-//		int status = Errorcode.EC_SUCCESS.getValue();
+		int status = Errorcode.EC_SUCCESS.getValue();
 		
 		//InputStream eamilProps = getCl;
 		Properties properties = new Properties();
@@ -214,7 +228,7 @@ public class UserRealm extends AuthorizingRealm{
 				properties.load(fstream);
 			
 			} catch (IOException e) {
-//				status = Errorcode.EC_FILE_READ_FAILED.getValue();
+				status = Errorcode.EC_FILE_READ_FAILED.getValue();
 				break;
 			}
 		
@@ -224,7 +238,7 @@ public class UserRealm extends AuthorizingRealm{
 			}
 			else
 			{
-//				status = Errorcode.EC_FILE_READ_FAILED.getValue();
+				status = Errorcode.EC_FILE_READ_FAILED.getValue();
 				break;
 			}
 		
@@ -276,12 +290,17 @@ public class UserRealm extends AuthorizingRealm{
 				// Send message
 				Transport.send(message);
 			} catch (MessagingException mex) {
-//				status = Errorcode.EC_FILE_READ_FAILED.getValue();
+				status = Errorcode.EC_FILE_READ_FAILED.getValue();
 				break;				
 			}
 		}while(false);
 		
-//		return status;
-		return 0;
+		return status;
+//		return 0;
+	}
+
+	public static void invalidateCurrentSession() {
+		org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
+		currentUser.logout();
 	}	
 }

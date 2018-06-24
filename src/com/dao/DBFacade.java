@@ -2,16 +2,18 @@ package com.dao;
 
 import java.util.List;
 
+import org.json.JSONObject;
+
 import com.bean.Book;
 import com.bean.BookUser;
-import com.bean.Locality;
 import com.bean.User;
+import com.utility.JsonStrings;
 
 public class DBFacade {
 	
 	static BookDao bookDao = new BookDao();
 	static BookUserDao bookUserDao = new BookUserDao();
-	static LocalityDao localityDao = new LocalityDao();
+	//static LocalityDao localityDao = new LocalityDao();
 	static UserDao userDao = new UserDao();
 	
 	public DBFacade() {
@@ -35,10 +37,10 @@ public class DBFacade {
 	 		
 		 for (BookUser bookUser : list) {
 			 Book book = bookDao.geBook(bookUser.getBookid());
-			 Locality locality = localityDao.getLocality(bookUser.getPin());
+			 //Locality locality = localityDao.getLocality(bookUser.getPin());
 			 
 			 bookUser.setBook(book);
-			 bookUser.setLocality(locality);
+			 //bookUser.setLocality(locality);
 			 
 			// System.out.println(bookUser);
 		}
@@ -49,14 +51,31 @@ public class DBFacade {
 	 /*Used in home page*/
 	 public static List<BookUser> getBookAdList()
 	 {		
-		 List<BookUser> list = bookUserDao.getBookList();
-		 		
-		 for (BookUser bookUser : list) {
+		 List<BookUser> list = bookUserDao.getBookList();		 
+		 for (BookUser bookUser : list) {		
 			 Book book = bookDao.geBook(bookUser.getBookid());
-			 Locality locality = localityDao.getLocality(bookUser.getPin());
+		
+			 //Locality locality = localityDao.getLocality(bookUser.getPin());
 			 
 			 bookUser.setBook(book);
-			 bookUser.setLocality(locality);
+			// bookUser.setLocality(locality);
+			 
+			// System.out.println(bookUser);
+		}
+		 return list;
+	 }
+	 
+	 /*Used in category page*/
+	 public static List<BookUser> getBookAdListByCategory(String category)
+	 {		
+		 List<BookUser> list = bookUserDao.getBookList(category);		 
+		 for (BookUser bookUser : list) {		
+			 Book book = bookDao.geBook(bookUser.getBookid());
+		
+			 //Locality locality = localityDao.getLocality(bookUser.getPin());
+			 
+			 bookUser.setBook(book);
+			// bookUser.setLocality(locality);
 			 
 			// System.out.println(bookUser);
 		}
@@ -73,27 +92,44 @@ public class DBFacade {
 		return user;
 	}
 
-	public static User getUserAccount(String principalAsEmail, String field) {		
-		User user = userDao.getUserAccount(principalAsEmail, field);
+	public static User getUserAccount(String field, String value) {		
+		User user = userDao.getUserAccount(field, value);
 		return user;
 	}
 
-	public static void activateUserAccount(String username) {
-		userDao.activateAccount(username);
+	public static void activateUserAccount(String uuid) {
+		userDao.activateAccount(uuid);
 	}
 
 	/*Save model 1 info*/
-	public static int saveBookUser(User user, String title, String author, String desc, String id, String thumbnail, String lpin,
-		String lcity, String larea, String lname, String lphno, String offPrice) {
+	public static int saveBookUser(User user,JSONObject userbookdetails) {
+		
+		System.out.println(user.toString());
 		
 		/*create required entities*/
-		Book book = new Book(title, author, desc, id, thumbnail);
-		Locality locality = new Locality(lpin,lcity, larea);
-		BookUser bookUser = new BookUser(user.getMobile(), id, Integer.parseInt(lpin), lname, lphno, offPrice, 0);
+		Book book = new Book(userbookdetails.getString(JsonStrings.ISBN_13),
+							 userbookdetails.getString(JsonStrings.TITLE), 
+							 userbookdetails.getString(JsonStrings.AUTHOR), 
+							 userbookdetails.getString(JsonStrings.DESCRIPTION), 							 
+							 userbookdetails.getString(JsonStrings.THUMBNAIL),
+							 (userbookdetails.has(JsonStrings.CATEGORIES) ? userbookdetails.getString(JsonStrings.CATEGORIES):""),
+							 (userbookdetails.has(JsonStrings.ISBN_10) ? userbookdetails.getString(JsonStrings.ISBN_10):""),
+							 (userbookdetails.has(JsonStrings.PUBLISHER) ? userbookdetails.getString(JsonStrings.PUBLISHER):""),
+						     (userbookdetails.has(JsonStrings.PUBLISHER) ? userbookdetails.getString(JsonStrings.PUBLISHEDDATE):"")						
+							);
+		
+		BookUser bookUser = new BookUser(user.getEmail(),
+										userbookdetails.getString(JsonStrings.ISBN_13), 
+										userbookdetails.getString(JsonStrings.LLOCALITY), 
+										userbookdetails.getString(JsonStrings.LCITY), 
+										userbookdetails.getString(JsonStrings.LNAME), 
+										userbookdetails.getString(JsonStrings.OFFPRICE), 
+										0);
 		
 		/*save book and locality details*/
+		System.out.println("sssss_1");
 		saveBook(book);
-		saveLocaity(locality);
+		//saveLocaity(locality);		
 		
 		/*save composite details in book_user table*/	
 		return bookUserDao.saveBookUser(bookUser);
@@ -103,7 +139,9 @@ public class DBFacade {
 	{
 		User user = UserRealm.getLoggedInUser();
 		
-		List<BookUser> list = bookUserDao.getBookListForUser(user.getMobile());			
+		System.out.println(user.toString());
+		
+		List<BookUser> list = bookUserDao.getBookListForUser(user.getEmail());			
 		 
 		 for (BookUser bookUser : list) {
 			 Book book = bookDao.geBook(bookUser.getBookid());
@@ -115,32 +153,32 @@ public class DBFacade {
 		return list;
 	}
 
-	private static void saveLocaity(Locality locality) {
+	/*private static void saveLocaity(Locality locality) {
 		
 		/*PENDING check if already exist*/
-		localityDao.saveLocality(locality);
-	}
+		/*localityDao.saveLocality(locality);
+	}*/
 
-	public static int setSoldStatusTrue(String mobile, String bookId) {
+	public static int setSoldStatusTrue(String email, String bookId) {
 
-		return bookUserDao.setSoldStatusTrue(mobile, bookId);
+		return bookUserDao.setSoldStatusTrue(email, bookId);
 	}
 
 	public static List<String> getCityList(String phrase) {
-		return localityDao.getSuggestionList(phrase, "city");
+		return bookUserDao.getSuggestionList(phrase, BookUser.cityStr);
 		
 	}
 
-	public static List<String> getLocalityList(String phrase) {
-		return localityDao.getSuggestionList(phrase, "area");
+	public static List<String> getLocalityList(String phrase) {		
+		return bookUserDao.getSuggestionList(phrase, BookUser.areaStr);
 	}
 
 	public static int resetPassword(String uuid, String hashedPasswordBase64, String salt) {
 		return UserDao.resetPassword(uuid, hashedPasswordBase64, salt);		
 	}
 
-	public static int updateNewOfferPrice(String mobile, String bookId, String newPrice) {
-		return bookUserDao.updateNewOfferPrice(mobile, bookId, newPrice);
+	public static int updateNewOfferPrice(String email, String bookId, String newPrice) {
+		return bookUserDao.updateNewOfferPrice(email, bookId, newPrice);
 	}
 
 	public static int updateProfile(User olduser, User user) {

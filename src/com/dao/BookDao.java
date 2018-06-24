@@ -27,11 +27,17 @@ public class BookDao implements IBaseDao{
 		try {
 			conn = ConnectionHandler.getConnection();
 			PreparedStatement preparedStmt = conn.prepareStatement(sql);
-			preparedStmt.setString(1, book.getIsbn());
-			preparedStmt.setString(2, book.getTitle());
-			preparedStmt.setString(3, book.getAuthors());
-			preparedStmt.setString(4, book.getDescription());
+			preparedStmt.setString(1, book.getBookid());
+			preparedStmt.setString(2, book.getBooktitle());
+			preparedStmt.setString(3, book.getBookauthor());
+			preparedStmt.setString(4, book.getBookdesc());
 			preparedStmt.setString(5, book.getThumbnail());
+			preparedStmt.setString(6, book.getCategory());
+			preparedStmt.setString(7, book.getIsbn_10());
+			preparedStmt.setString(8, book.getPublisher());
+			preparedStmt.setString(9, book.getPublished_date());			
+			
+			preparedStmt.setString(10, book.getBookid());			
 			preparedStmt.execute();
 			
 		}catch (SQLIntegrityConstraintViolationException e) {
@@ -55,12 +61,16 @@ public class BookDao implements IBaseDao{
 			rs = preparedStmt.executeQuery();
 			while(rs.next())
 			{
-				book = new Book(rs.getString("booktitle"), 
-									 rs.getString("bookauthor"),
-									 rs.getString("bookdesc"),
-									 rs.getString("bookid"),
-									 rs.getString("thumbnail")
-												);
+				book = new Book(rs.getString(Book.bookidStr),
+									rs.getString(Book.booktitleStr), 
+									 rs.getString(Book.bookauthorStr),
+									 rs.getString(Book.bookdescStr),									 
+									 rs.getString(Book.thumbnailStr),
+									 rs.getString(Book.categoryStr),
+									 rs.getString(Book.isbn10Str),
+									 rs.getString(Book.publisherStr),
+									 rs.getString(Book.publisheddateStr)
+									);
 			}
 		}catch(SQLException e) {
 			System.out.println(e.toString());
@@ -82,11 +92,11 @@ public class BookDao implements IBaseDao{
 			rs = preparedStmt.executeQuery();
 			while(rs.next())
 			{
-				Book book = new Book(rs.getString("booktitle"), 
-									 rs.getString("bookauthor"),
-									 rs.getString("bookdesc"),
-									 rs.getString("bookid"),
-									 rs.getString("thumbnail")
+				Book book = new Book(rs.getString(Book.booktitleStr), 
+						 			rs.getString(Book.bookauthorStr),
+						 			rs.getString(Book.bookdescStr),
+						 			rs.getString(Book.bookidStr),
+						 			rs.getString(Book.thumbnailStr)
 												);
 				list.add(book);
 			}
@@ -137,7 +147,10 @@ public class BookDao implements IBaseDao{
 
 	@Override
 	public String getInsertQuery() {
-		String sql = "insert into books(bookid,booktitle,bookauthor,bookdesc,thumbnail) values(?,?,?,?,?)";
+		String sql = "insert into books(bookid,booktitle,bookauthor,bookdesc,thumbnail,category,isbn_10,publisher,published_date) "
+				+ "select * from(select ? as bid, ? as bt, ? as ba, ? as bd, ? as th, ? as cat, ? as isbn_10, ? as pub, ? as pubdate) as tmp"
+				+ " where not exists"
+				+ " (select bookid from books where bookid = ?) limit 1";		
 		return sql;
 	}
 

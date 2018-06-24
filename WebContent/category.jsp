@@ -20,12 +20,7 @@
 <link rel="stylesheet" type="text/css" href="Css/style.css"></link>
 
 <script src="Js/basicB.js"></script>
-<script type="text/javascript">
-function getBookUser(userId,bookId){
-	console.log("called:"+userId+"bookid"+bookId);
-	var url = "http://localhost:8080";
-	document.location.href = url + "/BooksOnline/getMoreBookDetails?userId=" + encodeURIComponent(userId) + "&bookId=" + encodeURIComponent(bookId); 
-}
+
 </script>
 
 </head>
@@ -34,16 +29,14 @@ function getBookUser(userId,bookId){
 	<%@ include file="navbar.jsp"%>
 
 	<%
-		List<BookUser> list = DBFacade.getBookAdList();
+		String category = request.getParameter("category");
+		List<BookUser> list = DBFacade.getBookAdListByCategory(category);
 		request.setAttribute("list", list);
 	%>
-	
-	<%@ include file="carousel.jsp"%>
-	
+
 	<div class="container container_margin">
 		<div class="row cool-white">
-			<c:forEach items="${list}" var="item">
-				<a href="javascript:getBookUser('${item.uid}','${item.bookid}');">
+			<c:forEach items="${list}" var="item">				
 					<div class="col-sm-3">
 						<div class="panel panel-primary">
 							<div class="panel-body img-hover">
@@ -73,6 +66,18 @@ function getBookUser(userId,bookId){
 									<div class="col-sm-8">
 										<h5 class="h5-spec">
 											<c:out value="${item.getBook().getBooktitle()}" />
+										</h5>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-4">
+										<h5 class="h5-spec">
+											<b>Category</b>
+										</h5>
+									</div>
+									<div class="col-sm-8">
+										<h5 class="h5-spec">
+											<c:out value="${item.getBook().getCategory()}" />
 										</h5>
 									</div>
 								</div>
@@ -119,8 +124,7 @@ function getBookUser(userId,bookId){
 			</c:forEach>
 		</div>
 	</div>
-
-
+	
 
 	<!-- Footer -->
 	<footer class="container-fluid bg-4 text-center">

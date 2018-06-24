@@ -40,7 +40,7 @@ public class sendBookAdOverEmail extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		System.out.println("sendBookAdOverEmail called");
-		BookAdBean bd = new BookAdBean(request.getParameter("bookid"),request.getParameter("booktitle"),request.getParameter("bookauthor"), request.getParameter("bookdesc"), request.getParameter("thumbnail"), request.getParameter("name"), Integer.parseInt(request.getParameter("price")), Integer.parseInt(request.getParameter("soldstatus")), request.getParameter("email"), Integer.parseInt(request.getParameter("pin")), request.getParameter("city"), request.getParameter("area"),request.getParameter("buyerEmail"));
+		BookAdBean bd = new BookAdBean(request.getParameter("bookid"),request.getParameter("booktitle"),request.getParameter("bookauthor"), request.getParameter("bookdesc"), request.getParameter("thumbnail"), request.getParameter("name"), Integer.parseInt(request.getParameter("price")), Integer.parseInt(request.getParameter("soldstatus")), request.getParameter("email"), request.getParameter("city"), request.getParameter("area"),request.getParameter("buyerEmail"));
 		
 		BookService.sendDetailsOfBookAd(bd);
 		
