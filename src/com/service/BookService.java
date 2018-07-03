@@ -33,6 +33,7 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONString;
 
 import com.bean.Book;
 import com.bean.User;
@@ -97,7 +98,34 @@ public class BookService {
 		String jsonres = "";		
 		try {
 			url = new URL(address + URLEncoder.encode(query, charset));
+			System.out.println("url called"+url);
+			BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
 		
+			while ((str = in.readLine()) != null) {			
+				jsonres+=str;
+			}		
+		}catch (IOException e) {
+			System.out.println(e.getMessage());			
+			//status = Errorcode.EC_FILE_READ_FAILED.getValue();			
+		}
+		return jsonres;
+	}
+	
+	private String sendBookRequest(String key, String value, int startInd, int endInd)
+	{
+		String address = "https://www.googleapis.com/books/v1/volumes?q=";
+		String query = key + ":" + value + "&startIndex=" + startInd + "&maxResults=" + endInd;
+		String charset = "UTF-8";
+	 
+		int status = Errorcode.EC_SUCCESS.getValue();
+		System.out.println(query);
+		URL url;
+		String str;
+		String jsonres = "";		
+		try {
+//			url = new URL(address + URLEncoder.encode(query, charset));
+			url = new URL(address + query);
+			System.out.println("url called"+url);
 			BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
 		
 			while ((str = in.readLine()) != null) {			
@@ -142,154 +170,170 @@ public class BookService {
 		return sendResponse(status);
 	}
 	
+	public String setNoDataFound(String str){
+//		return null != str ? str.trim() : "<span style=\"background-color: #FFFF00\">Information not found</span>";
+		return null != str ? str.trim() : "<span style=\"font-style: italic;\">Information not found</span>";
+	}
 	
 	@GET
-	@Path("/getbookinfo/{param1}/{param2}")
+	@Path("/getbookinfo/{param1}/{param2}/{param3}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getBookDetails(@PathParam("param1") String key, @PathParam("param2") String value)
+	public String getBookDetails(@PathParam("param1") String key, @PathParam("param2") String value, @PathParam("param3") String page)
 	{				
-				
+		System.out.println("getBookDetails called : key:" + key + "  Value:" +value);		
 		int status = Errorcode.EC_SUCCESS.getValue();
 		int iter = 0;		
-		if(key.compareTo("TITLE") == 0 || key.compareTo("title")==0)
-		{
-			key = JsonStrings.INTITLE;
-		}
-		else if(key.compareTo("ISBN") == 0)
-		{
-			key = JsonStrings.INISBN;
-		}
-		do
-		{
-			String jsonres= sendBookRequest(key, value);
-			if(jsonres.isEmpty())
-			{
-				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
-				break;
-			}
+		key = key.equalsIgnoreCase("title") ? JsonStrings.INTITLE : key.equalsIgnoreCase("isbn") ? JsonStrings.INISBN : JsonStrings.INAUTHOR;
 		
-			JsonStrings jsonSTR = new JsonStrings(jsonres);
-
+		int startInd = Integer.parseInt(page);
+		int endInd = 0;
+		if(startInd == 1){
+			startInd = 0;
+			endInd = 7;
+		}else{
+			endInd = 7;
+			startInd = startInd - 1;
+			startInd = (startInd*endInd)+1;
+		}
+		
+		do{
+			//to get total count
+			String jsonres = sendBookRequest(key, value, 0, endInd);
+			JsonStrings jsonSTR = null;
 			JSONObject returnJson = null;
-
-			JSONArray jsonArr = jsonSTR.getItemsArray();
-			if(jsonArr == null)
-			{
-				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
-				break;
-			}
-
-			JSONObject obj0 = jsonSTR.getIthObjectFromArray(jsonArr, 0);
-			if(obj0 == null)
-			{
-				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
-				break;
+			JSONArray jsonArr = null;
+			JSONObject obj0 = null;
+			Integer totalItems = null;
+			if(null != jsonres && !jsonres.isEmpty()){
+				jsonSTR = new JsonStrings(jsonres);
+				totalItems = jsonSTR.getTotalItems(jsonres);
+				returnJson = jsonSTR.getNewJsonObject();
+				returnJson.put(JsonStrings.TOTALITEMS, totalItems);
 			}
 			
-			JSONObject jsonvolume = jsonSTR.getVolumesInfoFromObject(obj0);
-			if(jsonvolume == null)
-			{
-				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
-				break;
-			}
-			JSONArray authors = jsonSTR.getAuthorsArrayFromVolumeObject(jsonvolume);
-			if(authors == null)
-			{
-				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
-				break;
-			}
-			
-			JSONObject imagelinks = jsonSTR.getImageLinksFromVolumeObject(jsonvolume);
-			if(imagelinks == null)
-			{
-				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
-				break;
-			}
-			
-			String authorlist = "";
-			if(authors != null)
-			{			
-				for(int i = 0; i < authors.length(); i++)
-				{
-					authorlist += authors.getString(i) + " ";
+			List<Book> bookList = new ArrayList<>(0);
+			int cntItem = 0;
+			jsonres = "";
+			jsonres = sendBookRequest(key, value, startInd, endInd);
+			if(null != jsonres && !jsonres.isEmpty()){
+				jsonSTR = new JsonStrings(jsonres);
+				//got one or more items
+				if(totalItems > 1){
+					jsonArr = jsonSTR.getItemsArray();
+					if(null != jsonArr){
+						for(cntItem = 0; cntItem < endInd; cntItem++){
+							obj0 = jsonSTR.getIthObjectFromArray(jsonArr, cntItem);
+							if(null != obj0){
+								JSONObject jsonvolume = jsonSTR.getVolumesInfoFromObject(obj0);
+								if(null != jsonvolume){
+									JSONObject imagelinks = jsonSTR.getImageLinksFromVolumeObject(jsonvolume);
+									String isbn = jsonSTR.getIsbnFromVolumeObject(jsonvolume);
+									String isbn10 = jsonSTR.getIsbn10FromVolumeObject(jsonvolume);
+									String publisher = jsonSTR.getPublisherFromVolumeObject(jsonvolume);
+									String publishedDate = jsonSTR.getPublishedDateFromVolumeObject(jsonvolume);
+									String category = jsonSTR.getCategoryFromVolumeObject(jsonvolume);
+									String title = jsonSTR.getTitleFromVolumeObject(jsonvolume);		
+									String description = jsonSTR.getDescriptionFromVolumeObject(jsonvolume);
+									JSONArray authors =  jsonSTR.getAuthorsArrayFromVolumeObject(jsonvolume);
+									String authorlist = "";
+									String thumbnail = null;
+									if(authors != null){			
+										for(int i = 0; i < authors.length(); i++)
+										{
+											authorlist += authors.getString(i) + " ";
+										}
+									}
+									if(null != imagelinks){
+										thumbnail = jsonSTR.getThumbnailFromImageLinks(imagelinks);
+									}
+									
+									Book book = new Book();
+									book.setBookid(setNoDataFound(isbn));
+									book.setIsbn_10(setNoDataFound(isbn10));
+									book.setPublisher(setNoDataFound(publisher));
+									book.setPublished_date(setNoDataFound(publishedDate));
+									book.setCategory(setNoDataFound(category));
+//									if(key.equalsIgnoreCase(JsonStrings.INTITLE)){
+//										if(title.contains(value)){
+//											title = title.replace(value, "<span style=\"background-color: #FFFF00\">"+value+"</span>");
+//										}
+//									}
+									book.setBooktitle(setNoDataFound(title));
+									book.setBookdesc(setNoDataFound(description));
+									book.setBookauthor(setNoDataFound(authorlist));
+									book.setThumbnail(setNoDataFound(thumbnail));
+									bookList.add(book);
+								}else{
+									status = Errorcode.EC_DATA_NOT_FOUND.getValue();
+									break;
+								}
+							}
+						}
+					}
+				}else{
+					returnJson.put(JsonStrings.TOTALITEMS, totalItems);
+					jsonArr = jsonSTR.getItemsArray();
+					if(null != jsonArr){
+						obj0 = jsonSTR.getIthObjectFromArray(jsonArr, 0);
+						if(null != obj0){
+							JSONObject jsonvolume = jsonSTR.getVolumesInfoFromObject(obj0);
+							if(null != jsonvolume){
+								JSONObject imagelinks = jsonSTR.getImageLinksFromVolumeObject(jsonvolume);
+								String isbn = jsonSTR.getIsbnFromVolumeObject(jsonvolume);
+								String isbn10 = jsonSTR.getIsbn10FromVolumeObject(jsonvolume);
+								String publisher = jsonSTR.getPublisherFromVolumeObject(jsonvolume);
+								String publishedDate = jsonSTR.getPublishedDateFromVolumeObject(jsonvolume);
+								String category = jsonSTR.getCategoryFromVolumeObject(jsonvolume);
+								String title = jsonSTR.getTitleFromVolumeObject(jsonvolume);		
+								String description = jsonSTR.getDescriptionFromVolumeObject(jsonvolume);
+								JSONArray authors =  jsonSTR.getAuthorsArrayFromVolumeObject(jsonvolume);
+								String authorlist = "";
+								String thumbnail = null;
+								if(authors != null){			
+									for(int i = 0; i < authors.length(); i++)
+									{
+										authorlist += authors.getString(i) + " ";
+									}
+								}
+								if(null != imagelinks){
+									thumbnail = jsonSTR.getThumbnailFromImageLinks(imagelinks);
+								}
+								Book book = new Book();
+								book.setBookid(isbn);
+								book.setIsbn_10(isbn10);
+								book.setPublisher(publisher);
+								book.setPublished_date(publishedDate);
+								book.setCategory(category);
+								book.setBooktitle(title);
+								book.setBookdesc(description);
+								book.setBookauthor(authorlist);
+								book.setThumbnail(thumbnail);
+								returnJson.put(JsonStrings.BOOK,book);
+							}else{
+								status = Errorcode.EC_DATA_NOT_FOUND.getValue();
+								break;
+							}
+						}
+					}
 				}
 			}
-
-			String isbn = jsonSTR.getIsbnFromVolumeObject(jsonvolume);
-			if(isbn == null)
-			{
-				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
-				break;
-			}
 			
-			String isbn10 = jsonSTR.getIsbn10FromVolumeObject(jsonvolume);
-			if(isbn10 == null)
-			{
+			if(jsonArr == null){
 				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
 				break;
 			}
-			
-			String publisher = jsonSTR.getPublisherFromVolumeObject(jsonvolume);
-			if(publisher == null)
-			{
-				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
-				break;
-			}
-			
-			String publishedDate = jsonSTR.getPublishedDateFromVolumeObject(jsonvolume);
-			if(publishedDate == null)
-			{
-				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
-				break;
-			}
-			
-			String category = jsonSTR.getCategoryFromVolumeObject(jsonvolume);
-			if(category == null)
-			{
-				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
-				break;
-			}
-			
-			String title = jsonSTR.getTitleFromVolumeObject(jsonvolume);
-			if(title == null)
-			{
-				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
-				break;
-			}
-						
-			String thumbnail = jsonSTR.getThumbnailFromImageLinks(imagelinks);
-			if(thumbnail == null)
-			{
-				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
-				break;
-			}
-			
-			String description = jsonSTR.getDescriptionFromVolumeObject(jsonvolume);
-			if(description == null)
-			{
-				status = Errorcode.EC_DATA_NOT_FOUND.getValue();
-				break;
-			}
-						
-			returnJson = jsonSTR.getNewJsonObject();
-
-			returnJson.put(JsonStrings.TITLE, title);
-			returnJson.put(JsonStrings.AUTHOR, authorlist);
-			returnJson.put(JsonStrings.DESCRIPTION, description);
-			returnJson.put(JsonStrings.THUMBNAIL, thumbnail);
-			returnJson.put(JsonStrings.ISBN_13, isbn);
-			
-			returnJson.put(JsonStrings.ISBN_10, isbn10);
-			returnJson.put(JsonStrings.PUBLISHER, publisher);
-			returnJson.put(JsonStrings.PUBLISHEDDATE, publishedDate);
-			returnJson.put(JsonStrings.CATEGORIES, category);
 			
 			String response = Errorcode.errmsgstr[status];
 
 			returnJson.put(statusStr, status);
 			returnJson.put(errmsgStr, response);
-			
-			System.out.println(returnJson.toString());
+			if(null != bookList && !bookList.isEmpty()){
+				returnJson.put(JsonStrings.BOOKCOUNT, bookList.size());
+				for(int bookCnt = 0; bookCnt <bookList.size();bookCnt++){
+					returnJson.put(JsonStrings.BOOK+bookCnt, bookList.get(bookCnt));
+				}
+			}
+			System.out.println("JSON returnned From BookService : getBookDetails with param1 and Param2 :"+returnJson.toString());
 			return returnJson.toString();
 			
 		}while(iter != 0);

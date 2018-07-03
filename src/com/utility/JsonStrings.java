@@ -28,12 +28,17 @@ public class JsonStrings {
 		public static String PUBLISHER           = "publisher";
 		public static String PUBLISHEDDATE       = "publishedDate";
 		public static String CATEGORIES          = "categories";
+		public static String TOTALITEMS          = "totalItems";
+		public static String BOOK          		 = "book";
+		public static String BOOKCOUNT           = "bookcount";
 		
 		/*This is required for dbfacade*/
 		public static String LNAME          	 = "lname";
 		public static String LCITY          	 = "lcity";
 		public static String LLOCALITY         	 = "llocaltiy";
 		public static String OFFPRICE          	 = "offprice";
+		
+		
 		
 		public JsonStrings()
 		{			
@@ -56,13 +61,26 @@ public class JsonStrings {
 			if(json !=null && json.has(JsonStrings.ITEMS))
 			{
 				itemsArr = json.getJSONArray(JsonStrings.ITEMS);
+				System.out.println("itemsArr"+itemsArr);
 			}
 			return itemsArr;
 		}
+		
+		public Integer getTotalItems(String jsonStr) {
+			String totalItem = "0";
+			JSONObject totItem = new JSONObject(jsonStr);
+			if(null != totItem){
+				if(totItem.has(JsonStrings.TOTALITEMS)){
+					totalItem = totItem.optString(JsonStrings.TOTALITEMS);
+				}
+			}	
+			return Integer.parseInt(totalItem);
+		}
+		
 
 		public JSONArray getTitlesArrayFromItems(JSONArray itemsArr) {
 			JSONArray titles = new JSONArray();
-			JSONObject item=null;
+			JSONObject item = null;
 			for(int i = 0; i < itemsArr.length(); i++)
 			{
 				item= itemsArr.getJSONObject(i);

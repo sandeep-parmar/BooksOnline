@@ -60,43 +60,50 @@ $(document).ready(function(){
 				
 				var status= data[STATUS];
 	    		var errmsg = data[ERRMSG];
-	    		
 	    		if(status == 0)
 	    		{
-	    			var title = data["title"];									
-	    			var author = data["author"];
-	    			var description = data["description"];
-	    			var thumbnail = data["thumbnail"];
-	    			var isbn_13 = data["ISBN_13"];
-	    			var isbn_10 = data["ISBN_10"];
-	    			var publisher = data["publisher"];
-	    			var publisheddate = data["publishedDate"];
-	    			//alert(publisheddate);
-	    			var category = data["categories"];														
-
-	    			if(status == 0)
-	    			{										
-	    				$("#bookform").removeClass('hidden');				
-	    			}
-	    			else if(status == 13)
-	    			{								
-	    				$("#bookform").addClass('hidden');
-	    				resetBookForm();
-	    			}							
-
-	    			$("#title").val(title);
-	    			$("#author").val(author);										 
-	    			$("#description").val(description);
-	    			$("#isbn_13").val(isbn_13);	
-
-	    			$('#bookImg').attr('src',thumbnail);
-
-	    			/*hidden fields*/
-	    			$("#thumbnail").val(thumbnail);
-	    			$("#isbn_10").val(isbn_10);
-	    			$("#publisher").val(publisher);
-	    			$("#publisheddate").val(publisheddate);
-	    			$("#category").val(category);
+	    			
+	    			var totalItems = data["totalItems"];
+	    			var searchBookKey = searchKey;
+	    			var searchBookVal = searchVal;
+	    			$("#totalItems").val(totalItems);
+	    			$("#searchBookKey").val(searchBookKey);
+	    			$("#searchBookVal").val(searchBookVal);
+	    			
+//	    			var title = data["title"];									
+//	    			var author = data["author"];
+//	    			var description = data["description"];
+//	    			var thumbnail = data["thumbnail"];
+//	    			var isbn_13 = data["ISBN_13"];
+//	    			var isbn_10 = data["ISBN_10"];
+//	    			var publisher = data["publisher"];
+//	    			var publisheddate = data["publishedDate"];
+//	    			//alert(publisheddate);
+//	    			var category = data["categories"];														
+//
+//	    			if(status == 0)
+//	    			{										
+//	    				$("#bookform").removeClass('hidden');				
+//	    			}
+//	    			else if(status == 13)
+//	    			{								
+//	    				$("#bookform").addClass('hidden');
+//	    				resetBookForm();
+//	    			}							
+//
+//	    			$("#title").val(title);
+//	    			$("#author").val(author);										 
+//	    			$("#description").val(description);
+//	    			$("#isbn_13").val(isbn_13);	
+//
+//	    			$('#bookImg').attr('src',thumbnail);
+//
+//	    			/*hidden fields*/
+//	    			$("#thumbnail").val(thumbnail);
+//	    			$("#isbn_10").val(isbn_10);
+//	    			$("#publisher").val(publisher);
+//	    			$("#publisheddate").val(publisheddate);
+//	    			$("#category").val(category);
 	    		}
 	    		else
 	    		{
@@ -159,14 +166,10 @@ $(document).ready(function(){
 		if(!searchVal)
 		{			
 			alert("input field can not be empty");			
-		}
-		else if(searchKey === "AUTHOR" || searchKey === "author")
-		{
-			getSetBookTitles(searchVal);
-		}
-		else
-		{		
-			getBookInfoAndSetModal1(searchKey, searchVal);			
+		}else{		
+			//getBookInfoAndSetModal1(searchKey, searchVal);
+			var boolistjsp = ("../Secure/bookListView.jsp?page=1&bookSearchKey="+searchKey+"&bookSearchVal="+searchVal);
+			window.location.href = boolistjsp;
 		}
 		return false;
 	});
@@ -659,4 +662,19 @@ $(document).ready(function(){
 	      }
 	  }
 	  
+	  function openBookPopUp(url, title, w, h) {
+		    
+		    var width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+		    var height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+
+		    var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : window.screenX;
+		    var dualScreenTop = window.screenTop != undefined ? window.screenTop : window.screenY;
+
+		    var left = ((width / 2) - (w / 2)) + dualScreenLeft;
+		    var top = ((height / 2) - (h / 2)) + dualScreenTop;
+		    var newWindow = window.open(url, title, 'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+		    if (window.focus) {
+		        newWindow.focus();
+		    }
+		}
 });

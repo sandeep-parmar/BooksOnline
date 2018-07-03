@@ -1,6 +1,7 @@
 package com.bean;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Book implements Serializable{
 	private static final long serialVersionUID = -451379059366096868L;
@@ -14,6 +15,7 @@ public class Book implements Serializable{
 	private String isbn_10;
 	private String publisher;
 	private String published_date;
+	private String authorList;
 	
 	public static String booktitleStr = "booktitle";
 	public static String bookauthorStr = "bookauthor";
@@ -48,6 +50,10 @@ public class Book implements Serializable{
 		this.isbn_10 = isbn_10;
 		this.publisher = publisher;
 		this.published_date = published_date;
+	}
+
+	public Book() {
+		// TODO Auto-generated constructor stub
 	}
 
 	public String getBooktitle() {
@@ -130,12 +136,28 @@ public class Book implements Serializable{
 		Book.thumbnailStr = thumbnailStr;
 	}
 
+	
+	
+	public String getAuthorList() {
+		return authorList;
+	}
+
+	public void setAuthorList(String authorList) {
+		this.authorList = authorList;
+	}
+
+//	@Override
+//	public String toString() {
+//		return "Book [booktitle=" + booktitle + ", bookauthor=" + bookauthor + ", bookdesc=" + bookdesc + ", bookid="
+//				+ bookid + ", thumbnail=" + thumbnail + ", category=" + category + ", isbn_10=" + isbn_10
+//				+ ", publisher=" + publisher + ", published_date=" + published_date + "]";
+//	}
+	
 	@Override
 	public String toString() {
-		return "Book [booktitle=" + booktitle + ", bookauthor=" + bookauthor + ", bookdesc=" + bookdesc + ", bookid="
+		return "booktitle=" + booktitle + ", bookauthor=" + bookauthor + ", bookdesc=" + bookdesc + ", bookid="
 				+ bookid + ", thumbnail=" + thumbnail + ", category=" + category + ", isbn_10=" + isbn_10
-				+ ", publisher=" + publisher + ", published_date=" + published_date + "]";
+				+ ", publisher=" + publisher + ", published_date=" + published_date;
 	}
-	
 	
 }
