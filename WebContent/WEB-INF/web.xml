@@ -12,7 +12,6 @@
       <param-name>jersey.config.server.provider.classnames</param-name>
       <param-value>org.glassfish.jersey.media.multipart.MultiPartFeature</param-value>
     </init-param>
-
     <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>
@@ -116,7 +115,7 @@
     <servlet-name>bookdetails</servlet-name>
     <url-pattern>/bookdetails</url-pattern>
   </servlet-mapping>
-   <servlet-mapping>
+  <servlet-mapping>
     <servlet-name>category</servlet-name>
     <url-pattern>/category</url-pattern>
   </servlet-mapping>
@@ -124,7 +123,14 @@
     <servlet-name>category</servlet-name>
     <jsp-file>/category.jsp</jsp-file>
   </servlet>
-  
+   <servlet>
+    <servlet-name>bookListFromSearch</servlet-name>
+    <jsp-file>/Secure/bookListFromSearch.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>bookListFromSearch</servlet-name>
+    <url-pattern>/Secure/bookListFromSearch</url-pattern>
+  </servlet-mapping>
   <listener>
     <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
   </listener>

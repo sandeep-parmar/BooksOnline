@@ -10,6 +10,8 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.security.auth.Subject;
@@ -109,6 +111,34 @@ public class BookService {
 		}
 		return jsonres;
 	}
+	
+	private String sendBookRequest(String key, String value, int startIndex, int maxResults)
+	{
+		String address = "https://www.googleapis.com/books/v1/volumes?q=";
+		String query = key + ":" + value + "&startIndex=" + startIndex + "&maxResults=" + maxResults;
+		String charset = "UTF-8";
+	 
+		int status = Errorcode.EC_SUCCESS.getValue();
+		System.out.println(query);
+		URL url;
+		String str;
+		String jsonres = "";		
+		try {
+			
+			url = new URL(address + query);
+			System.out.println("URL Called to get Books :: " + url);
+			BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+		
+			while ((str = in.readLine()) != null) {			
+				jsonres+=str;
+			}		
+		}catch (IOException e) {
+			System.out.println(e.getMessage());			
+			//status = Errorcode.EC_FILE_READ_FAILED.getValue();			
+		}
+		System.out.println("JSON returned by api :: " + jsonres);
+		return jsonres;
+	}
 
 	@GET
 	@Path("/getbooklist/{author}")
@@ -141,7 +171,91 @@ public class BookService {
 		status = DBFacade.setSoldStatusTrue(user.getEmail(), bookId);
 		return sendResponse(status);
 	}
+
+	public String setNoDataFound(String str){
+	//		return null != str ? str.trim() : "<span style=\"background-color: #FFFF00\">Information not found</span>";
+		return null != str ? str.trim() : "<span style=\"font-style: italic\">Information not found</span>";
+	}
 	
+	public String setDataHighLight(String str, String valChk){
+		if(str.contains(valChk)){
+			valChk =  "<span style=\"background-color: #FFFF00\">"+ str +"</span>";
+		}
+		return null != str ? "<span style=\"background-color: #FFFF00\">"+ str +"</span>" : "";
+	}
+	
+	@GET
+	@Path("/getbookinfo/{param1}/{param2}/{param3}/{param4}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Book> getBookDetails(@PathParam("param1") String key, @PathParam("param2") String value, @PathParam("param2") int startIndex, @PathParam("param2") int maxResults)
+	{
+		System.out.println("getBookDetails called with key:"+key+":value:"+value+":startIndex:"+startIndex+":maxResults:"+maxResults);
+		int totalItems = 0;
+		JSONArray jsonArr = null;
+		List<Book> bookList = new ArrayList<>(0);
+		String jsonres= sendBookRequest(key, value, startIndex, maxResults);
+		if(null != jsonres && !jsonres.isEmpty())
+		{ 
+			JsonStrings jsonSTR = new JsonStrings(jsonres);
+			totalItems = jsonSTR.getTotalItems(jsonres);
+			if(totalItems > 0){
+				for(int ith = 0; ith < 10 && ith < totalItems; ith++){
+					jsonArr = jsonSTR.getItemsArray();
+					if(null != jsonArr){
+						JSONObject obj0 = jsonSTR.getIthObjectFromArray(jsonArr, ith);
+						if(null != obj0)
+						{
+							JSONObject jsonvolume = jsonSTR.getVolumesInfoFromObject(obj0);
+							JSONObject imagelinks = jsonSTR.getImageLinksFromVolumeObject(jsonvolume);
+							String isbn = jsonSTR.getIsbnFromVolumeObject(jsonvolume);
+							String isbn10 = jsonSTR.getIsbn10FromVolumeObject(jsonvolume);
+							String publisher = jsonSTR.getPublisherFromVolumeObject(jsonvolume);
+							String publishedDate = jsonSTR.getPublishedDateFromVolumeObject(jsonvolume);
+							String category = jsonSTR.getCategoryFromVolumeObject(jsonvolume);
+							String title = jsonSTR.getTitleFromVolumeObject(jsonvolume);
+							String thumbnail = jsonSTR.getThumbnailFromImageLinks(imagelinks);
+							String description = jsonSTR.getDescriptionFromVolumeObject(jsonvolume);
+							
+							JSONArray authors = jsonSTR.getAuthorsArrayFromVolumeObject(jsonvolume);
+							String authorlist = "";
+							if(null != authors){			
+								for(int i = 0; i < authors.length(); i++)
+								{
+									authorlist += authors.getString(i) + " ";
+								}
+							}
+							
+							authorlist = setNoDataFound(authorlist);
+							title = setNoDataFound(title);
+							if(key.equalsIgnoreCase(JsonStrings.INTITLE)){
+								
+								if(title.contains(value.toUpperCase()) || title.contains(value.toLowerCase())){
+//									title = setDataHighLight(title , value);
+								}
+							}
+							
+							String bookShortCustdesc = null;
+							bookShortCustdesc = null != description && description.length() > 100 ? description.substring(0, 99) + "...." : description;
+							if(null == description || description.isEmpty()){
+								description = "";
+								bookShortCustdesc = "<span style=\"font-style: italic\">Information not found</span>";
+							}
+							bookList.add(new Book(setNoDataFound(isbn), title ,authorlist , description, setNoDataFound(thumbnail), setNoDataFound(category), setNoDataFound(isbn10), setNoDataFound(publisher), setNoDataFound(publishedDate), totalItems, bookShortCustdesc));
+						}
+						
+					}
+				}
+			}
+			
+			if(bookList.isEmpty() || bookList.size() == 0)
+			{
+				System.out.println("Data returned from getBookDetails" + bookList.toString());
+				return Collections.emptyList();
+			}
+		}
+		System.out.println("Data returned from getBookDetails" + bookList.toString());
+		return bookList;
+	}
 	
 	@GET
 	@Path("/getbookinfo/{param1}/{param2}")

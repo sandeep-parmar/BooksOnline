@@ -15,7 +15,9 @@
 <link rel="stylesheet" type="text/css" href="../Css/style.css"></link>
 
 <script src="../Js/basicB.js"></script>
-
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" ></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" ></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" ></script>
 </head>
 <body class="body-grey">
 
@@ -39,24 +41,28 @@
 	<div class="col-sm-6 searchContain">
 		
 		<div class="row">
-			<div class="col-sm-2 col-sm-offset-1">
-				<label for="sel1">Search By:</label>
-			</div>
-			<div class="col-sm-3">
-				<select class="form-control" id="searchkey">
-    				<option>ISBN</option>
-    				<option>TITLE</option>
-    				<option>AUTHOR</option>    
- 				</select>
-			</div>
-			<div class="col-sm-4">
-				<div class="form-group">
-  					<input type="text" class="form-control" id="inputfield">
+			<form name="searchForBooks" method="post" action="../GetBooksFromSearch">
+				<input type="hidden" name="currentPage" value="1">
+				<input type="hidden" name="recordsPerPage" value="10">
+				<div class="col-sm-2 col-sm-offset-1">
+					<label for="sel1">Search By:</label>
 				</div>
-			</div>
-			<div class="col-lg-2">
-				<button type="button" class="btn btn-primary btn-md" id="searchIsbn">Search</button>
-			</div>
+				<div class="col-sm-3">
+					<select class="form-control" id="bookSearchkey" name="bookSearchkey">
+						<option value="intitle">TITLE</option>
+	    				<option value="isbn">ISBN</option>
+	    				<option value="inauthor">AUTHOR</option>    
+	 				</select>
+				</div>
+				<div class="col-sm-4">
+					<div class="form-group">
+	  					<input type="text" class="form-control" id="bookSearchVal" name="bookSearchVal">
+					</div>
+				</div>
+				<div class="col-lg-2">
+					<button type="submit" class="btn btn-primary" id="searchForBooksBtn">Search</button>
+				</div>
+			</form>
 		</div>
 		<div class="row hidden" id="booklistrow">
 			<div class="col-sm-2 col-sm-offset-1">
