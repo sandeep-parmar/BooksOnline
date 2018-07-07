@@ -123,13 +123,21 @@
     <servlet-name>category</servlet-name>
     <jsp-file>/category.jsp</jsp-file>
   </servlet>
-   <servlet>
+  <servlet>
     <servlet-name>bookListFromSearch</servlet-name>
     <jsp-file>/Secure/bookListFromSearch.jsp</jsp-file>
   </servlet>
   <servlet-mapping>
     <servlet-name>bookListFromSearch</servlet-name>
     <url-pattern>/Secure/bookListFromSearch</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>saveSearchBook</servlet-name>
+    <jsp-file>/Secure/saveSearchBook.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>saveSearchBook</servlet-name>
+    <url-pattern>/saveSearchBook</url-pattern>
   </servlet-mapping>
   <listener>
     <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>

@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@page import="java.util.ArrayList" %>
+<%@page import="java.util.List" %>
+<%@page import="com.bean.Book" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -12,8 +15,38 @@
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+var selIsbn = "";
+$(document).ready(function(){
+	document.getElementById('selectBookErrorMsg').style.visibility = "hidden";
+});
+function saveSelLinkClick(){
+	for (i = 0; i < document.getElementById('bookListSize').value; i++) {
+	   if($('input:radio[name=selectedBookFromSearch]')[i].checked){
+		   selIsbn = $('input:radio[name=selectedBookFromSearch]:checked').val();
+		   if(null != selIsbn || selIsbn != '' || selIsbn != ""){
+			  document.forms["selectSearchBookData"].submit();
+		   }else{
+			   document.getElementById('selectBookErrorMsg').style.visibility = "";
+		   }
+		   break;
+	   }
+	}
+	if(null == selIsbn || selIsbn == '' || selIsbn == ""){
+		document.getElementById('selectBookErrorMsg').style.visibility = "";
+	}
+}
+
+function settingBookData(){
+	document.getElementById('selectBookErrorMsg').style.visibility = "hidden";
+
+}
+
+</script>
 </head>
 <body class="m-3">
+	<label for="selectBookErrorMsg" id="selectBookErrorMsg" name="selectBook" style="color: red">Please Select Book to Proceed</label>
 	<label for="records">Found ${totalItems} Results. Showing ${currentPage * 10} results of ${totalItems}</label>
 	<nav aria-label="Navigation for Searched Books">
 	    <ul class="pagination">
@@ -48,26 +81,38 @@
 	    </ul>
 	</nav>
 	<div class="row col-md-10">
-	    <table class="table table-striped table-bordered table-sm">
-	        <tr>
-	        	<th>Select</th>
-	            <th>Title</th>
-	            <th>Author</th>
-	            <th>Publishers</th>
-	            <th>Book Description</th>
-	        </tr>
+	<a class="page-link" href="#" onclick="saveSelLinkClick();" id="saveSelLink">Proceed Next</a>
+	<form name="selectSearchBookData" id="selectSearchBookData" method="post" action="/BooksOnline/GetSingleBookDetailsAfterSearch">
+	<input type="hidden" name="bookListSize" id="bookListSize" value="${books.size()}">
 	
-	        <c:forEach items="${books}" var="book">
-	            <tr>
-	            	<td><input type="radio" name="selectedBookFromSearch" id="selectedBookFromSearch"></td>
-	                <td>${book.getBooktitle()}</td>
-	                <td>${book.getBookauthor()}</td>  
-	                <td>${book.getPublisher()}</td>  
-	                <td title="${book.getBookdesc()}">${book.getBookShortCustdesc()}</td>  
-	            </tr>
-	        </c:forEach>
-	    </table>
-	    <a class="page-link" href="/BooksOnline/Secure/isbnquery.jsp" >Next Step</a>
+	<%
+		session.setAttribute("books", request.getAttribute("books"));
+		List<Book> bookList = (ArrayList)request.getAttribute("books");
+	%>
+	
+		    <table class="table table-striped table-bordered table-sm" id="myTable">
+		        <tr>
+		        	<th>Select</th>
+		            <th>Title</th>
+		            <th>Author</th>
+		            <th>Publishers</th>
+		            <th>Book Description</th>
+		        </tr>
+		
+		        <c:forEach items="${books}" var="book" varStatus="loop">
+		            <tr>
+		            	<td><input type="radio" name="selectedBookFromSearch" id="selectedBookFromSearch" value='<c:out value="${book.getBookid()}" />' onclick="settingBookData();">
+		            		
+		            	</td>
+		                <td>${book.getBooktitle()}</td>
+		                <td>${book.getBookauthor()}</td>  
+		                <td>${book.getPublisher()}</td>
+		                <td title="${book.getBookdesc()}">${book.getBookShortCustdesc()}</td>  
+		            </tr>
+		        </c:forEach>
+		    </table>
+	    </form>
+	    <a class="page-link" href="#" onclick="saveSelLinkClick();" id="saveSelLink">Proceed Next</a>
 	</div>
 </body>
 </html>

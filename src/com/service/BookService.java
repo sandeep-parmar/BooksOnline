@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import javax.security.auth.Subject;
 import javax.servlet.Servlet;
@@ -240,7 +241,9 @@ public class BookService {
 								description = "";
 								bookShortCustdesc = "<span style=\"font-style: italic\">Information not found</span>";
 							}
-							bookList.add(new Book(setNoDataFound(isbn), title ,authorlist , description, setNoDataFound(thumbnail), setNoDataFound(category), setNoDataFound(isbn10), setNoDataFound(publisher), setNoDataFound(publishedDate), totalItems, bookShortCustdesc));
+							
+							
+							bookList.add(new Book(null != isbn ? isbn : "0", title ,authorlist , description, setNoDataFound(thumbnail), setNoDataFound(category), setNoDataFound(isbn10), setNoDataFound(publisher), setNoDataFound(publishedDate), totalItems, bookShortCustdesc));
 						}
 						
 					}
@@ -442,7 +445,7 @@ public class BookService {
 		json.put(JsonStrings.TITLE, title);
 		json.put(JsonStrings.AUTHOR, author);
 		json.put(JsonStrings.DESCRIPTION, desc);
-		json.put(JsonStrings.ISBN_13, id);
+		json.put(JsonStrings.ISBN_13, id.equals("0") ? UUID.randomUUID().toString().replace("-", "") : id); //generate id to store as we got null from api
 		
 		/*hidden fields*/
 		json.put(JsonStrings.ISBN_10, isbn_10);

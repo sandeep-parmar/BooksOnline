@@ -68,6 +68,10 @@ public class Book implements Serializable{
 		this.bookShortCustdesc = bookShortCustdesc;
 	}
 
+	public Book() {
+		super();
+	}
+
 	public String getBooktitle() {
 		return booktitle;
 	}

@@ -269,4 +269,9 @@ body {
       margin: auto;
   }
 	
-
+.bookSearchRight{
+	height: 300px;
+    width: 300px;
+    position: absolute;
+    right: 270px;
+}
