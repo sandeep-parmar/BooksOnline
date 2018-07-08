@@ -175,7 +175,8 @@ public class BookService {
 
 	public String setNoDataFound(String str){
 	//		return null != str ? str.trim() : "<span style=\"background-color: #FFFF00\">Information not found</span>";
-		return null != str ? str.trim() : "<span style=\"font-style: italic\">Information not found</span>";
+//		return null != str ? str.trim() : "<span style=\"font-style: italic\">Information not found</span>";
+		return null != str ? str.trim() : "";
 	}
 	
 	public String setDataHighLight(String str, String valChk){
@@ -238,12 +239,11 @@ public class BookService {
 							String bookShortCustdesc = null;
 							bookShortCustdesc = null != description && description.length() > 100 ? description.substring(0, 99) + "...." : description;
 							if(null == description || description.isEmpty()){
-								description = "";
-								bookShortCustdesc = "<span style=\"font-style: italic\">Information not found</span>";
+								description = "No Data Found";
+								bookShortCustdesc = "";
 							}
 							
-							
-							bookList.add(new Book(null != isbn ? isbn : "0", title ,authorlist , description, setNoDataFound(thumbnail), setNoDataFound(category), setNoDataFound(isbn10), setNoDataFound(publisher), setNoDataFound(publishedDate), totalItems, bookShortCustdesc));
+							bookList.add(new Book(null != isbn ? isbn : UUID.randomUUID().toString().replace("-", ""), title ,authorlist , description, setNoDataFound(thumbnail), setNoDataFound(category), setNoDataFound(isbn10), setNoDataFound(publisher), setNoDataFound(publishedDate), totalItems, bookShortCustdesc));
 						}
 						
 					}
@@ -414,6 +414,10 @@ public class BookService {
 		return sendResponse(status);
 	}
 	
+	public String validateNull(String str){
+		return null != str ? str.trim() : "No Data Found";
+	}
+	
 	@POST
 	@Path("/savebook")
 	public String saveBook(@FormParam("title") String title,
@@ -442,23 +446,23 @@ public class BookService {
 		JsonStrings jsonSTR = new JsonStrings();
 		JSONObject json = jsonSTR.getNewJsonObject();
 		
-		json.put(JsonStrings.TITLE, title);
-		json.put(JsonStrings.AUTHOR, author);
-		json.put(JsonStrings.DESCRIPTION, desc);
-		json.put(JsonStrings.ISBN_13, id.equals("0") ? UUID.randomUUID().toString().replace("-", "") : id); //generate id to store as we got null from api
+		json.put(JsonStrings.TITLE, validateNull(title));
+		json.put(JsonStrings.AUTHOR, validateNull(author));
+		json.put(JsonStrings.DESCRIPTION, validateNull(desc));
+		json.put(JsonStrings.ISBN_13, validateNull(id)); //generate id to store as we got null from api
 		
 		/*hidden fields*/
-		json.put(JsonStrings.ISBN_10, isbn_10);
-		json.put(JsonStrings.PUBLISHER, publisher);
-		json.put(JsonStrings.PUBLISHEDDATE, publisheddate);
-		json.put(JsonStrings.CATEGORIES, category);
-		json.put(JsonStrings.THUMBNAIL, thumbnail);
+		json.put(JsonStrings.ISBN_10, validateNull(isbn_10));
+		json.put(JsonStrings.PUBLISHER, validateNull(publisher));
+		json.put(JsonStrings.PUBLISHEDDATE, validateNull(publisheddate));
+		json.put(JsonStrings.CATEGORIES, validateNull(category));
+		json.put(JsonStrings.THUMBNAIL, validateNull(thumbnail));
 		
 		/*local user details*/
-		json.put(JsonStrings.LNAME, lname);
-		json.put(JsonStrings.LCITY, lcity);
-		json.put(JsonStrings.LLOCALITY, llocality);
-		json.put(JsonStrings.OFFPRICE, offPrice);
+		json.put(JsonStrings.LNAME, validateNull(lname));
+		json.put(JsonStrings.LCITY, validateNull(lcity));
+		json.put(JsonStrings.LLOCALITY, validateNull(llocality));
+		json.put(JsonStrings.OFFPRICE, validateNull(offPrice));
 		
 		status = DBFacade.saveBookUser(user, json);
 		return sendResponse(status);
