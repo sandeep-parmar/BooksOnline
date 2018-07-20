@@ -53,66 +53,66 @@ $(document).ready(function(){
 		$("#isbn").prop("readonly",false);
 	}
 	
-	function getBookInfoAndSetModal1(searchKey, searchVal)
-	{				
-		$.get(host + port + webservice + bookservice + "/getbookinfo/" + searchKey + "/" + searchVal,
-				function(data, status){				
-				
-				var status= data[STATUS];
-	    		var errmsg = data[ERRMSG];
-	    		
-	    		if(status == 0)
-	    		{
-	    			var title = data["title"];									
-	    			var author = data["author"];
-	    			var description = data["description"];
-	    			var thumbnail = data["thumbnail"];
-	    			var isbn_13 = data["ISBN_13"];
-	    			var isbn_10 = data["ISBN_10"];
-	    			var publisher = data["publisher"];
-	    			var publisheddate = data["publishedDate"];
-	    			//alert(publisheddate);
-	    			var category = data["categories"];														
-
-	    			if(status == 0)
-	    			{										
-	    				$("#bookform").removeClass('hidden');				
-	    			}
-	    			else if(status == 13)
-	    			{								
-	    				$("#bookform").addClass('hidden');
-	    				resetBookForm();
-	    			}							
-
-	    			$("#title").val(title);
-	    			$("#author").val(author);										 
-	    			$("#description").val(description);
-	    			$("#isbn_13").val(isbn_13);	
-
-	    			$('#bookImg').attr('src',thumbnail);
-
-	    			/*hidden fields*/
-	    			$("#thumbnail").val(thumbnail);
-	    			$("#isbn_10").val(isbn_10);
-	    			$("#publisher").val(publisher);
-	    			$("#publisheddate").val(publisheddate);
-	    			$("#category").val(category);
-	    		}
-	    		else
-	    		{
-	    			showWarning(errmsg);
-	    		}
-				
-				setReadOnlyTrue();				 
-									 
-				})
-				.fail(function(res,status,error) {
-					//console.log(res.responseText);
-					//alert( res.responseText+" "+status+" "+error);
-					showDanger("Something went wrong, we are looking into it");
-				});		
-	}
-	
+//	function getBookInfoAndSetModal1(searchKey, searchVal)
+//	{				
+//		$.get(host + port + webservice + bookservice + "/getbookinfo/" + searchKey + "/" + searchVal,
+//				function(data, status){				
+//				
+//				var status= data[STATUS];
+//	    		var errmsg = data[ERRMSG];
+//	    		
+//	    		if(status == 0)
+//	    		{
+//	    			var title = data["title"];									
+//	    			var author = data["author"];
+//	    			var description = data["description"];
+//	    			var thumbnail = data["thumbnail"];
+//	    			var isbn_13 = data["ISBN_13"];
+//	    			var isbn_10 = data["ISBN_10"];
+//	    			var publisher = data["publisher"];
+//	    			var publisheddate = data["publishedDate"];
+//	    			//alert(publisheddate);
+//	    			var category = data["categories"];														
+//
+//	    			if(status == 0)
+//	    			{										
+//	    				$("#bookform").removeClass('hidden');				
+//	    			}
+//	    			else if(status == 13)
+//	    			{								
+//	    				$("#bookform").addClass('hidden');
+//	    				resetBookForm();
+//	    			}							
+//
+//	    			$("#title").val(title);
+//	    			$("#author").val(author);										 
+//	    			$("#description").val(description);
+//	    			$("#isbn_13").val(isbn_13);	
+//
+//	    			$('#bookImg').attr('src',thumbnail);
+//
+//	    			/*hidden fields*/
+//	    			$("#thumbnail").val(thumbnail);
+//	    			$("#isbn_10").val(isbn_10);
+//	    			$("#publisher").val(publisher);
+//	    			$("#publisheddate").val(publisheddate);
+//	    			$("#category").val(category);
+//	    		}
+//	    		else
+//	    		{
+//	    			showWarning(errmsg);
+//	    		}
+//				
+//				setReadOnlyTrue();				 
+//									 
+//				})
+//				.fail(function(res,status,error) {
+//					//console.log(res.responseText);
+//					//alert( res.responseText+" "+status+" "+error);
+//					showDanger("Something went wrong, we are looking into it");
+//				});		
+//	}
+//	
 	function resetBookForm()
 	{
 		$("#title").val("");
@@ -125,25 +125,9 @@ $(document).ready(function(){
 		$("#llocality").val("");
 		$("#offprice").val("");			
 		$('#bookImg').attr('src',"");
-		setReadOnlyFalse();	
+		//setReadOnlyFalse();	
 	}
-	function validateBookForm()
-	{
-		var title = $("#title").val();
-		var author = $("#author").val();										 
-		var desc = $("#description").val();
-		var isbn = $("#isbn_13").val();		
-		var lname = $("#lname").val();
-		var lcity = $("#lcity").val();
-		var llocality = $("#llocality").val();
-		var offprice = $("#offPrice").val();
-		if(!title || !author || !desc || !isbn || !lname || !lcity || !llocality || !offprice)
-		{
-			showWarning("Form fields can not be empty");
-			return 0;
-		}
-		return 1;	
-	}
+	
 	
 	$("#searchIsbn").click(function(){
 		
@@ -486,19 +470,14 @@ $(document).ready(function(){
             type: "POST",       
             contentType: "application/x-www-form-urlencoded",
             url: host + port + webservice + bookservice + "/savebook",
-            data: $("#bookform").serialize(),
+            data: $("#saveSearchBook").serialize(),
             dataType: 'json',
             success: function (data) {              	
-            	$("#bookform").addClass("hidden");
+            	$("#saveSearchBook").addClass("hidden");
             	showSuccess(data[ERRMSG]);            	
-                //console.log("SUCCESS : ", data[ERRMSG]);
             },
             error: function (res,status,error) {
-            
-            	showDanger(res.responseText);
-            	//alert("some error:"+e);
-                //console.log("ERROR : ", e);
-
+               showDanger(res.responseText);
             }
         });
 	}
@@ -659,4 +638,5 @@ $(document).ready(function(){
 	      }
 	  }
 	  
+
 });

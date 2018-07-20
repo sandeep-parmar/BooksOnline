@@ -28,6 +28,10 @@ public class JsonStrings {
 		public static String PUBLISHER           = "publisher";
 		public static String PUBLISHEDDATE       = "publishedDate";
 		public static String CATEGORIES          = "categories";
+		public static String TOTALITEMS          = "totalItems";
+		public static String BOOK          		 = "book";
+		public static String BOOKCOUNT           = "bookcount";
+		public static String ISBN           	 = "ISBN";
 		
 		/*This is required for dbfacade*/
 		public static String LNAME          	 = "lname";
@@ -214,5 +218,16 @@ public class JsonStrings {
 				category = categories.getString(0);				
 			}
 			return category;
+		}
+		
+		public Integer getTotalItems(String jsonStr) {
+			String totalItem = "0";
+			JSONObject totItem = new JSONObject(jsonStr);
+				if(null != totItem){
+					if(totItem.has(JsonStrings.TOTALITEMS)){
+						totalItem = totItem.optString(JsonStrings.TOTALITEMS);
+					}
+				}	
+			return Integer.parseInt(totalItem);
 		}
 }

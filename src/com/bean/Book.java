@@ -14,6 +14,8 @@ public class Book implements Serializable{
 	private String isbn_10;
 	private String publisher;
 	private String published_date;
+	private int totalItems; 
+	private String bookShortCustdesc;
 	
 	public static String booktitleStr = "booktitle";
 	public static String bookauthorStr = "bookauthor";
@@ -48,6 +50,26 @@ public class Book implements Serializable{
 		this.isbn_10 = isbn_10;
 		this.publisher = publisher;
 		this.published_date = published_date;
+	}
+	
+	public Book(String bookid, String booktitle, String bookauthor, String bookdesc, String thumbnail, String category,
+			String isbn_10, String publisher, String published_date, int totalItems, String bookShortCustdesc) {
+		super();
+		this.booktitle = booktitle;
+		this.bookauthor = bookauthor;
+		this.bookdesc = bookdesc;
+		this.bookid = bookid;
+		this.thumbnail = thumbnail;
+		this.category = category;
+		this.isbn_10 = isbn_10;
+		this.publisher = publisher;
+		this.published_date = published_date;
+		this.totalItems = totalItems;
+		this.bookShortCustdesc = bookShortCustdesc;
+	}
+
+	public Book() {
+		super();
 	}
 
 	public String getBooktitle() {
@@ -128,6 +150,22 @@ public class Book implements Serializable{
 
 	public static void setThumbnailStr(String thumbnailStr) {
 		Book.thumbnailStr = thumbnailStr;
+	}
+
+	public int getTotalItems() {
+		return totalItems;
+	}
+
+	public void setTotalItems(int totalItems) {
+		this.totalItems = totalItems;
+	}
+
+	public String getBookShortCustdesc() {
+		return bookShortCustdesc;
+	}
+
+	public void setBookShortCustdesc(String bookShortCustdesc) {
+		this.bookShortCustdesc = bookShortCustdesc;
 	}
 
 	@Override

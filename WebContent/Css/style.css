@@ -269,4 +269,18 @@ body {
       margin: auto;
   }
 	
+.bookSearchRight{
+	height: 300px;
+    width: 300px;
+    position: absolute;
+    right: 270px;
+}
 
+.bookOptionSelected {
+	padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}

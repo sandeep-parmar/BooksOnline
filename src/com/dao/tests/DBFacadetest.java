@@ -20,15 +20,15 @@ public class DBFacadetest {
 		int i = 0;
 		for(i = 0; i < 100; i++)
 		{
-			 status = DBFacade.saveBookUser(user, "title"+i, 
-										"author"+i, 
-										"desc"+i, 
-										"id"+i,
-										"http://books.google.com/books/content?id=cqCiDQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api", 										
-										"pune", 
-										"vishrantwadi", 
-										"sandeep", 										
-										"150");
+//			 status = DBFacade.saveBookUser(user, "title"+i, 
+//										"author"+i, 
+//										"desc"+i, 
+//										"id"+i,
+//										"http://books.google.com/books/content?id=cqCiDQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api", 										
+//										"pune", 
+//										"vishrantwadi", 
+//										"sandeep", 										
+//										"150");
 			if(status != 0)
 				break;
 		}
