@@ -45,6 +45,7 @@ function saveSearchBookDetails(){
 	console.log("called saveSearchBookDetails");
 	//saving book
 	if(validateBookForm()){
+		editBookSearchFun();
 		submitNormalForm();
 		$("#saveSearchBook").addClass("hidden");
 	}	

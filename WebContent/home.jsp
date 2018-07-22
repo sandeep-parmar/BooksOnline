@@ -21,25 +21,73 @@
 
 <script src="Js/basicB.js"></script>
 <script type="text/javascript">
+$(document).ready(function()
+{
+    $(".backup_picture").on("error", function(){
+        $(this).attr('src', './Images/no_thumb_avail.png');
+    });
+});
 function getBookUser(userId,bookId){
 	console.log("called:"+userId+"bookid"+bookId);
 	var url = "http://localhost:8080";
 	document.location.href = url + "/BooksOnline/getMoreBookDetails?userId=" + encodeURIComponent(userId) + "&bookId=" + encodeURIComponent(bookId); 
 }
+
 </script>
 
 </head>
 <body class = "body-grey">
 
-	<%@ include file="navbar.jsp"%>
-
-	<%
-		List<BookUser> list = DBFacade.getBookAdList();
-		request.setAttribute("list", list);
-	%>
-	
+	<%@ include file="navbar.jsp"%>	
 	<%@ include file="carousel.jsp"%>
 	
+	<%
+		List<BookUser> list = (List) request.getSession().getAttribute("list");
+	%>
+	<div align="center" class="displayNoofBookText">
+		You can browse through ${totalItems} Books Posted.   Displaying 
+		 <c:if test="${currentHomePage lt noOfPages}">
+		 	${currentHomePage*10} of ${totalItems} .
+		 </c:if>
+		  <c:if test="${currentHomePage eq noOfPages}">
+		 	${totalItems} of ${totalItems} .
+		 </c:if>
+		
+	</div>
+	<nav aria-label="Navigation for Books">
+	    <ul class="pagination">
+	        <c:if test="${currentHomePage != 1}">
+	            <li class="page-item"><a class="page-link" 
+	                href="HomeNavigation?recordsHomePerPage=${recordsHomePerPage}&currentHomePage=${currentHomePage-1}">Previous</a>
+	            </li>
+	        </c:if>
+	
+	        <c:forEach begin="1" end="${noOfPages}" var="i">
+	            <c:choose>
+	                <c:when test="${currentHomePage eq i}">
+	                    <li class="page-item active"><a class="page-link">
+	                            ${i} <span class="sr-only">(current)</span></a>
+	                    </li>
+	                </c:when>
+	                <c:otherwise>
+	                	<c:if test="${i <= 20 }">
+		                   <li class="page-item"><a class="page-link" 
+	                        href="HomeNavigation?recordsHomePerPage=${recordsHomePerPage}&currentHomePage=${i}">${i}</a>
+							</li>
+	                    </c:if>
+	                </c:otherwise>
+	            </c:choose>
+	        </c:forEach>
+	
+	        <c:if test="${currentHomePage lt noOfPages}">
+	            <li class="page-item"><a class="page-link" 
+	                href="HomeNavigation?recordsHomePerPage=${recordsHomePerPage}&currentHomePage=${currentHomePage+1}">Next</a>
+	            </li>
+	        </c:if>              
+	    </ul>
+	</nav>
+	<input type="hidden" name="currentHomePage" value="${currentHomePage}">
+	<input type="hidden" name="recordsHomePerPage" value="${recordsHomePerPage}">
 	<div class="container container_margin">
 		<div class="row cool-white">
 			<c:forEach items="${list}" var="item">
@@ -47,9 +95,9 @@ function getBookUser(userId,bookId){
 					<div class="col-sm-3">
 						<div class="panel panel-primary">
 							<div class="panel-body img-hover">
-								<img class="img-responsive imgstyle center-block"
-									src=<c:out value = "${item.getBook().getThumbnail()}"/>
-									alt=<c:out value = "${item.getBook().getThumbnail()}"/>>
+								<img class="backup_picture img-responsive imgstyle center-block"
+									src="${item.getBook().getThumbnail()}"
+									alt="No Image Available" >
 							</div>
 							<div class="panel-footer">
 								<div class="row">

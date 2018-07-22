@@ -38,7 +38,7 @@ public class BookDao implements IBaseDao{
 			preparedStmt.setString(9, book.getPublished_date());			
 			
 			preparedStmt.setString(10, book.getBookid());			
-			preparedStmt.execute();
+			boolean result = preparedStmt.execute();
 			
 		}catch (SQLIntegrityConstraintViolationException e) {
 			System.out.println(e.toString());

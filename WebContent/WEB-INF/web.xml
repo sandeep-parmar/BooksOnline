@@ -26,14 +26,26 @@
     <servlet-name>UploadServlet</servlet-name>
     <url-pattern>/Secure/UploadServlet</url-pattern>
   </servlet-mapping>
-  <servlet>
-    <servlet-name>home</servlet-name>
-    <jsp-file>/home.jsp</jsp-file>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>home</servlet-name>
-    <url-pattern>/home</url-pattern>
-  </servlet-mapping>
+<!--   <servlet> -->
+<!--     <servlet-name>HomeNavigation</servlet-name> -->
+<!--     <jsp-file>/home.jsp</jsp-file> -->
+<!--   </servlet> -->
+<!--   <servlet-mapping> -->
+<!--     <servlet-name>HomeNavigation</servlet-name> -->
+<!--     <url-pattern>/home</url-pattern> -->
+<!--   </servlet-mapping> -->
+   <servlet>
+        <servlet-name>HomeNavigation</servlet-name>
+        <servlet-class>com.bookServlets.HomeNavigation</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>HomeNavigation</servlet-name>
+        <url-pattern></url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>HomeNavigation</servlet-name>
+        <url-pattern>/HomeNavigation</url-pattern>
+    </servlet-mapping>
   <servlet>
     <servlet-name>login</servlet-name>
     <jsp-file>/login.jsp</jsp-file>

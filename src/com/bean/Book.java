@@ -105,7 +105,7 @@ public class Book implements Serializable{
 	}
 
 	public String getThumbnail() {
-		return thumbnail;
+		return null == thumbnail || thumbnail.isEmpty() ? "" : thumbnail;
 	}
 
 	public void setThumbnail(String thumbnail) {

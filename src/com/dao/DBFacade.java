@@ -54,16 +54,48 @@ public class DBFacade {
 		 List<BookUser> list = bookUserDao.getBookList();		 
 		 for (BookUser bookUser : list) {		
 			 Book book = bookDao.geBook(bookUser.getBookid());
-		
-			 //Locality locality = localityDao.getLocality(bookUser.getPin());
-			 
-			 bookUser.setBook(book);
-			// bookUser.setLocality(locality);
-			 
-			// System.out.println(bookUser);
+			 if(null != book){
+				 //Locality locality = localityDao.getLocality(bookUser.getPin());
+				 String thumbNailsBook = null == book.getThumbnail() || book.getThumbnail().isEmpty() ? "" : book.getThumbnail();
+				 
+				 book.setThumbnail(thumbNailsBook);
+				 bookUser.setBook(book);
+				// bookUser.setLocality(locality);
+				 
+				// System.out.println(bookUser);
+			 }
 		}
 		 return list;
 	 }
+	 
+	 /*Used in home page*/
+	 public static int getBookAdListCount()
+	 {		
+		 return bookUserDao.getBookListCount();
+	 }
+	 
+	 /*Used in home page*/
+	 public static List<BookUser> getBookAdList(int currentHomePageStr, int recordsHomePerPageStr)
+	 {		
+		 List<BookUser> list = bookUserDao.getBookList(currentHomePageStr, recordsHomePerPageStr);		 
+		 for (BookUser bookUser : list) {		
+			 Book book = bookDao.geBook(bookUser.getBookid());
+			 if(null != book){
+				 //Locality locality = localityDao.getLocality(bookUser.getPin());
+				 String thumbNailsBook = null == book.getThumbnail() || book.getThumbnail().isEmpty() ? "/Images/no_thumb_avail.png" : book.getThumbnail();
+				 
+				 book.setThumbnail(thumbNailsBook);
+				 bookUser.setBook(book);
+				// bookUser.setLocality(locality);
+				 
+				// System.out.println(bookUser);
+			 }
+		}
+		 System.out.println("list::"+list);
+		 return list;
+	 }
+	 
+	 
 	 
 	 /*Used in category page*/
 	 public static List<BookUser> getBookAdListByCategory(String category)
@@ -73,7 +105,7 @@ public class DBFacade {
 			 Book book = bookDao.geBook(bookUser.getBookid());
 		
 			 //Locality locality = localityDao.getLocality(bookUser.getPin());
-			 
+			
 			 bookUser.setBook(book);
 			// bookUser.setLocality(locality);
 			 

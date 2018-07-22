@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -113,10 +114,10 @@ public class BookService {
 		return jsonres;
 	}
 	
-	private String sendBookRequest(String key, String value, int startIndex, int maxResults)
+	private String sendBookRequest(String key, String value, int startIndex, int maxResults) throws UnsupportedEncodingException
 	{
 		String address = "https://www.googleapis.com/books/v1/volumes?q=";
-		String query = key + ":" + value + "&startIndex=" + startIndex + "&maxResults=" + maxResults;
+		String query = key + ":" + URLEncoder.encode(value, "UTF-8") + "&startIndex=" + startIndex + "&maxResults=" + maxResults;
 		String charset = "UTF-8";
 	 
 		int status = Errorcode.EC_SUCCESS.getValue();
@@ -189,7 +190,7 @@ public class BookService {
 	@GET
 	@Path("/getbookinfo/{param1}/{param2}/{param3}/{param4}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Book> getBookDetails(@PathParam("param1") String key, @PathParam("param2") String value, @PathParam("param2") int startIndex, @PathParam("param2") int maxResults)
+	public List<Book> getBookDetails(@PathParam("param1") String key, @PathParam("param2") String value, @PathParam("param2") int startIndex, @PathParam("param2") int maxResults) throws UnsupportedEncodingException
 	{
 		System.out.println("getBookDetails called with key:"+key+":value:"+value+":startIndex:"+startIndex+":maxResults:"+maxResults);
 		int totalItems = 0;
