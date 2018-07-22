@@ -25,9 +25,10 @@ public class BookUserDao implements IBaseDao {
 
 	@Override
 	public String getSelectQuery() {
-		String sql = "select * from book_user where soldstatus = 0";
+		String sql = "select * from book_user where soldstatus = 0 order by ADDEDON DESC";
 		return sql;
 	}
+	
 	
 	public String getSelectQueryForCategory() {
 		String sql = "select * from book_user where bookid in (select bookid from books where category like ?) and soldstatus = 0";
@@ -50,7 +51,15 @@ public class BookUserDao implements IBaseDao {
 		String sql = "update book_user set price = ? where uid = ? and bookid = ?";
 		return sql;
 	}
+	
+	public String getBooksAdCountQuery(){
+		return "select count(*) AS BOOKCOUNT from book_user where soldstatus = 0";
+	}
 
+	public String getPaginatedHomeSelectQuery(int currPage, int recordPg) {
+		return "select * from book_user where soldstatus = 0 order by ADDEDON DESC limit "+currPage+","+recordPg;
+	}
+	
 	public int saveBookUser(BookUser bookUser) {
 		
 		/*PENDING*/
@@ -156,6 +165,41 @@ public class BookUserDao implements IBaseDao {
 		return list;
 	}
 
+	public List<BookUser> getBookList(int currentHomePageStr, int recordsHomePerPageStr) {
+		System.out.println("called getBookList :currentHomePageStr::"+currentHomePageStr+" recordsHomePerPageStr:: "+recordsHomePerPageStr);
+		List<BookUser> list = new ArrayList<BookUser>(0);
+		ResultSet rs = null;
+		int currPage = currentHomePageStr != 0 ? (currentHomePageStr-1)*10 : currentHomePageStr;
+		int recordPerPg = recordsHomePerPageStr;
+		String sql = getPaginatedHomeSelectQuery(currPage, recordPerPg);
+		System.out.println("Query to get Books reocrds::"+sql);
+		try {
+			Connection conn = ConnectionHandler.getConnection();
+			PreparedStatement preparedStmt = conn.prepareStatement(sql);
+			rs = preparedStmt.executeQuery();
+			while(rs.next())
+			{
+				BookUser bookUser = new BookUser(rs.getString(BookUser.uidStr),
+												 rs.getString(BookUser.bookidStr),
+												 rs.getString(BookUser.areaStr),
+												 rs.getString(BookUser.cityStr),
+												 rs.getString(BookUser.nameStr), 
+												 rs.getString(BookUser.priceStr), 
+												 rs.getInt(BookUser.soldstatusStr)
+												 ); 
+				list.add(bookUser);
+			}
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}finally
+		{
+			ConnectionHandler.closeConnection();
+		}
+		return list;
+	}
+
+	
 	@Override
 	public String getSingleEntryQuery() {
 		// TODO Auto-generated method stub
@@ -323,4 +367,26 @@ public class BookUserDao implements IBaseDao {
 				+ "on bu.pin=l.pin";*/
 		return sql;
 	}	
+	
+
+	public int getBookListCount() {
+		ResultSet rs = null;
+		String sql = getBooksAdCountQuery();
+		int bookCount = 0;
+		try {
+			Connection conn = ConnectionHandler.getConnection();
+			PreparedStatement preparedStmt = conn.prepareStatement(sql);
+			rs = preparedStmt.executeQuery();
+			while(rs.next()){
+				bookCount = rs.getInt("BOOKCOUNT");
+			}
+		}catch(SQLException e) {
+			System.out.println(e.toString());
+		}
+		finally {
+			ConnectionHandler.closeConnection();
+		}
+		return bookCount;
+	}
+	
 }
